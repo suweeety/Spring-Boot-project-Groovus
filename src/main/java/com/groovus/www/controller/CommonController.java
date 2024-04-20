@@ -14,7 +14,7 @@ public class CommonController {
     @GetMapping("/")
     public String helloGroovus(){
 
-        return "/main/main";
+        return "/main/test";
     }
 
 
