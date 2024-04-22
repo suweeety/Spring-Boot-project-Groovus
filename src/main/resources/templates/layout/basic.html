@@ -162,7 +162,6 @@
                     </a>
                   </li>
                 </ul>
-
               </div>
             </div>
           </li>
@@ -274,6 +273,16 @@
   <div class="nk-sidebar">
     <div class="nk-nav-scroll">
       <ul class="metismenu" id="menu">
+        <li class="nav-label">나의 활동</li>
+        <li>
+          <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
+            <i class="fa-regular fa-comment-dots"></i><span class="nav-text">Reply</span>
+          </a>
+          <ul aria-expanded="false">
+            <li><a th:href="@{/reply/myreply}">내가 쓴 댓글</a></li>
+          </ul>
+        </li>
+
         <li class="nav-label">Collaboration(프로젝트명)</li>
         <li>
           <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
@@ -346,7 +355,7 @@
         <!--관라자만 보일 메뉴-->
         <li>
           <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
-            <i class="fa-solid fa-gear"></i><span class="nav-text">설정</span>
+            <i class="fa-solid fa-gear"></i><span class="nav-text">Setting</span>
           </a>
           <ul aria-expanded="false">
             <li><a th:href="@{/setting}">설정</a></li>

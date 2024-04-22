@@ -17,6 +17,13 @@ public class CommonController {
         return "/main/test";
     }
 
+    @GetMapping("/reply/myreply")
+    public void goMyReply(){
+        //내가 쓴 댓글로 이동
+
+    }
+
+
     @GetMapping("/task/taskList")
     public void goTaskList(){
         //업무리스트로 이동
