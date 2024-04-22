@@ -14,8 +14,16 @@ public class CommonController {
     @GetMapping("/")
     public String helloGroovus(){
 
+        return "/main/main";
+    }
+
+    @GetMapping("/main/test")
+    public String tesPage(){
+
         return "/main/test";
     }
+
+
 
     @GetMapping("/reply/myreply")
     public void goMyReply(){
@@ -27,7 +35,6 @@ public class CommonController {
     @GetMapping("/task/taskList")
     public void goTaskList(){
         //업무리스트로 이동
-
     }
 
     @GetMapping("/calendar/schedule")
@@ -62,6 +69,21 @@ public class CommonController {
     @GetMapping("/setting")
     public void goSetting(){
         //설정페이지로 이동
+    }
+    
+    @GetMapping("/main/about")
+    public void  goAbout(){
+        //어바웃 페이지 이동
+    }
+
+    @GetMapping("/main/function")
+    public void  goFunction(){
+        //기능소개 페이지로 이동
+    }
+
+    @GetMapping("/main/register")
+    public void  goRegister(){
+        //프로젝트 생성 페이지로 이동
     }
 
 }
