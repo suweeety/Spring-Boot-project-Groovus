@@ -82,6 +82,10 @@
     @media #{$breakpoint-xs} {
       height: calc(100% - 70px);
     }
+
+    .main-bg-img .bg-img-1 {
+      border-radius: 20px;
+    }
   }
 
   .social-info {
