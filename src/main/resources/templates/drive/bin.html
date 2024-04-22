@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/basic.html}">
+<head>
+  <meta charset="UTF-8">
+  <title>드라이브 / 휴지통</title>
+  <th:block layout:fragment="css">
+
+    <style>
+
+      #logoImg{
+        background-color: #2de3f1;
+      }
+
+    </style>
+
+  </th:block>
+</head>
+
+<th:block layout:fragment="content">
+
+  <div class="row">
+
+    <div class="col-lg-6 col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <h1>드라이브 휴지통</h1>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</th:block>
+
+
+
+
+</html>

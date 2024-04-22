@@ -13,7 +13,7 @@
   <meta name="theme-name" content="quixlab" />
   <!--@{/vendor/bootstrap/css/bootstrap.min.css}-->
   <!-- Favicon icon -->
-  <link rel="icon" type="image/png" sizes="16x16" th:href="@{/quixlab-bootstrap-main/theme/images/favicon.png}">
+  <link rel="icon" type="image/png" sizes="16x16" th:href="@{/quixlab-bootstrap-main/theme/images/groovusfavicon.png}">
   <!-- Pignose Calender -->
   <link th:href="@{/quixlab-bootstrap-main/theme/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
   <!-- Chartist -->
@@ -25,7 +25,20 @@
   <!-- 폰트 어썸 -->
   <script src="https://kit.fontawesome.com/c96d31bca3.js"
           crossorigin="anonymous"></script>
+<th:block layout:fragment="css">
 
+  <style>
+
+    #logoImg{
+      background-color: #005fdb;
+    }
+
+
+  </style>
+
+
+
+</th:block>
 
 </head>
 <body>
@@ -48,9 +61,10 @@
   <!--**********************************
   Nav header start
 ***********************************-->
-  <div class="nav-header">
+
+  <div class="nav-header" id="logoImg">
     <div class="brand-logo">
-      <a th:href="@{/}">
+      <a th:href="@{/}" >
         <b class="logo-abbr"><img src="/quixlab-bootstrap-main/theme/images/groovuslogo2.png" alt="" style="
     width: 10rem;
     height: 47px;
@@ -266,7 +280,9 @@
             <i class="fa-regular fa-clipboard"></i><span class="nav-text">Task</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{/quixlab-bootstrap-main/theme/index.html}">업무리스트</a></li>
+            <li><a th:href="@{/task/taskList}">업무리스트</a></li>
+            <li><a th:href="@{/task/taskList}">담당업무</a></li>
+            <li><a th:href="@{/task/taskList}">참조업무</a></li>
             <!-- <li><a href="./index-2.html">Home 2</a></li> -->
           </ul>
         </li>
@@ -295,7 +311,7 @@
             <i class="fa-regular fa-envelope"></i> <span class="nav-text">Message</span>
           </a>
           <ul aria-expanded="false">
-            <li><a href="#">쪽지함</a></li>
+            <li><a th:href="@{/message/messageList}">쪽지함</a></li>
 
           </ul>
         </li>
@@ -305,7 +321,7 @@
             <i class="fa-regular fa-calendar-days"></i><span class="nav-text">Calendar</span>
           </a>
           <ul aria-expanded="false">
-            <li><a href="#">일정관리</a></li>
+            <li><a th:href="@{/calendar/schedule}">일정관리</a></li>
           </ul>
         </li>
         <li>
@@ -313,17 +329,27 @@
             <i class="fa-solid fa-cloud"></i> <span class="nav-text">Drive</span>
           </a>
           <ul aria-expanded="false">
-            <li><a href="#">공유드라이브</a></li>
-            <li><a href="#">휴지통</a></li>
+            <li><a th:href="@{/drive/drive}">공유드라이브</a></li>
+            <li><a th:href="@{/drive/bin}">휴지통</a></li>
           </ul>
         </li>
         <!--<li class="nav-label">UI Components</li>-->
         <li>
           <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
-            <i class="fa-solid fa-video"></i><span class="nav-text">Video Conferenve</span>
+            <i class="fa-solid fa-video"></i><span class="nav-text">Video Conference</span>
           </a>
           <ul aria-expanded="false">
-            <li><a href="#">화상회의</a></li>
+            <li><a th:href="@{/conference/webConference}">화상회의</a></li>
+          </ul>
+        </li>
+
+        <!--관라자만 보일 메뉴-->
+        <li>
+          <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
+            <i class="fa-solid fa-gear"></i><span class="nav-text">설정</span>
+          </a>
+          <ul aria-expanded="false">
+            <li><a th:href="@{/setting}">설정</a></li>
           </ul>
         </li>
 
