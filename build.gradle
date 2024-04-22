@@ -103,7 +103,6 @@ tasks.named('test') {
 
 sourceSets {
     // 톰켓 9용 main.java.srcDir querydslDir
-
     // 톰켓 10용
     main {
         java {
