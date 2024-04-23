@@ -4,41 +4,220 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       layout:decorate="~{layout/basic.html}">
 <head>
-  <meta charset="UTF-8">
-  <title>일정관리</title>
+    <meta charset="UTF-8">
+    <title>일정관리</title>
+    <link th:href="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/css/fullcalendar.min.css}" rel="stylesheet">
+    <link th:href="@{/quixlab-bootstrap-main/theme/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
+    <link th:href="@{/quixlab-bootstrap-main/theme/css/style.css}" rel="stylesheet">
+    <th:block layout:fragment="css">
 
-  <th:block layout:fragment="css">
+        <style>
 
-    <style>
+            #logoImg {
+                background-color: red;
+            }
+            .pl{
+                width: 200px;
+                border: 1px solid #C4C4C4;
+                box-sizing: border-box;
+                border-radius: 10px;
+                padding: 12px 13px;
+                font-family: 'Roboto';
+                font-style: normal;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 16px;
+            }
 
-      #logoImg{
-        background-color: red;
-      }
+            .pl:focus{
+                border: 1px solid #9B51E0;
+                box-sizing: border-box;
+                border-radius: 10px;
+                outline: 3px solid #F8E4FF;
+                border-radius: 10px;
+            }
 
-    </style>
+        </style>
 
-  </th:block>
+    </th:block>
 
 </head>
 
 
 <th:block layout:fragment="content">
 
-  <div class="row">
+    <!--**********************************
+                Content body start
+    ***********************************-->
+    <div class="content-body">
 
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-body">
-          <h1>일정관리</h1>
+        <div class="row page-titles mx-0" style=" transform: translate(10px, -22px);">
+            <div class="col p-md-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                </ol>
+            </div>
         </div>
-      </div>
+        <!-- row -->
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card" style="
+    transform: translate(-256px, -42px);
+    width: 74rem;
+    height: 45rem;
+">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h3>Calendar</h3>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 mt-5" style=" max-width: 12rem;">
+                                    <a href="#" data-toggle="modal" data-target="#add-category"
+                                       class="btn btn-primary btn-block"><i class="ti-plus f-s-12 m-r-5"></i> Create New</a>
+                                    <div id="external-events" class="m-t-20">
+                                        <p>Drag and drop your event or click in the calendar</p>
+                                        <div class="external-event bg-primary text-white" data-class="bg-primary"><i
+                                                class="fa fa-move"></i>New Theme Release
+                                        </div>
+                                        <div class="external-event bg-success text-white" data-class="bg-success"><i
+                                                class="fa fa-move"></i>My Event
+                                        </div>
+                                        <div class="external-event bg-warning text-white" data-class="bg-warning"><i
+                                                class="fa fa-move"></i>Meet manager
+                                        </div>
+                                        <div class="external-event bg-dark text-white" data-class="bg-dark"><i
+                                                class="fa fa-move"></i>Create New theme
+                                        </div>
+                                    </div>
+                                    <!-- checkbox -->
+                                    <div class="checkbox m-t-40">
+                                        <input id="drop-remove" type="checkbox">
+                                        <label for="drop-remove">Remove after drop</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8" style=" height: 38rem;">
+                                    <div class="card-box m-b-50" style="width: 55rem;">
+                                        <div id="calendar"></div>
+                                    </div>
+                                </div>
+
+                                <!-- end col -->
+                                <!-- BEGIN MODAL -->
+                                <div class="modal fade none-border" id="event-modal">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title"><strong>새 일정</strong></h4>
+                                            </div>
+                                            <div class="modal-body"></div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect"
+                                                        data-dismiss="modal">✖ Close
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-success save-event waves-effect waves-light">
+                                                    ➕ 생성
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-danger delete-event waves-effect waves-light"
+                                                        data-dismiss="modal">삭제
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Add Category -->
+                                <div class="modal fade none-border" id="add-category">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="modal-title"><strong>Add a category</strong></h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="control-label">Category Name</label>
+                                                            <input class="form-control form-white"
+                                                                   placeholder="Enter name" type="text"
+                                                                   name="category-name">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="control-label">Choose Category Color</label>
+                                                            <select class="form-control form-white"
+                                                                    data-placeholder="Choose a color..."
+                                                                    name="category-color">
+                                                                <option value="success">Success</option>
+                                                                <option value="danger">Danger</option>
+                                                                <option value="info">Info</option>
+                                                                <option value="pink">Pink</option>
+                                                                <option value="primary">Primary</option>
+                                                                <option value="warning">Warning</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default waves-effect"
+                                                        data-dismiss="modal">Close
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-danger waves-effect waves-light save-category"
+                                                        data-dismiss="modal">저장
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- END MODAL -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /# card -->
+                </div>
+                <!-- /# column -->
+            </div>
+        </div>
+        <!-- #/ container -->
     </div>
+    <!--**********************************
+        Content body end
+    ***********************************-->
 
-  </div>
+    <!--**********************************
+            Footer start
+        ***********************************-->
+    <div class="footer">
+        <div class="copyright">
+            <p>Copyright &copy; Designed & Developed by <a href="https://themeforest.net/user/quixlab">Quixlab</a> 2018</p>
+        </div>
+    </div>
+    <!--**********************************
+        Footer end
+    ***********************************-->
+    </div>
+    <!--**********************************
+        Main wrapper end
+    ***********************************-->
 
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/common/common.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/custom.min.js}"></script>
+    <!--<script th:src="@{/quixlab-bootstrap-main/theme/js/settings.js}"></script>-->
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/gleek.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/styleSwitcher.js}"></script>
+
+
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/jqueryui/js/jquery-ui.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/moment/moment.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/js/fullcalendar.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/plugins-init/fullcalendar-init.js}"></script>
 </th:block>
-
-
-
 
 </html>
