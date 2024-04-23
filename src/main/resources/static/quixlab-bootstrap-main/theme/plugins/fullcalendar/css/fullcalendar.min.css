@@ -271,7 +271,8 @@ a[data-goto]:hover {
 }
 
 .fc-icon, .fc-row.fc-rigid, .fc-time-grid-event {
-  overflow: hidden
+  overflow: hidden;
+  heigh: 593px;
 }
 
 .fc-scroller > .fc-day-grid, .fc-scroller > .fc-time-grid {

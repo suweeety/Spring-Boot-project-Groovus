@@ -60,9 +60,6 @@
         "<input class='form-control' placeholder='시작 날짜' type='text' id='start_date' name='start_date'/>" +
         "<input class='form-control' placeholder='종료 날짜' type='text' id='end_date' name='end_date'/></div></div>")
 
-    $('#start_date').datepicker()
-    $('#end_date').datepicker()
-
   , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()
