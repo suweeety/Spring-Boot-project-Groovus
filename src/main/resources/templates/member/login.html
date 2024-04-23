@@ -1,10 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/mainbasic}"  >
+
+    <!--css 파일-->
+    <link th:href="@{/quixlab-bootstrap-main/theme/css/style.css}" rel="stylesheet">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
 </head>
-<body>
 
-</body>
+<th:block layout:fragment="content">
+
+    <div style="width: 100%;height: 60rem; position: relative;">
+        <div class="bg-curve" style="background-image: url('/img/core-img/curve.png'); background-repeat: no-repeat; height:40rem; width:60%; position: absolute; right: 0;z-index: -5;"></div>
+
+        <div class="login-form-bg h-100">
+            <div class="container h-100">
+                <div class="row justify-content-center h-100">
+                    <div class="col-xl-6">
+                        <div class="form-input-content" style="margin-top: 10rem">
+                            <div class="card login-form mb-0">
+                                <div class="card-body pt-5">
+                                    <a class="text-center" th:href="@{/}"> <h4>GroovUs Login</h4></a>
+
+                                    <form class="mt-5 mb-5 login-input" action="/member/login" method="post">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="아이디" name="username">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" placeholder="비밀번호" name="password">
+                                        </div>
+                                        <th:block th:if="${not #strings.isEmpty(msg)}">
+                                            <p style="color: red"> 로그인 정보가 일치하지 않습니다.</p>
+                                        </th:block>
+                                        <button class="btn login-form__btn submit w-100">LogIn</button>
+                                        <input type="checkbox" name="remember-me" style="margin-top: 1rem;"><label>로그인 정보 기억하기</label>
+
+                                    </form>
+
+                                    <p class="mt-5 login-form__footer">계정이 없으신가요? <a th:href="@{/member/join}" class="text-primary">회원가입</a> now</p>
+                                    <button class="btn login-form__btn submit w-100" onclick="location.href='/oauth2/authorization/kakao'" style="background: #fee500;">카카오 계정 로그인</button>
+
+                                   <!-- <a href="/oauth2/authorization/kakao"> 카카오 계정으로 로그인 </a>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+<script th:inline="javascript">
+
+    $(document).ready(function (){
+
+        var socialLoginErrorMsg = [[${socialMsg}]];
+
+        if(socialLoginErrorMsg!= null){
+            alert("해당 이메일로 계정이 존재합니다!!");
+        }
+
+
+
+
+    });
+
+
+</script>
+
+
+</th:block>
+
+
+
+
+
+
 </html>
