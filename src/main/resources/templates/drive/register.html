@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>등록</title>
+
+    <th:block layout:fragment="css">
+
+        <style>
+
+            #logoImg{
+                background-color: #8d8d8d;
+            }
+
+        </style>
+
+    </th:block>
+</head>
+
+<th:block layout:fragment="content">
+
+    <div class="row">
+
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1>등록</h1>
+                    <form th:action="@{/drive/register}" th:method="post">
+                        <div class="form-group">
+                            <label>제목</label>
+                            <input type="text" class="form-control" name="title">
+                        </div>
+
+                        <div class="form-group fileForm">
+                            <label >Files</label>
+                            <div class="custom-file">
+                                <input type="file"  class="custom-file-input files" id="fileInput" multiple>
+                                <label class="custom-file-label" data-browse="Browse"></label>
+                            </div>
+                        </div>
+
+                        <div class="box">
+
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function (e) {
+
+        });
+    </script>
+
+</th:block>
+
+</html>

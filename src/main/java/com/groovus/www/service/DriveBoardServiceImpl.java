@@ -2,19 +2,18 @@ package com.groovus.www.service;
 
 import com.groovus.www.dto.DriveBoardDTO;
 import com.groovus.www.dto.PageRequestDTO;
-import com.groovus.www.dto.PageResponseDTO;
+import com.groovus.www.dto.PageResultDTO;
 import com.groovus.www.entity.DriveBoard;
 import com.groovus.www.repository.DriveBoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
+import java.util.function.Function;
 
 
 @Service
@@ -22,20 +21,30 @@ import java.util.stream.Collectors;
 @Log4j2
 public class DriveBoardServiceImpl implements DriveBoardService {
 
-    private final ModelMapper modelMapper;
-    private final DriveBoardRepository driveBoardRepository;
+    private final DriveBoardRepository repository;
 
     @Override
-    public Long register(DriveBoardDTO driveBoardDTO) {
+    public Long register(DriveBoardDTO dto) {
 
-        DriveBoard driveBoard = modelMapper.map(driveBoardDTO, DriveBoard.class);
+        log.info(dto);
 
-        Long bno = driveBoardRepository.save(driveBoard).getBno();
+        DriveBoard driveBoard = dtoToEntity(dto);
+
+        repository.save(driveBoard);
 
         return driveBoard.getBno();
-    }
+
+           } // register
 
     @Override
+    public PageResultDTO<DriveBoardDTO, DriveBoard> getList(PageRequestDTO requestDTO){
+        Pageable pageable = requestDTO.getPageable(Sort.by("bno").descending());
+        Page<DriveBoard> result = repository.findAll(pageable);
+        Function<DriveBoard, DriveBoardDTO> fn = (driveBoard -> entityToDTO(driveBoard));
+        return new PageResultDTO<>(result, fn);
+    }
+
+ /*   @Override
     public DriveBoardDTO readOne(Long bno) {
 
         Optional<DriveBoard> result = driveBoardRepository.findById(bno);
@@ -45,9 +54,9 @@ public class DriveBoardServiceImpl implements DriveBoardService {
         DriveBoardDTO driveBoardDTO = modelMapper.map(driveBoard, DriveBoardDTO.class);
 
         return driveBoardDTO;
-    } // readOne
+    } // readOne*/
 
-    @Override
+    /*@Override
     public void modify(DriveBoardDTO driveBoardDTO) {
 
         Optional<DriveBoard> result = driveBoardRepository.findById(driveBoardDTO.getBno());
@@ -57,15 +66,15 @@ public class DriveBoardServiceImpl implements DriveBoardService {
         driveBoard.change(driveBoardDTO.getTitle());
 
         driveBoardRepository.save(driveBoard);
-    } // modify
+    } // modify*/
 
-    @Override
+    /*@Override
     public void remove(Long bno) {
 
         driveBoardRepository.deleteById(bno);
     } // remove
-
-    @Override
+*/
+  /*  @Override
     public PageResponseDTO<DriveBoardDTO> list(PageRequestDTO pageRequestDTO) {
 
         String[] types = pageRequestDTO.getTypes();
@@ -83,6 +92,6 @@ public class DriveBoardServiceImpl implements DriveBoardService {
                 .total((int)result.getTotalElements())
                 .build();
     }
-
+*/
 
 }

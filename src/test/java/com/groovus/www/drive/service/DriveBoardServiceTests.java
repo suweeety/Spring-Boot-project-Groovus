@@ -2,7 +2,8 @@ package com.groovus.www.drive.service;
 
 import com.groovus.www.dto.DriveBoardDTO;
 import com.groovus.www.dto.PageRequestDTO;
-import com.groovus.www.dto.PageResponseDTO;
+import com.groovus.www.dto.PageResultDTO;
+import com.groovus.www.entity.DriveBoard;
 import com.groovus.www.service.DriveBoardService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class DriveBoardServiceTests {
         log.info("bno: " + bno);
     } // testRegister
 
-    @Test
+  /*  @Test
     public void testModify(){
 
         DriveBoardDTO driveBoardDTO = DriveBoardDTO.builder()
@@ -39,9 +40,9 @@ public class DriveBoardServiceTests {
                 .title("수정제목!")
                 .build();
         driveBoardService.modify(driveBoardDTO);
-    } // testModify
+    } // testModify*/
 
-    @Test
+ /*   @Test
     public void testList(){
 
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
@@ -54,7 +55,26 @@ public class DriveBoardServiceTests {
         PageResponseDTO<DriveBoardDTO> responseDTO = driveBoardService.list(pageRequestDTO);
 
         log.info(responseDTO);
-    } // testList 안됨 ㅠ_ㅠ
+    } // testList 안됨 ㅠ_ㅠ*/
 
+    @Test
+    public void testList(){
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(1).size(10).build();
+
+        PageResultDTO<DriveBoardDTO, DriveBoard> resultDTO = driveBoardService.getList(pageRequestDTO);
+
+        System.out.println("PREV: " + resultDTO.isPrev());
+        System.out.println("NEXT: " + resultDTO.isNext());
+        System.out.println("TOTAL: " + resultDTO.getTotalPage());
+        System.out.println("-----------------------------------");
+
+        for(DriveBoardDTO driveBoardDTO : resultDTO.getDtoList()){
+            System.out.println(driveBoardDTO);
+        }
+
+        System.out.println("-------------------------------");
+        resultDTO.getPageList().forEach(i -> System.out.println(i));
+    }
 
 }

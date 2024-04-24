@@ -50,11 +50,11 @@ public class CommonController {
 
     }
 
-    @GetMapping("/drive/drive")
+   /* @GetMapping("/drive/drive")
     public void goDrive(){
         //드라이브 이동
 
-    }
+    }*/
     @GetMapping("/drive/bin")
     public void goDriveBin(){
         //드라이브 휴지통
