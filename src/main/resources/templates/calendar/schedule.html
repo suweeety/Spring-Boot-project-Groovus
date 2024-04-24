@@ -9,6 +9,12 @@
     <link th:href="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/css/fullcalendar.min.css}" rel="stylesheet">
     <link th:href="@{/quixlab-bootstrap-main/theme/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
     <link th:href="@{/quixlab-bootstrap-main/theme/css/style.css}" rel="stylesheet">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
     <th:block layout:fragment="css">
 
         <style>
@@ -55,8 +61,8 @@
         <div class="row page-titles mx-0" style=" transform: translate(10px, -22px);">
             <div class="col p-md-0">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Project</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Calendar</a></li>
                 </ol>
             </div>
         </div>
@@ -78,16 +84,16 @@
                                 <div class="col-lg-4 mt-5" style="max-width: 14rem;transform: translate(40px, 55px);">
                                     <a href="#" data-toggle="modal" data-target="#add-category"
                                        class="btn btn-primary btn-block" style="background-color: red; border-color: red;">
-                                        <i class="ti-plus f-s-12 m-r-5"></i> 새 일정 생성하기</a>
+                                        <i class="ti-plus f-s-12 m-r-5"></i> New Category</a>
                                     <div id="external-events" class="m-t-20">
-                                        <p>달력에 일정을 드래그 해보세요</p>
-                                        <div class="external-event bg-primary text-white" data-class="bg-team"><i
+                                        <p>달력에 드래그 해보세요</p>
+                                        <div class="external-event bg-team text-white" data-class="bg-team"><i
                                                 class="fa fa-move"></i>팀 회의
                                         </div>
-                                        <div class="external-event bg-success text-white" data-class="bg-dept"><i
+                                        <div class="external-event bg-dept text-white" data-class="bg-dept"><i
                                                 class="fa fa-move"></i>부서 회의
                                         </div>
-                                        <div class="external-event bg-warning text-white" data-class="bg-business-trip">
+                                        <div class="external-event bg-business-trip text-white" data-class="bg-business-trip">
                                             <i
                                                     class="fa fa-move"></i>외근 일정
                                         </div>
@@ -118,7 +124,6 @@
         </div>
         <!-- #/ container -->
     </div>
-
     <!-- BEGIN MODAL -->
     <div class="modal fade none-border" id="event-modal">
         <div class="modal-dialog">
@@ -132,7 +137,10 @@
                             data-dismiss="modal">✖ Close
                     </button>
                     <button type="button"
-                            class="btn btn-success save-event waves-effect waves-light">
+                            class="btn btn-success save-event waves-effect waves-light" style="
+    background-color: red;
+    border-color: red;
+">
                         ➕ 생성
                     </button>
                     <button type="button"
@@ -148,19 +156,19 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title"><strong>Add a category</strong></h4>
+                    <h4 class="modal-title"><strong>카테고리 생성</strong></h4>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="row">
                             <div class="col-md-6">
-                                <label class="control-label">Category Name</label>
+                                <label class="control-label">카테고리명</label>
                                 <input class="form-control form-white"
                                        placeholder="Enter name" type="text"
                                        name="category-name">
                             </div>
                             <div class="col-md-6">
-                                <label class="control-label">Choose Category Color</label>
+                                <label class="control-label">색상 선택</label>
                                 <select class="form-control form-white"
                                         data-placeholder="Choose a color..."
                                         name="category-color">
@@ -188,6 +196,7 @@
         </div>
     </div>
     <!-- END MODAL -->
+
     <!--**********************************
         Content body end
     ***********************************-->

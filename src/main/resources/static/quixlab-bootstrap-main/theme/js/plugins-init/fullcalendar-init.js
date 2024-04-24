@@ -46,7 +46,7 @@
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>일정 제목</label>" +
         "<input class='form-control' placeholder='Untitled' type='text' name='title'/></div></div>")
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>카테고리</label>" +
-        "<select class='form-control' name='category'></select></div></div>").find("select[name='category']")
+        "<select class='form-control' name='category' style='width: 9rem;'></select></div></div>").find("select[name='category']")
       .append("<option value='bg-team'>팀 회의</option>")
       .append("<option value='bg-dept'>부서 회의</option>")
       .append("<option value='bg-company-event'>사내 행사</option>")
@@ -56,9 +56,6 @@
       .append("<option value='bg-etc'>기타</option></div></div>")
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>일정 내용</label>" +
         "<input class='form-control' placeholder='Contents' type='text' name='content'/></div></div>")
-      .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>기간</label>" +
-        "<input class='form-control' placeholder='시작 날짜' type='text' id='start_date' name='start_date'/>" +
-        "<input class='form-control' placeholder='종료 날짜' type='text' id='end_date' name='end_date'/></div></div>")
 
   , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
@@ -114,7 +111,7 @@
       handleWindowResize: !0,
       height: e(window).height() - 200,
       header: {
-        left: "prev,next today",
+        left: "prev today next",
         center: "title",
         right: "month,agendaWeek,agendaDay"
       },
