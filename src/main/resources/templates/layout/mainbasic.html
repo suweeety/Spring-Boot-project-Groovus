@@ -9,6 +9,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+<!--jquery-->
+  <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+
   <!--fonts-->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,16 +78,16 @@
           </div>
           <!-- Nav Start -->
           <div class="classynav">
-            <ul id="nav" style=" width: 46rem;">
+            <ul id="nav" style=" width: 48rem;">
               <li class="nav-create-project-btn" th:type="button" style="transform: translate(-14px, 0px);">
                 <a th:href="@{/main/register}">GroovUs</a></li>
               <li class="current-item"><a th:href="@{/}">GroovUs Home</a></li>
-              <li><a href="#">Pages</a>
+              <li><a th:href="@{/project/list}"> Project </a>
                 <ul class="dropdown">
-                  <li class="dropdown-list"><a th:href="@{/}" style="color: black;">- GroovUs Home</a></li>
+                  <!--<li class="dropdown-list"><a th:href="@{/}" style="color: black;">- GroovUs Home</a></li>
                   <li class="dropdown-list"><a th:href="@{/main/about}" style="color: black;">- About Us</a></li>
                   <li class="dropdown-list"><a th:href="@{/main/function}" style="color: black;">- Functions</a></li>
-                  <li class="dropdown-list"><a th:href="@{/main/register}" style="color: black;">- GroovUs</a></li>
+                  <li class="dropdown-list"><a th:href="@{/main/register}" style="color: black;">- GroovUs</a></li>-->
                 </ul>
               </li>
               <li><a th:href="@{/main/about}">About Us</a></li>
@@ -90,9 +96,9 @@
                 <li><a th:href="@{/member/login}">Login</a></li>
                 <li><a th:href="@{/member/join}">Sign Up</a></li>
               </th:block>
-              <th:block sec:authorize="isAuthenticated()">
+              <th:block sec:authorize="isAuthenticated()" th:with="user=${#authentication.principal}">
                   <li><a th:href="@{/logout}">LogOut</a></li>
-                <li><a><i class="fa-regular fa-user" aria-hidden="true"></i>myPage</a></li>
+                <li><a><i class="fa-regular fa-user" aria-hidden="true"></i>[[${user.uname}]] 님</a></li>
 
 
               </th:block>

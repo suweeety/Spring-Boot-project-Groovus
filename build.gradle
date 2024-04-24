@@ -49,7 +49,9 @@ dependencies {
 
     // 날짜 처리관련 코드 추가
     // https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-java8time
+
     implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version: '3.0.4.RELEASE'
+
     // 안됨 compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time'
 
     //쿼리dsl 관련 설정 추가

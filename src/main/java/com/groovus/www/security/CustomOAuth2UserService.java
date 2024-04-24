@@ -6,6 +6,7 @@ import com.groovus.www.entity.MemberRole;
 import com.groovus.www.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -86,7 +87,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //데이터베이스에 해당 이메일 사용자가 없다면
         if(result.isEmpty()){
             //회원추가
-
             Member member = Member.builder()
                     .uid(email)
                     .email(email)
@@ -105,7 +105,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         }else{
             Member member =result.get();
-
 
                 MemberDTO memberDTO = new MemberDTO(member.getUid(), member.getUpw(), member.getMid(), member.getUname(), member.getEmail(), member.isDel(), member.isSocial(), member.getRoleSet().stream()
                         .map(memberRole -> new SimpleGrantedAuthority("ROLE_"+memberRole.name())).collect(Collectors.toList()));

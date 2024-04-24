@@ -1,10 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/mainbasic}"  >
 <head>
     <meta charset="UTF-8">
-    <title>프로젝트 생성 페이지</title>
+    <title>프로젝트 생성</title>
 </head>
-<body>
+<th:block layout:fragment="content">
+    <div style="width: 100%;height: 80rem; position: relative;">
+        <div class="bg-curve" style="background-image: url('/img/core-img/curve.png'); background-repeat: no-repeat; height:40rem; width:60%; position: absolute; right: 0;z-index: -5;"></div>
 
-</body>
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body" style="padding-top: 8rem;">
+
+            <div class="row page-titles mx-0" style="margin-bottom: 0;">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb" style="margin-bottom: 0; border-radius: 0;" >
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">GroovUs</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">프로젝트 생성</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="card" style="width: 50rem; left: 26rem; margin-bottom: 1rem; margin-top: 1rem; text-align: center;">
+
+                            <div class="card-body">
+                                <div class="inline-editor">
+                                    <h4 class="card-title m-b-40">You can select content and edit inline</h4>
+                                    <h3>Title Heading will be <b>apear here</b></h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elitconsectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud Exercitation ullamco laboris
+                                        nisi ut aliquip ex ea commodo consequat.</p>
+                                    <ul class="list-icons">
+                                        <li><i class="fa fa-check text-success"></i> Lorem ipsum dolor sit amet</li>
+                                        <li><i class="fa fa-check text-success"></i> Consectetur adipiscing elit</li>
+                                        <li><i class="fa fa-check text-success"></i> Integer molestie lorem at massa</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="width: 50rem; left: 26rem;">
+                            <div class="card-body">
+                                <div class="form-validation">
+                                    <form class="form-valide" action="/project/register" method="post" name="regiForm">
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-username">프로젝트명 <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="val-username" name="projectName" placeholder="프로젝트명">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-password">비밀번호 <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="val-password" name="projectPassword" placeholder="프로젝트 비밀번호 입력">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-confirm-password">비밀번호 확인 <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="val-confirm-password" name="re-projectPassword" placeholder="비밀번호 입력 확인">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-suggestions">프로젝트 설명</label>
+                                            <div class="col-lg-6">
+                                                <textarea class="form-control" id="val-suggestions"  rows="5" placeholder="프로젝트 설명 입력" name="projectDescription"></textarea>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" style="position: relative; height: 15rem;">
+                                            <label class="col-lg-4 col-form-label" for="val-suggestions">멤버 초대</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" placeholder="초대 멤버 ID입력" name="inviteMember" style="display: inline-block;">
+                                               <span> <button type="button" class="btn btn-dark mb-2" style="position: absolute; right: -26px; top: 1px;" name="addBtn"> + </button> </span>
+
+                                            </div>
+                                                <div name="memberTags" style="display: block;width: 26rem;height: 10rem;position: absolute;left: 35%;top: 4rem;padding: 10px;border: 1px solid gray;">
+
+
+                                                </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-lg-8 ml-auto">
+                                                <button type="button" class="btn btn-primary" name="registerProject">프로젝트 생성</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+    </div>
+
+    <script th:inline="javascript">
+
+        $(document).ready(function(){
+
+            var memberInputs='';
+
+            $("button[name='addBtn']").on("click" , function(){
+
+                var memberInput = $("input[name='inviteMember']").val();
+
+                if(memberInput === '' || memberInput === null){
+                    alert("추가할 멤버 ID를 입력해주세요");
+                }else{
+
+                    memberInputs = "<span class='badge badge-pill badge-primary'>"+memberInput+"</span><button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='"+memberInput+"'><i class=\"fa-solid fa-xmark\"></i></button>" +
+                        "<input type='hidden' name='projectMember' value='"+ memberInput +"'/>";
+
+                    $("div[name='memberTags']").append(memberInputs);
+                    $("input[name='inviteMember']").val('');
+                    memberInputs ='';
+                }
+            });
+
+
+            $("button[name='registerProject']").on("click",function (e){
+                e.preventDefault();
+
+                var regiForm = $("form[name='regiForm']");
+
+                regiForm.submit();
+            });
+
+
+
+
+
+        });
+
+        $(document).on('click','button[name="deleteInviteMember"]',function (){
+            $(this).prev("span").remove();
+            $(this).next("input").remove();
+            $(this).remove();
+        });
+
+    </script>
+
+
+
+</th:block>
 </html>

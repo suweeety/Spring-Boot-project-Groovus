@@ -17,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -35,6 +37,8 @@ public class CustomSecurityConfig {
     //의존성 주입
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
+
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -72,7 +76,8 @@ public class CustomSecurityConfig {
         //로그아웃 설정
         http.logout((logout)->logout
                 .logoutSuccessUrl("/member/login")
-                .invalidateHttpSession(true));
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID"));
 
         //리멤버미 설정
         http.rememberMe(httpSecurityRememberMeConfigurer -> {
@@ -90,11 +95,13 @@ public class CustomSecurityConfig {
             httpSecurityOAuth2LoginConfigurer.loginPage("/member/login")
                     .successHandler(authenticationSuccessHandler())
                     .failureHandler(customAuthenticationFailureHandler());
-        });
-
+        }).logout(logout -> logout
+                        .logoutSuccessUrl("/member/login") // 일반적인 로그아웃 성공 URL
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                );
 
         return http.build();
-
     }
 
     @Bean

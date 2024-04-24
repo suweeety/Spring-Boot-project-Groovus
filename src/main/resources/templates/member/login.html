@@ -42,7 +42,10 @@
                                     </form>
 
                                     <p class="mt-5 login-form__footer">계정이 없으신가요? <a th:href="@{/member/join}" class="text-primary">회원가입</a> now</p>
-                                    <button class="btn login-form__btn submit w-100" onclick="location.href='/oauth2/authorization/kakao'" style="background: #fee500;">카카오 계정 로그인</button>
+                                    <!--/oauth2/authorization/kakao-->
+                                    <!-- https://kauth.kakao.com/oauth/authorize-->
+
+                                    <div onclick="location.href='/oauth2/authorization/kakao'" style="background-image: url('/kakao_login_medium_wide.png');background-repeat: no-repeat;background-color: white;width: 19rem;height: 3rem;border: none; cursor: pointer;"></div>
 
                                    <!-- <a href="/oauth2/authorization/kakao"> 카카오 계정으로 로그인 </a>-->
 
