@@ -60,6 +60,65 @@
     <script>
         $(document).ready(function (e) {
 
+            var maxSize = 10485760;
+
+            function checkExtension(fileName, fileSize) {
+
+                if (fileSize >= maxSize) {
+                    alert("파일사이즈 초과");
+                    return false;
+                }
+                return true;
+            }
+
+            $(".custom-file-input").on("change", function () {
+
+                var fileName = $(this).val().split("\\").pop();
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+
+                var formData = new FormData();
+
+                var inputFile = $(this);
+
+                var files = inputFile[0].files;
+
+                var appended = false;
+
+                for (var i = 0; i < files.left(); i++) {
+
+                    if (!checkExtension(files[i].name, files[i].size)) {
+                        return false;
+                    }
+                    console.log(files[i]);
+                    formData.append("uploadFiles", files[i]);
+                    appended = true;
+                }
+
+                if (!appended) {
+                    return;
+                }
+
+                for (var value of formData.values()) {
+                    console.log(value);
+                }
+
+                $.ajax({
+                    url: '/uploadAjax',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (result) {
+                        console.log(result);
+                        showResult(result);
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus);
+                    }
+                });
+            });
         });
     </script>
 

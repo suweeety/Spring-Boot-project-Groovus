@@ -3,6 +3,8 @@ package com.groovus.www.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @ToString
@@ -20,4 +22,7 @@ public class DriveBoardDTO {
     private LocalDateTime regdate;
 
     private LocalDateTime moddate;
+
+    @Builder.Default
+    private List<DriveFileDTO> driveFileDTOList = new ArrayList<>();
 }
