@@ -1,9 +1,11 @@
 package com.groovus.www.dto;
 
 import com.groovus.www.entity.CalendarAttach;
+import com.groovus.www.entity.CalendarCategory;
 import com.groovus.www.entity.Project;
 import com.groovus.www.entity.User;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,28 +28,30 @@ public class CalendarDTO {
     @NotEmpty
     private String cal_title;
 
-    @NotEmpty
     private String cal_content;
 
-    @NotEmpty
-    private String cal_color;
+//    @NotEmpty
+//    private String cal_color;
+    @NotNull
+    private List<CalendarCategory> calendarCategories;
 
     private String cal_period;
-    private String cal_dday;
-    private String cal_link;
-    private String cal_todo;
+//    private String cal_dday;
+//    private String cal_link;
+//    private String cal_todo;
+
     private LocalDateTime regDate;
     private LocalDateTime modDate;
 
     //tb_calendarAttach
-    private Set<CalendarAttach> cal_attach;
-
-    //tb_user
-    private List<User> uIds;
-    @NotEmpty
-    private User create_user_id;
-    private List<User> update_user_id;
-
-    //tb_project
-    private Project pId;
+//    private Set<CalendarAttach> cal_attach;
+//
+//    //tb_user
+//    private List<User> mIds;
+//    @NotEmpty
+//    private User create_user_id;
+//    private List<User> update_user_id;
+//
+//    //tb_project
+//    private Project pId;
 }

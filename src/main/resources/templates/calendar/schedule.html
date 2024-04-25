@@ -15,6 +15,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <th:block layout:fragment="css">
 
         <style>
@@ -126,23 +130,21 @@
     </div>
     <!-- BEGIN MODAL -->
     <div class="modal fade none-border" id="event-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+        <div class="modal-dialog" style="max-width: 48rem;">
+            <div class="modal-content" style="height: 50rem">
                 <div class="modal-header">
-                    <h4 class="modal-title"><strong>새 일정</strong></h4>
+                    <h4 class="modal-title"><strong>✅ 새 일정</strong></h4>
                 </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default waves-effect"
                             data-dismiss="modal">✖ Close
                     </button>
-                    <button type="button"
-                            class="btn btn-success save-event waves-effect waves-light" style="
-    background-color: red;
-    border-color: red;
-">
+                    <button type="submit"
+                            class="btn btn-success save-event waves-effect waves-light" style="background-color: red; border-color: red;">
                         ➕ 생성
                     </button>
+
                     <button type="button"
                             class="btn btn-danger delete-event waves-effect waves-light"
                             data-dismiss="modal">삭제
@@ -221,6 +223,28 @@
     <!--**********************************
         Scripts
     ***********************************-->
+    <script layout:fragment="script" th:inline="javascript">
+        const errors = [[${errors}]]
+        console.log(errors)
+
+        let errorMsg = ''
+
+        if(errors) {
+            for(let i=0; i<errors.length; i++) {
+                errorMsg += '${errors[i].field}은(는) ${errors[i].code} \n'
+
+            }
+            alert(errorMsg)
+        }
+
+        const result = [[${result}]]
+
+        if(result) {
+            alert(result)
+        }
+    </script>
+
+
     <script th:src="@{/quixlab-bootstrap-main/theme/plugins/common/common.min.js}"></script>
     <script th:src="@{/quixlab-bootstrap-main/theme/js/custom.min.js}"></script>
     <!--<script th:src="@{/quixlab-bootstrap-main/theme/js/settings.js}"></script>-->

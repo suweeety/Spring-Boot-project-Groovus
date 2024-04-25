@@ -10,7 +10,7 @@ public interface CalendarService {
 
     CalendarDTO readOne(Long cal_id);
 
-    void modify(CalendarDTO calendarDTO, CalendarCategoryDTO calendarCategoryDTO);
+    void modify(CalendarDTO calendarDTO);
 
     void remove(Long cal_id);
 }

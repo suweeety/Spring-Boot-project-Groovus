@@ -45,15 +45,13 @@ public class CalendarServiceImpl implements CalendarService{
     }
 
     @Override
-    public void modify(CalendarDTO calendarDTO, CalendarCategoryDTO calendarCategoryDTO) {
+    public void modify(CalendarDTO calendarDTO) {
 
         Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
 
         Calendar calendar = result.orElseThrow();
 
-        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content(), calendarDTO.getCal_color(), calendarCategoryDTO.getCal_category()
-        , calendarDTO.getCal_period(), calendarDTO.getCal_todo(), calendarDTO.getCal_dday(), calendarDTO.getCal_attach()
-        , calendarDTO.getCal_link());
+        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content());
 
         calendarRepository.save(calendar);
     }

@@ -41,12 +41,12 @@
     o.$modal.modal({
       backdrop: "static"
     });
-    var i = e("<form></form>");
+    var i = e("<form action='/calendar/register' method='post'></form>");
     i.append("<div class='row'></div>"), i.find(".row")
-      .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>일정 제목</label>" +
-        "<input class='form-control' placeholder='Untitled' type='text' name='title'/></div></div>")
+      .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group'><label class='control-label'>일정 제목</label>" +
+        "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>카테고리</label>" +
-        "<select class='form-control' name='category' style='width: 9rem;'></select></div></div>").find("select[name='category']")
+        "<select class='form-control' name='cal_category' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_category']")
       .append("<option value='bg-team'>팀 회의</option>")
       .append("<option value='bg-dept'>부서 회의</option>")
       .append("<option value='bg-company-event'>사내 행사</option>")
@@ -54,17 +54,44 @@
       .append("<option value='bg-account-event'>거래처 일정</option>")
       .append("<option value='bg-business-trip'>출장</option>")
       .append("<option value='bg-etc'>기타</option></div></div>")
-      .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>일정 내용</label>" +
-        "<input class='form-control' placeholder='Contents' type='text' name='content'/></div></div>")
+      .end()
+      .append("<div class='col-md-6'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+        "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 35rem; height: 10rem; transform: translate(3px, 10px); border-radius: 10px;'/></div></div>")
+      .append("<div class='col-md-6'><div class='form-group'><label class='control-label' style='transform: translate(-380px, 224px); width: 13rem;'>날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_period' style='transform: translate(-382px, 219px); border-radius: 10px'/></div></div>")
+      .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>등록일: </label>" +
+        "<input class='form-control' type='date' name='cal_title' /></div></div>")
+      .append("<div class='plus-menu' style='transform: translate(15px, 104px);'><label class='plus-emo'>➕&nbsp;</label>" +
+        "<button type='button' class='btn-dday' style='border-radius: 20px; background-color: ghostwhite; border-color: red; width: 4rem; height: 2rem;'>D-day</button>")
+
+      // 버튼 클릭 이벤트 핸들러 함수
+    $(".btn-dday").on("click", function() {
+      // 첫 번째 모달 요소 생성
+      var firstModal = e("#event-modal");
+
+      // 두 번째 모달 요소 생성
+      var secondModal = $("<div class='modal-content'>" +
+        "<span class='close-button'>&times;</span>" +
+        "<p>모달 내용</p>" +
+        "</div>");
+
+      // 첫 번째 모달의 모달 바디에 두 번째 모달 추가
+      firstModal.find(".modal-body").append(secondModal);
+
+      // 두 번째 모달의 닫기 버튼 클릭 이벤트 핸들러 함수
+      secondModal.find(".close-button").on("click", function() {
+        secondModal.remove(); // 두 번째 모달 제거
+      });
+    })
 
   , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()
       .find(".save-event").unbind("click").on("click", function () {
-      i.submit()
+        i.submit();
     }), o.$modal.find("form").on("submit", function () {
-      var e = i.find("input[name='title']").val(),
-        a = (i.find("input[name='beginning']").val(), i.find("input[name='ending']").val(), i.find("select[name='category'] option:checked").val());
+      var e = i.find("input[name='cal_title']").val(),
+        a = (i.find("input[name='beginning']").val(), i.find("input[name='ending']").val(), i.find("select[name='cal_category'] option:checked").val());
       return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
         title: e,
         start: t,
