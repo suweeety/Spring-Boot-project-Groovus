@@ -4,8 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       layout:decorate="~{layout/mainbasic}"  >
 
-    <!--css 파일-->
-    <link th:href="@{/quixlab-bootstrap-main/theme/css/style.css}" rel="stylesheet">
+<!--css 파일-->
+<link th:href="@{/quixlab-bootstrap-main/theme/css/style.css}" rel="stylesheet">
 
 <head>
     <meta charset="UTF-8">
@@ -42,9 +42,12 @@
                                     </form>
 
                                     <p class="mt-5 login-form__footer">계정이 없으신가요? <a th:href="@{/member/join}" class="text-primary">회원가입</a> now</p>
-                                    <button class="btn login-form__btn submit w-100" onclick="location.href='/oauth2/authorization/kakao'" style="background: #fee500;">카카오 계정 로그인</button>
+                                    <!--/oauth2/authorization/kakao-->
+                                    <!-- https://kauth.kakao.com/oauth/authorize-->
 
-                                   <!-- <a href="/oauth2/authorization/kakao"> 카카오 계정으로 로그인 </a>-->
+                                    <div onclick="location.href='/oauth2/authorization/kakao'" style="background-image: url('/kakao_login_medium_wide.png');background-repeat: no-repeat;background-color: white;width: 19rem;height: 3rem;border: none; cursor: pointer;"></div>
+
+                                    <!-- <a href="/oauth2/authorization/kakao"> 카카오 계정으로 로그인 </a>-->
 
                                 </div>
                             </div>
@@ -56,23 +59,23 @@
 
     </div>
 
-<script th:inline="javascript">
+    <script th:inline="javascript">
 
-    $(document).ready(function (){
+        $(document).ready(function (){
 
-        var socialLoginErrorMsg = [[${socialMsg}]];
+            var socialLoginErrorMsg = [[${socialMsg}]];
 
-        if(socialLoginErrorMsg!= null){
-            alert("해당 이메일로 계정이 존재합니다!!");
-        }
-
-
+            if(socialLoginErrorMsg!= null){
+                alert("해당 이메일로 계정이 존재합니다!!");
+            }
 
 
-    });
 
 
-</script>
+        });
+
+
+    </script>
 
 
 </th:block>

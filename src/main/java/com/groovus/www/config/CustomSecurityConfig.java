@@ -92,7 +92,6 @@ public class CustomSecurityConfig {
                     .failureHandler(customAuthenticationFailureHandler());
         });
 
-
         return http.build();
 
     }
@@ -124,4 +123,5 @@ public class CustomSecurityConfig {
         return (web)-> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 
     }
+
 }
