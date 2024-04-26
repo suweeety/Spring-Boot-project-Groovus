@@ -28,30 +28,17 @@ public class CalendarDTO {
     @NotEmpty
     private String cal_title;
 
+    @NotEmpty
     private String cal_content;
 
-//    @NotEmpty
-//    private String cal_color;
-    @NotNull
-    private List<CalendarCategory> calendarCategories;
+    private CalendarCategory cal_category;
 
-    private String cal_period;
-//    private String cal_dday;
-//    private String cal_link;
-//    private String cal_todo;
+    private String cal_startDate;
+
+    private String cal_endDate;
 
     private LocalDateTime regDate;
+
     private LocalDateTime modDate;
 
-    //tb_calendarAttach
-//    private Set<CalendarAttach> cal_attach;
-//
-//    //tb_user
-//    private List<User> mIds;
-//    @NotEmpty
-//    private User create_user_id;
-//    private List<User> update_user_id;
-//
-//    //tb_project
-//    private Project pId;
 }

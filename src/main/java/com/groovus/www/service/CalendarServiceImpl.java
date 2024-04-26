@@ -29,6 +29,9 @@ public class CalendarServiceImpl implements CalendarService{
 
         Long cal_id = calendarRepository.save(calendar).getCal_id();
 
+        log.info("calendarDTO.getCal_id() 값 확인: " + calendarDTO.getCal_id());
+        log.info("cal_id 값 확인: " + cal_id);
+
         return cal_id;
     }
 
@@ -47,13 +50,13 @@ public class CalendarServiceImpl implements CalendarService{
     @Override
     public void modify(CalendarDTO calendarDTO) {
 
-        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
-
-        Calendar calendar = result.orElseThrow();
-
-        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content());
-
-        calendarRepository.save(calendar);
+//        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
+//
+//        Calendar calendar = result.orElseThrow();
+//
+//        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content(), calendarDTO.getCal_Categories(), calendarDTO.getCal_endDate(), calendarDTO.getCal_startDate());
+//
+//        calendarRepository.save(calendar);
     }
 
     @Override

@@ -16,6 +16,9 @@ public class CalendarCategory {
     @Id
     private Long calCate_id;
 
-    private String cate1;
-    private String cate2;
+    private String cal_category;
+
+    public void change(Long calCate_id) {
+        this.cal_category = cal_category;
+    }
 }

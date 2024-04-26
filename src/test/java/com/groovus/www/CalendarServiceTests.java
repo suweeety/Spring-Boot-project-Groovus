@@ -36,4 +36,14 @@ public class CalendarServiceTests {
                 .build();
         calendarService.modify(calendarDTO);
     }
+
+    @Test
+    public void testRemove() {
+        CalendarDTO calendarDTO = CalendarDTO.builder()
+                .cal_id(2L) // 삭제할 일정의 ID
+                .build();
+
+        // 삭제할 일정의 ID를 사용하여 일정을 삭제하는 서비스 메서드 호출
+        calendarService.remove(calendarDTO.getCal_id());
+    }
 }

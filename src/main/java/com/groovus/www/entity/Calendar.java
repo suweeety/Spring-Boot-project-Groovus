@@ -20,62 +20,32 @@ public class Calendar extends BaseEntity{
     Calendar Entity 하나는 여러 명의 User Entity를 가짐
      */
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cal_id; // 캘린더 아이디
 
-//    @ManyToOne(fetch = FetchType.LAZY) // 하위 클래스로서의 관점: 여러 일정은 하나의 프로젝트를 가짐
-//    private Project pId; // 프로젝트 아이디
-//
-//    @ManyToMany // 상위 클래스로서의 관점: 여러 일정은 여러 유저를 가짐
-//    @Builder.Default
-//    @Column(nullable = true)
-//    private List<User> mIds = new ArrayList<>(); // 일정에 초대되는 멤버들
-//
-//    @OneToMany // 상위 클래스로서의 관점: 하나의 일정은 여러 첨부파일을 가짐
-//    @JoinColumn(name = "calAtt_id")
-//    @Column(nullable = true)
-//    private Set<CalendarAttach> cal_attach; // 첨부파일
     @Column(length = 200, nullable = false)
     private String cal_title; // 일정 제목
 
     @Column(length = 5000, nullable = false)
     private String cal_content; // 일정 내용
 
-    @OneToMany(mappedBy = "calCate_id")
-    @Builder.Default
-    private List<CalendarCategory> calendarCategories = new ArrayList<>();
+    @OneToOne
+    private CalendarCategory cal_category;
 
-//
-////    @Column(nullable = false)
-////    private String cal_color; // 일정 색
-//
     @Column(nullable = true)
-    private String cal_period; // 일정 기간
-//
-//    @Column(nullable = true)
-//    private String cal_dday; // 디데이
-//
-//    @Column(length = 5000, nullable = true)
-//    private String cal_link; // 링크
-//
-//    @Column(nullable = true)
-//    private String cal_todo; // 투두리스트
-//
-//    @ManyToOne(fetch = FetchType.LAZY) // 하위 클래스로서의 관점: 여러 일정은 하나의 등록인을 가짐
-//    private User create_user_id; // 등록인
+    private String cal_startDate;
 
-//    @ManyToMany
-//    @Builder.Default
-//    @Column(nullable = true)
-//    private List<User> update_user_id = new ArrayList<>(); // 수정인
+    @Column(nullable = true)
+    private String cal_endDate;
 
-    public void change(String cal_title, String cal_content) {
+    public void change(String cal_title, String cal_content, CalendarCategory cal_category, String cal_startDate, String cal_endDate) {
 
         this.cal_title = cal_title;
         this.cal_content = cal_content;
-        this.cal_period = cal_period;
-        this.calendarCategories = calendarCategories;
+        this.cal_category = cal_category;
+        this.cal_startDate = cal_startDate;
+        this.cal_endDate = cal_endDate;
     }
 
     // 수정일 및 등록일은 BaseEntity 참고
