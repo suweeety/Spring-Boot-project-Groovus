@@ -14,7 +14,7 @@
         <!--**********************************
             Content body start
         ***********************************-->
-        <div class="content-body" style="padding-top: 8rem;">
+        <div class="content-body" style="padding-top: 8rem;" th:with="user=${#authentication.principal}">
 
             <div class="row page-titles mx-0" style="margin-bottom: 0;">
                 <div class="col p-md-0">
@@ -33,14 +33,13 @@
 
                             <div class="card-body">
                                 <div class="inline-editor">
-                                    <h4 class="card-title m-b-40">You can select content and edit inline</h4>
-                                    <h3>Title Heading will be <b>apear here</b></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elitconsectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud Exercitation ullamco laboris
-                                        nisi ut aliquip ex ea commodo consequat.</p>
+                                    <h4 class="card-title m-b-40">협업의 비전, 우리의 혁신</h4>
+                                    <h3>GroovUs <b>프로젝트 생성</b></h3>
+                                    <p>프로젝트 생성후 협업을 진행하세요!</p>
                                     <ul class="list-icons">
-                                        <li><i class="fa fa-check text-success"></i> Lorem ipsum dolor sit amet</li>
-                                        <li><i class="fa fa-check text-success"></i> Consectetur adipiscing elit</li>
-                                        <li><i class="fa fa-check text-success"></i> Integer molestie lorem at massa</li>
+                                        <li><i class="fa fa-check text-success"></i> 프로젝트 생성후에도 멤버 초대가 가능합니다.</li>
+                                        <li><i class="fa fa-check text-success"></i> 관련 설정은 프로젝트 생성 후 설정 가능합니다. </li>
+                                        <li><i class="fa fa-check text-success"></i> 프로젝트 비밀번호는 프로젝트 접근시 사용합니다.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -64,6 +63,10 @@
                                                 <input type="password" class="form-control" id="val-password" name="projectPassword" placeholder="프로젝트 비밀번호 입력">
                                             </div>
                                         </div>
+
+                                        <p style="color: red; display: none; margin-left: 17rem;" name="wrongPw" >비밀번호가 일치하지 않습니다.</p>
+                                        <p style="color: green; display: none; margin-left: 17rem;" name="correctPw">비밀번호가 일치합니다.</p>
+
                                         <div class="form-group row">
                                             <label class="col-lg-4 col-form-label" for="val-confirm-password">비밀번호 확인 <span class="text-danger">*</span>
                                             </label>
@@ -88,10 +91,15 @@
                                             </div>
                                                 <div name="memberTags" style="display: block;width: 26rem;height: 10rem;position: absolute;left: 35%;top: 4rem;padding: 10px;border: 1px solid gray;">
 
+                                                    <span class='badge badge-pill badge-success'>[[${user.uid}]]</span>
+                                                    <input type="hidden" name="projectMember" th:value="${user.uid}">
 
                                                 </div>
                                         </div>
-
+                                        <th:block th:with="user=${#authentication.principal}">
+                                            <input type="hidden" name="adminUid" th:value="${user.uid}">
+                                            <input type="hidden" name="mid" th:value="${user.mid}">
+                                        </th:block>
                                         <div class="form-group row">
                                             <div class="col-lg-8 ml-auto">
                                                 <button type="button" class="btn btn-primary" name="registerProject">프로젝트 생성</button>
@@ -134,19 +142,46 @@
                 }
             });
 
-
             $("button[name='registerProject']").on("click",function (e){
                 e.preventDefault();
 
                 var regiForm = $("form[name='regiForm']");
 
+                if($("input[name='projectName']").val() === '' || $("input[name='projectName']").val()== null){
+                    alert("프로젝트명을 입력해주세요.");
+                    $("input[name='projectName']").focus();
+                    return;
+                }
+                if($("input[name='projectPassword']").val() === '' || $("input[name='projectPassword']").val()== null){
+                    alert("비밀번호를 입력해주세요.");
+                    $("input[name='projectPassword']").focus();
+                    return;
+                }
+                if($("input[name='re-projectPassword']").val()=== '' ||$("input[name='re-projectPassword']").val() === null ){
+
+                    alert("재확인 비밀번호를 입력해주세요.");
+                    $("input[name='re-projectPassword']").focus();
+                    return;
+                }
+
+
                 regiForm.submit();
             });
 
+            $("input[name='re-projectPassword']").blur(function (){
+                var InputPassword = $("input[name='projectPassword']").val();
+                var reInputPassword = $("input[name='re-projectPassword']").val();
 
+                if(InputPassword !== reInputPassword){
+                    $("p[name='correctPw']").hide();
+                    $("p[name='wrongPw']").show();
+                    $("input[name='re-projectPassword']").val('');
+                }else{
+                    $("p[name='correctPw']").show();
+                    $("p[name='wrongPw']").hide();
+                }
 
-
-
+            });
         });
 
         $(document).on('click','button[name="deleteInviteMember"]',function (){
@@ -156,8 +191,5 @@
         });
 
     </script>
-
-
-
 </th:block>
 </html>
