@@ -57,7 +57,8 @@ public class ChatRoomController {
         if (principalDetails != null) {
             // 세션에서 로그인 유저 정보를 가져옴
             model.addAttribute("user", principalDetails.getUser());
-        }*/
+        }
+        */
 
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(roomId);
 
