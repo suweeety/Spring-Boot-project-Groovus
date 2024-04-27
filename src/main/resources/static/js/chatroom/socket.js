@@ -171,6 +171,14 @@ function onMessageReceived(payload) {
 
     var contentElement = document.createElement('p');
 
+    var messageText = document.createTextNode(chat.message);
+    contentElement.appendChild(messageText);
+
+    messageElement.appendChild(contentElement);
+
+    messageArea.appendChild(messageElement);
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
 
     function getAvatarColor(messageSender) {
         var hash = 0;
@@ -184,4 +192,4 @@ function onMessageReceived(payload) {
 
     usernameForm.addEventListener('submit', connect, true)
     messageForm.addEventListener('submit', sendMessage, true)
-}
+

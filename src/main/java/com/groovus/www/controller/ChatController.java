@@ -107,7 +107,6 @@ public class ChatController {
 
     // 채팅에 참여한 유저 닉네임 중복 확인
     @GetMapping("/chat/duplicateName")
-    @ResponseBody
     public String isDuplicateName(@RequestParam("roomId") String roomId, @RequestParam("username") String username) {
 
         // 유저 이름 확인

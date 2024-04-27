@@ -30,39 +30,22 @@
         console.log(errors)
     </script>
 
+    <th:block layout:fragment="css">
 
+        <style>
+
+            #logoImg{
+                background-color: hotpink;
+            }
+
+        </style>
+
+    </th:block>
 
 
 </head>
 
 <th:block layout:fragment="content">
-
-    <style>
-        a {
-            text-decoration: none;
-        }
-
-        #table {
-            margin-top: 40px;
-        }
-
-        h2 {
-            margin-top: 40px;
-        }
-
-        input#maxUserCnt {
-            width: 160px;
-        }
-
-        span.input-group-text.input-password-hide {
-            height: 40px;
-        }
-
-        span.input-group-text.input-password-show {
-            height: 40px;
-        }
-
-    </style>
 
     <div class="row" th:with="memberDTO=${#authentication.principal}">
 
