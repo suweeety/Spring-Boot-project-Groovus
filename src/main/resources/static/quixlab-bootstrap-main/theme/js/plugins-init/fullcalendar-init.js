@@ -57,20 +57,34 @@
       .end()
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
         "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-      .append("<div class='col-md-6'><div class='form-group'><label class='control-label' style='transform: translate(-380px, 224px); width: 13rem;'>시작 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_startDate' style='transform: translate(-382px, 219px); border-radius: 10px'/></div>" +
-        "<div class='form-group'><label class='control-label' style='transform: translate(-380px, 224px); width: 13rem;'>종료 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_endDate' style='transform: translate(-382px, 219px); border-radius: 10px'/></div></div>")
-      .append("<div class='plus-menu' style='transform: translate(425px, 42px);'><label class='plus-emo'>➕&nbsp;</label>" +
-        "<button type='button' class='btn-dday' style='border-radius: 20px; background-color: ghostwhite; border-color: red; width: 4rem; height: 2rem;'>D-day</button>")
-      .append("<input type='hidden' name='regDate' value='regDate'/>")
-      , o.$modal.find(".delete-event").hide().end()
+      .append("<div class='col-md-6' style='text-align: center; transform: translate(-199px, 10px);'><label class='control-label'>이벤트 시간 설정</label>" +
+        "<div class='btn-group' style='transform: translate(-106px, 41px);' data-toggle='buttons'>" +
+        "<label class='btn btn-primary active' style='border-radius: 20px;'>" +
+        "<input type='radio' name='cal_allDay' id='option1' autocomplete='off' checked> 하루 종일" +
+        "</label>" +
+        "<label class='btn btn-primary' style='border-radius: 20px;'>" +
+        "<input type='radio' name='cal_allDay' id='option2' autocomplete='off'> 시간 설정" +
+        "</label></div></div>")
+
+      .append("<div class='col-md-6 start-time' style='display:none'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_startDate' /></div></div>")
+      .append("<div class='col-md-6 end-time' style='display:none'><div class='form-group'><label class='control-label'>종료 날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_endDate' /></div></div>")
+      // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
+    i.find("input[name='cal_allDay']").on("change", function () {
+      if ($(this).is("checked")) {
+        $(".start-time, .end-time").hide(); // 하루 종일 선택 시 숨김
+      } else {
+        $(".start-time, .end-time").show(); // 시간 설정 선택 시 표시
+      }
+    })
+  , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()
 
     // 이벤트 핸들러 등록
     o.$modal.find(".save-event").unbind("click").on("click", function () {
-      var eventData = {
+      const eventData = {
         cal_title: i.find("input[name='cal_title']").val(),
         beginning: i.find("input[name='beginning']").val(),
         ending: i.find("input[name='ending']").val(),
@@ -98,19 +112,23 @@
       var e = i.find("input[name='cal_title']").val(),
         a = (i.find("input[name='beginning']").val(),
           i.find("input[name='ending']").val(),
-          i.find("select[name='cal_category'] option:checked").val(),
+          i.find("select[name='cal_category']").val(),
           i.find("input[name='cal_content']").val(),
           i.find("input[name='cal_startDate']").val(),
         i.find("input[name='cal_endDate']").val());
       return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
-        title: e,
+        cal_title: e,
         start: t,
         end: n,
         allDay: !1,
-        className: a
+        className: a,
+        cal_content: i,
+        cal_category: i,
+        cal_startDate: i,
+        cal_endDate: i
       }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
     }), o.$calendarObj.fullCalendar("unselect")
-  }, t.prototype.enableDrag = function () {
+  }, t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능
     e(this.$event).each(function () {
       var t = {
         title: e.trim(e(this).text())

@@ -25,13 +25,13 @@ public class CalendarCategoryServiceImpl implements CalendarCategoryService {
     private final CalendarCategoryRepository calendarCategoryRepository;
 
     @Override
-    public Long register(CalendarCategoryDTO calendarCategoryDTO) {
+    public String register(CalendarCategoryDTO calendarCategoryDTO) {
 
         CalendarCategory calendarCategory = modelMapper.map(calendarCategoryDTO, CalendarCategory.class);
 
-        Long calCate_id = calendarCategoryRepository.save(calendarCategory).getCalCate_id();
+        String cal_category = calendarCategoryRepository.save(calendarCategory).getCal_category();
 
-        return calCate_id;
+        return cal_category;
     }
 
     @Override

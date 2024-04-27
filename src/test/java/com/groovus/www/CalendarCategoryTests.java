@@ -22,8 +22,8 @@ public class CalendarCategoryTests {
         CalendarCategoryDTO calendarCategoryDTO = CalendarCategoryDTO.builder()
                 .cal_category("팀 회의")
                 .build();
-        Long calCate_id = calendarCategoryService.register(calendarCategoryDTO);
+        String cal_category = calendarCategoryService.register(calendarCategoryDTO);
 
-        log.info("calCate_id: "+ calCate_id);
+        log.info("calCate_id: "+ cal_category);
     }
 }

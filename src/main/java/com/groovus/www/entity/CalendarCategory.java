@@ -14,11 +14,11 @@ public class CalendarCategory {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long calCate_id;
+    private Long cal_cate_id;
 
     private String cal_category;
 
-    public void change(Long calCate_id) {
+    public void change(String cal_category) {
         this.cal_category = cal_category;
     }
 }

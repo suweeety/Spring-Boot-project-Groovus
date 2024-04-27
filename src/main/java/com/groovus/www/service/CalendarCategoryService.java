@@ -5,7 +5,7 @@ import com.groovus.www.dto.CalendarDTO;
 
 public interface CalendarCategoryService {
 
-    Long register(CalendarCategoryDTO calendarCategoryDTO);
+    String register(CalendarCategoryDTO calendarCategoryDTO);
 
     CalendarCategoryDTO readOne(Long calCate_id);
 

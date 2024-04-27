@@ -14,6 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CalendarCategoryDTO {
 
-    private Long calCate_id;
     private String cal_category;
 }
