@@ -1,5 +1,7 @@
 package com.groovus.www.controller;
 
+import com.groovus.www.dto.ProjectPageRequestDTO;
+import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.dto.RegisterProjectDTO;
 import com.groovus.www.dto.RegisterProjectRequestDTO;
 import com.groovus.www.service.ProjectService;
@@ -25,17 +27,23 @@ public class ProjectController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/list")
-    public void  goProjectList(Long mid , Model model){
+    public void  goProjectList(ProjectPageRequestDTO pageRequestDTO, Long mid , Model model){
+
+
+        ProjectPageResponseDTO<RegisterProjectDTO> responseDTO = projectService.getProjectListWithPaging(pageRequestDTO,mid);
 
         model.addAttribute("mid",mid);
+        model.addAttribute("responseDTO",responseDTO);
+        model.addAttribute("pageRequestDTO",pageRequestDTO);
 
-        List<RegisterProjectDTO> projectList = projectService.getProjectList(mid);
+/*        List<RegisterProjectDTO> projectList = projectService.getProjectList(mid);
 
         model.addAttribute("projectList",projectList);
         log.info("==========================");
         log.info(projectList);
-        log.info("==========================");
-        //프로젝트 생성 페이지로 이동
+        log.info("==========================");*/
+
+
     }
 
     @PreAuthorize("permitAll()")
@@ -59,7 +67,6 @@ public class ProjectController {
     @PreAuthorize("permitAll()")
     @GetMapping("/{pid}/{projectName}")
     public String projectPage(@PathVariable("pid") String pid , @PathVariable("projectName") String projectName, @RequestParam(value = "type",required = false) String type, RedirectAttributes redirectAttributes){
-
 
         redirectAttributes.addFlashAttribute("pid",pid);
         redirectAttributes.addFlashAttribute("projectName",projectName);

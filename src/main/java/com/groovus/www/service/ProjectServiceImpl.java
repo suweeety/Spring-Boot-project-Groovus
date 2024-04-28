@@ -1,5 +1,7 @@
 package com.groovus.www.service;
 
+import com.groovus.www.dto.ProjectPageRequestDTO;
+import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.dto.RegisterProjectDTO;
 import com.groovus.www.dto.RegisterProjectRequestDTO;
 import com.groovus.www.entity.Member;
@@ -60,18 +62,17 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public List<RegisterProjectDTO> getProjectList(Long mid) {
+            //멤버가 속해있는 프로젝트 목록을 가져오는 메서드
+            //멤버 시퀀스 mid와 Pageable변수를 받아 해당 멤버가 속해있는 프로젝트 리스트를 반환한다.
+        List<RegisterProjectDTO> result = projectRepository.getProjectListWithMid(mid);
 
-        Pageable pageable = PageRequest.of(0,10);
-
-        Page<RegisterProjectDTO> result = projectRepository.getProjectListWithMid(mid,pageable);
-
-        List<RegisterProjectDTO> resultList = result.stream().collect(Collectors.toList());
-
-        return resultList;
+        return result;
     }
 
     @Override
     public boolean validProjectPw(String pid, String pw) {
+        //프로젝트 이동 전 패스워드를 확인함
+        //프로젝트 삭제 전 패스워드를 확인함
 
         Optional<Project> result = projectRepository.findByIdWithMember(Long.parseLong(pid));
 
@@ -100,6 +101,25 @@ public class ProjectServiceImpl implements ProjectService{
 
 
         return false;
+    }
+
+    @Override
+    @Transactional
+    public ProjectPageResponseDTO<RegisterProjectDTO> getProjectListWithPaging(ProjectPageRequestDTO pageRequestDTO, Long mid) {
+
+        String [] types= pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        Pageable pageable = pageRequestDTO.getPageable("pid");
+
+        Page<RegisterProjectDTO> result = projectRepository.searchAll(types,keyword,pageable,mid);
+
+        List<RegisterProjectDTO> resultList = result.stream().collect(Collectors.toList());
+
+        return ProjectPageResponseDTO.<RegisterProjectDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(resultList)
+                .total((int)result.getTotalElements())
+                .build();
     }
 
 

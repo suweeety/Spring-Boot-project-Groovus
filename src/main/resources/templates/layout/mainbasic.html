@@ -41,6 +41,14 @@
   <script src="https://kit.fontawesome.com/c96d31bca3.js"
           crossorigin="anonymous"></script>
 
+
+  <th:block layout:fragment="css">
+      <!--스타일요소 넣을 수 있음-->
+
+
+  </th:block>
+
+
 </head>
 
 <body>
@@ -85,7 +93,7 @@
               <th:block sec:authorize="isAuthenticated()">
                 <th:block th:with="user=${#authentication.principal}">
                   <li><a th:href="@{/project/list(mid=${user.mid})}"> Project </a>
-                    <ul class="dropdown" th:name="projectListDropdown">
+                    <ul class="dropdown" th:name="projectListDropdown" style="height: 20rem; overflow: scroll; overflow-x: hidden;">
                       <!--<li class="dropdown-list"><a th:href="@{/}" style="color: black;">- GroovUs Home</a></li>
                       <li class="dropdown-list"><a th:href="@{/main/about}" style="color: black;">- About Us</a></li>
                       <li class="dropdown-list"><a th:href="@{/main/function}" style="color: black;">- Functions</a></li>
@@ -116,7 +124,7 @@
                           for(var project of result){
                             console.log(project);
 
-                            resultStr += "<li class='dropdown-list'><a th:href='@{/project/"+project.pid+"/"+project.projectName+"}' style='color: black;font-size: 12px;'>"+project.projectName+"</a></li>";
+                            resultStr += "<li class='dropdown-list'><a href='/project/"+project.pid+"/"+project.projectName+"' style='color: black;font-size: 12px;'>"+project.projectName+"</a></li>";
                           }
 
                           $("ul[name='projectListDropdown']").append(resultStr);
