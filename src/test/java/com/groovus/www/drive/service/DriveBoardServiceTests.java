@@ -62,7 +62,7 @@ public class DriveBoardServiceTests {
 
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder().page(1).size(10).build();
 
-        PageResultDTO<DriveBoardDTO, DriveBoard> resultDTO = driveBoardService.getList(pageRequestDTO);
+        PageResultDTO<DriveBoardDTO, Object[]> resultDTO = driveBoardService.getList(pageRequestDTO);
 
         System.out.println("PREV: " + resultDTO.isPrev());
         System.out.println("NEXT: " + resultDTO.isNext());
@@ -86,7 +86,7 @@ public class DriveBoardServiceTests {
                 .type("tw")
                 .keyword("70")
                 .build();
-        PageResultDTO<DriveBoardDTO, DriveBoard> resultDTO = driveBoardService.getList(pageRequestDTO);
+        PageResultDTO<DriveBoardDTO, Object[]> resultDTO = driveBoardService.getList(pageRequestDTO);
 
         System.out.println("PREV: " + resultDTO.isPrev());
         System.out.println("NEXT: " + resultDTO.isNext());

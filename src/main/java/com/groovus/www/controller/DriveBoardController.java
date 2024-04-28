@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,37 +22,49 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class DriveBoardController {
 
-    private final DriveBoardService driveBoardService;
+  private final DriveBoardService driveBoardService;
 
-      @GetMapping("/")
-        public String index(){
+  @GetMapping("/")
+  public String index(){
 
-          return "redirect:/drive/drive";
-      }
+    return "redirect:/drive/drive";
+  }
 
-      @GetMapping("/drive")
-        public void drive(PageRequestDTO pageRequestDTO, Model model){
+  @GetMapping("/drive")
+  public void drive(PageRequestDTO pageRequestDTO, Model model){
 
-          log.info("list...." + pageRequestDTO);
+    log.info("list...." + pageRequestDTO);
 
-          model.addAttribute("result", driveBoardService.getList(pageRequestDTO));
-      } // drive
+    model.addAttribute("result", driveBoardService.getList(pageRequestDTO));
+  } // drive
 
-      @GetMapping("/register")
-      public void register(){
+  @GetMapping("/register")
+  public void register(){
 
-      }
+  }
 
-      @PostMapping("/register")
-      public String register(DriveBoardDTO driveBoardDTO, RedirectAttributes redirectAttributes){
+  @PostMapping("/register")
+  public String register(DriveBoardDTO driveBoardDTO, RedirectAttributes redirectAttributes){
 
-        Long bno = driveBoardService.register(driveBoardDTO);
+    Long bno = driveBoardService.register(driveBoardDTO);
 
-        redirectAttributes.addFlashAttribute("msg", bno );
+    redirectAttributes.addFlashAttribute("msg", bno );
 
-        return "redirect:/drive/drive";
-      } // register
+    return "redirect:/drive/drive";
+  } // register
 
+
+  @GetMapping({"/read", "/modify"})
+  public void read(@ModelAttribute("requestDTO") PageRequestDTO pageRequestDTO, Long bno, Model model){
+
+    log.info("bno: " + bno);
+
+    DriveBoardDTO driveBoardDTO = driveBoardService.get(bno);
+
+    log.info(driveBoardDTO);
+
+    model.addAttribute("dto", driveBoardDTO);
+  }
 
 
 

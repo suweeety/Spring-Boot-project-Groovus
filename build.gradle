@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // db 하이버네이트용
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' // 타임리프 프론트용
     implementation 'org.springframework.boot:spring-boot-starter-web'       // mvc
-    implementation 'org.postgresql:postgresql:42.6.0' //postgre
+
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -42,7 +42,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok' // 테스트 코드에서 롬북 사용 가능하게 설정
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'          // boot 용 개발 환경
-    runtimeOnly 'org.postgresql:postgresql' //postgresql db용 드라이버
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client' // mariadb
 
     implementation 'org.springframework.boot:spring-boot-starter-tomcat'   // 톰켓
     testImplementation 'org.springframework.boot:spring-boot-starter-test'  // 테스트 환경 구축

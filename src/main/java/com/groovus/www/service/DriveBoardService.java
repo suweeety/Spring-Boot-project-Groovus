@@ -16,13 +16,13 @@ public interface DriveBoardService {
 
     Long register(DriveBoardDTO dto); // 등록
 
-    PageResultDTO<DriveBoardDTO, DriveBoard> getList(PageRequestDTO pageRequestDTO);
+    PageResultDTO<DriveBoardDTO, Object[]> getList(PageRequestDTO pageRequestDTO);
 
-/*
-    DriveBoardDTO readOne(Long bno); // 읽기
-*/
 
-/*    void modify(DriveBoardDTO driveBoardDTO); // 수정*/
+    DriveBoardDTO get(Long bno); // 읽기
+
+
+    /*    void modify(DriveBoardDTO driveBoardDTO); // 수정*/
 
     /*void remove(Long bno); // 삭제*/
 
@@ -53,12 +53,12 @@ public interface DriveBoardService {
                         return driveFile;
                     }).collect(Collectors.toList());
 
-                    entityMap.put("fileList", driveFileList);
+            entityMap.put("fileList", driveFileList);
         }
         return entityMap;
     } // dtoToEntity
 
-    default DriveBoardDTO entityToDTO(DriveBoard driveBoard){
+    default DriveBoardDTO entityToDTO(DriveBoard driveBoard, List<DriveFile> driveFiles){
         DriveBoardDTO driveBoardDTO = DriveBoardDTO.builder()
                 .bno(driveBoard.getBno())
                 .title(driveBoard.getTitle())
@@ -66,6 +66,15 @@ public interface DriveBoardService {
                 .moddate(driveBoard.getModDate())
                 .nickname(driveBoard.getNickname())
                 .build();
+
+        List<DriveFileDTO> driveFileDTOList = driveFiles.stream().map(driveFile -> {
+            return DriveFileDTO.builder().fName(driveFile.getFName())
+                    .path(driveFile.getPath())
+                    .uuid(driveFile.getUuid())
+                    .build();
+        }).collect(Collectors.toList());
+
+        driveBoardDTO.setDriveFileDTOList(driveFileDTOList);
 
         return driveBoardDTO;
     } // entityToDTO

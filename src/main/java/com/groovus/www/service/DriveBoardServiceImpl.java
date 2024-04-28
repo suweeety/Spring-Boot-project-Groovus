@@ -18,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -51,20 +53,42 @@ public class DriveBoardServiceImpl implements DriveBoardService {
 
         return driveBoard.getBno();
 
-           } // register
+    } // register
 
     @Override
-    public PageResultDTO<DriveBoardDTO, DriveBoard> getList(PageRequestDTO requestDTO){
+    public PageResultDTO<DriveBoardDTO, Object[]> getList(PageRequestDTO requestDTO){
 
         Pageable pageable = requestDTO.getPageable(Sort.by("bno").descending());
 
-        BooleanBuilder booleanBuilder = getSearch(requestDTO);
+        Page<Object[]> result = repository.getListPage(pageable);
 
-        Page<DriveBoard> result = repository.findAll(booleanBuilder, pageable);
+        log.info("==============================================");
+        result.getContent().forEach(arr -> {
+            log.info(Arrays.toString(arr));
+        });
 
-        Function<DriveBoard, DriveBoardDTO> fn = (driveBoard -> entityToDTO(driveBoard));
+        Function<Object[], DriveBoardDTO> fn = (arr -> entityToDTO(
+                (DriveBoard)arr[0],
+                (List<DriveFile>) (Arrays.asList((DriveFile)arr[1]))));
 
         return new PageResultDTO<>(result, fn);
+    }
+
+    @Override
+    public DriveBoardDTO get(Long bno) {
+        List<Object[]> result = repository.getDriveWithAll(bno);
+
+        DriveBoard driveBoard = (DriveBoard) result.get(0)[0];
+
+        List<DriveFile> driveFileList = new ArrayList<>();
+
+        result.forEach(arr -> {
+            DriveFile driveFile = (DriveFile)arr[1];
+            driveFileList.add(driveFile);
+
+        });
+
+        return entityToDTO(driveBoard, driveFileList);
     }
 
     private BooleanBuilder getSearch(PageRequestDTO requestDTO){

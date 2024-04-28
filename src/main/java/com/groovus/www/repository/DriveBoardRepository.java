@@ -25,4 +25,9 @@ public interface DriveBoardRepository extends JpaRepository<DriveBoard, Long>, D
             " WHERE d.bno = :bno")
     List<Object[]> getDriveWithAll(Long bno);
 
+
+    @Query("SELECT d, df FROM DriveBoard d " +
+            "LEFT outer join DriveFile df on df.driveBoard = d " +
+            "GROUP BY d ")
+    Page<Object[]> getListPage(Pageable pageable);
 }
