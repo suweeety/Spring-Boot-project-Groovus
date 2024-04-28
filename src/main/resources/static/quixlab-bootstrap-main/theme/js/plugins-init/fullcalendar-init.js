@@ -57,25 +57,20 @@
       .end()
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
         "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-      .append("<div class='col-md-6' style='text-align: center; transform: translate(-199px, 10px);'><label class='control-label'>이벤트 시간 설정</label>" +
-        "<div class='btn-group' style='transform: translate(-106px, 41px);' data-toggle='buttons'>" +
-        "<label class='btn btn-primary active' style='border-radius: 20px;'>" +
-        "<input type='radio' name='cal_allDay' id='option1' autocomplete='off' checked> 하루 종일" +
-        "</label>" +
-        "<label class='btn btn-primary' style='border-radius: 20px;'>" +
-        "<input type='radio' name='cal_allDay' id='option2' autocomplete='off'> 시간 설정" +
-        "</label></div></div>")
-
-      .append("<div class='col-md-6 start-time' style='display:none'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_startDate' /></div></div>")
-      .append("<div class='col-md-6 end-time' style='display:none'><div class='form-group'><label class='control-label'>종료 날짜</label>" +
+      .append("<div class='col-md-6 start-time'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_startDate' /></div>")
+      .append("<div class='col-md-6 end-time'><div class='form-group'><label class='control-label'>종료 날짜</label>" +
         "<input class='form-control' type='datetime-local' name='cal_endDate' /></div></div>")
       // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
-    i.find("input[name='cal_allDay']").on("change", function () {
-      if ($(this).is("checked")) {
-        $(".start-time, .end-time").hide(); // 하루 종일 선택 시 숨김
+    // 라디오 버튼의 변경 이벤트 핸들러 등록
+    $("input[name='cal_allDay']").click(function() {
+      // 선택된 라디오 버튼의 값을 확인
+      if ($('#option2')) {
+        // '시간 설정' 버튼이 선택되었을 때, '시작 날짜'와 '종료 날짜' 표시
+        $(".start-time, .end-time").show();
       } else {
-        $(".start-time, .end-time").show(); // 시간 설정 선택 시 표시
+        // '하루 종일' 버튼이 선택되었을 때, '시작 날짜'와 '종료 날짜' 숨김
+        $(".start-time, .end-time").hide();
       }
     })
   , o.$modal.find(".delete-event").hide().end()
