@@ -43,7 +43,6 @@ public class ProjectController {
         log.info(projectList);
         log.info("==========================");*/
 
-
     }
 
     @PreAuthorize("permitAll()")
@@ -140,12 +139,28 @@ public class ProjectController {
         }
     }
     
-    
-    
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/home")
     public void goProjectHome(){
         //프로젝트 홈으로 이동
     }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/task/{pid}/{projectName}")
+    public String goTaskList(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName,RedirectAttributes redirectAttributes){
+        //업무탭으로 이동
+
+        redirectAttributes.addFlashAttribute("pid",pid);
+        redirectAttributes.addFlashAttribute("projectName",projectName);
+
+        log.info("==============================");
+        log.info(pid);
+        log.info("==============================");
+
+        return "redirect:/task/taskList";
+    }
+
+
+
 
 }

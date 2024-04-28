@@ -28,7 +28,7 @@ public class ProjectPageResponseDTO<E> {
 
     private List<E> dtoList; //데이터리스트
 
-   private int lastPage;
+   private int lastPage=1;
 
     //페이지 번호 목록
     private List<Integer> pageList;
@@ -51,6 +51,11 @@ public class ProjectPageResponseDTO<E> {
         this.start = tempEnd-9; //화면에서의 시작번호
 
         this.lastPage =(int)(Math.ceil((total/(double)size))); //데이터의 개수를 계산한 마지막 페이지 번호
+
+        if(lastPage<=1){
+
+            this.lastPage = 1;
+        }
 
         this.end = this.total > tempEnd ? tempEnd : this.total;
 
