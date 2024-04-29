@@ -33,7 +33,6 @@ public class Calendar extends BaseEntity{
     private String cal_content; // 일정 내용
 
     @OneToOne
-    @Column(nullable = true)
     private CalendarCategory cal_category;
 
     @Column(nullable = true)
