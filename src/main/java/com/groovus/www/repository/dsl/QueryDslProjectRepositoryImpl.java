@@ -64,9 +64,7 @@ public class QueryDslProjectRepositoryImpl extends QuerydslRepositorySupport imp
 
         return projectDTOList;
     }
-
-
-
+    
     @Override
     public Page<RegisterProjectDTO> searchAll(String[] types, String keyword, Pageable pageable ,Long mid) {
 
