@@ -11,12 +11,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@MappedSuperclass //직접 테이블용은 아님을 명시
+@MappedSuperclass
+@EntityListeners(value = { AuditingEntityListener.class })
 @Getter
-@EntityListeners(value = {AuditingEntityListener.class})
-//세터 대신 감시용 코드 (데이터 변경을 감지하여 적용 -> Main 메서드에 추가코드 필수
-abstract class BaseEntity {  //상속간에 추상클래스 동작
-
+abstract class BaseEntity {
     //테이블에 공통되는 부분을 상속해줄 클래스
 
     @CreatedDate // 게시물 생성할 때 동작

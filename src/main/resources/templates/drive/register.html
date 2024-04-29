@@ -12,7 +12,7 @@
         <style>
 
             #logoImg{
-                background-color: #8d8d8d;
+                background-color: #2de3f1;
             }
 
         </style>
@@ -28,101 +28,47 @@
             <div class="card">
                 <div class="card-body">
                     <h1>등록</h1>
-                    <form th:action="@{/drive/register}" th:method="post">
-                        <div class="form-group">
-                            <label>제목</label>
-                            <input type="text" class="form-control" name="title">
+
+                    <form action="/drive/register" method="post">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">제목</span>
+                            <input type="text" name="title" class="form-control" placeholder="Title">
                         </div>
 
-                        <div class="form-group fileForm">
-                            <label >Files</label>
-                            <div class="custom-file">
-                                <input type="file"  class="custom-file-input files" id="fileInput" multiple>
-                                <label class="custom-file-label" data-browse="Browse"></label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">작성자</span>
+                            <input type="text" name="nickname" class="form-control" placeholder="Nickname">
+
+                        </div>
+
+                        <div class="my-4">
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </div>
-
-                        <div class="box">
-
-                        </div>
-
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-
                     </form>
 
-                </div>
-            </div>
+                </div> <!-- card-body -->
+            </div> <!-- card -->
         </div>
     </div>
 
+<script layout:fragment="script" th:inline="javascript">
 
-    <script>
-        $(document).ready(function (e) {
+    /* 에러 메시지*/
+    const errors = [[${errors}]]
+    console.log(errors)
 
-            var maxSize = 10485760;
+    let errorMsg = ''
 
-            function checkExtension(fileName, fileSize) {
-
-                if (fileSize >= maxSize) {
-                    alert("파일사이즈 초과");
-                    return false;
-                }
-                return true;
-            }
-
-            $(".custom-file-input").on("change", function () {
-
-                var fileName = $(this).val().split("\\").pop();
-                $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-
-                var formData = new FormData();
-
-                var inputFile = $(this);
-
-                var files = inputFile[0].files;
-
-                var appended = false;
-
-                for (var i = 0; i < files.left(); i++) {
-
-                    if (!checkExtension(files[i].name, files[i].size)) {
-                        return false;
-                    }
-                    console.log(files[i]);
-                    formData.append("uploadFiles", files[i]);
-                    appended = true;
-                }
-
-                if (!appended) {
-                    return;
-                }
-
-                for (var value of formData.values()) {
-                    console.log(value);
-                }
-
-                $.ajax({
-                    url: '/uploadAjax',
-                    processData: false,
-                    contentType: false,
-                    data: formData,
-                    type: 'POST',
-                    dataType: 'json',
-                    success: function (result) {
-                        console.log(result);
-                        showResult(result);
-
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus);
-                    }
-                });
-            });
-        });
-    </script>
-
-
+    if(errors){
+        for (let i = 0; i < errors.length; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code} \n`
+        }
+        alert(errorMsg)
+    }
+</script>
 
 </th:block>
 
