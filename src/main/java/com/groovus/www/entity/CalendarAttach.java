@@ -25,6 +25,7 @@ public class CalendarAttach extends BaseEntity{
 
     @Column(nullable = false)
     private String uuid;
+
     @Column(nullable = false)
     private String uploadPath;
 

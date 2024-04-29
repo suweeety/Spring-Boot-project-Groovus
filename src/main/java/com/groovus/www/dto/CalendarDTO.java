@@ -31,7 +31,7 @@ public class CalendarDTO {
     @NotEmpty
     private String cal_content;
 
-    private String cal_category;
+    private String cal_cate;
 
     private String cal_startDate;
 

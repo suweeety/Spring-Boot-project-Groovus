@@ -12,13 +12,13 @@ import lombok.*;
 @ToString
 public class CalendarCategory {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cal_cate_id;
 
     private String cal_category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Calendar calendar;
 
     public void change(String cal_category) {

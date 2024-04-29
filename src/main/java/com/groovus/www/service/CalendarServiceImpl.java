@@ -18,7 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class CalendarServiceImpl implements CalendarService{
-    @Autowired
+
     private final ModelMapper modelMapper;
 
     private final CalendarRepository calendarRepository;

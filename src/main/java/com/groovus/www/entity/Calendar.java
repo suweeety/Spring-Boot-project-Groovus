@@ -2,6 +2,7 @@ package com.groovus.www.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.web.bind.annotation.Mapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,9 +33,9 @@ public class Calendar extends BaseEntity{
     @Column(length = 5000, nullable = false)
     private String cal_content; // 일정 내용
 
-    @OneToOne
-    @Column(nullable = true)
-    private CalendarCategory cal_category;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "cal_cate_id")
+    private CalendarCategory cal_cate;
 
     @Column(nullable = true)
     private String cal_startDate;
@@ -67,11 +68,11 @@ public class Calendar extends BaseEntity{
         this.imageSet.clear();
     }
 
-    public void change(String cal_title, String cal_content, CalendarCategory cal_category, String cal_startDate, String cal_endDate) {
+    public void change(String cal_title, String cal_content, CalendarCategory cal_cate, String cal_startDate, String cal_endDate) {
 
         this.cal_title = cal_title;
         this.cal_content = cal_content;
-        this.cal_category = cal_category;
+        this.cal_cate = cal_cate;
         this.cal_startDate = cal_startDate;
         this.cal_endDate = cal_endDate;
     }

@@ -46,16 +46,16 @@
       .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group'><label class='control-label'>일정 제목</label>" +
         "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
       .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>카테고리</label>" +
-        "<select class='form-control' name='cal_category' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_category']")
-      .append("<option name='cal_category' value='bg-team'>팀 회의</option>")
-      .append("<option name='cal_category' value='bg-dept'>부서 회의</option>")
-      .append("<option name='cal_category' value='bg-company-event'>사내 행사</option>")
-      .append("<option name='cal_category' value='bg-personal-event'>개인 일정</option>")
-      .append("<option name='cal_category' value='bg-account-event'>거래처 일정</option>")
-      .append("<option name='cal_category' value='bg-business-trip'>출장</option>")
-      .append("<option name='cal_category' value='bg-etc'>기타</option></div></div>")
+        "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
+      .append("<option value='bg-team'>팀 회의</option>")
+      .append("<option value='bg-dept'>부서 회의</option>")
+      .append("<option value='bg-company-event'>사내 행사</option>")
+      .append("<option value='bg-personal-event'>개인 일정</option>")
+      .append("<option value='bg-account-event'>거래처 일정</option>")
+      .append("<option value='bg-business-trip'>출장</option>")
+      .append("<option value='bg-etc'>기타</option></div></div>")
       .end()
-      .append("<div class='col-md-6' style='width: 9rem; transform: translate(567px, -94px);'><div class='form-group'><label class='control-label'>참여자</label>" +
+      .append("<div class='col-md-6' style='width: 9rem; tracnsform: translate(567px, -94px);'><div class='form-group'><label class='control-label'>참여자</label>" +
         "<input class='form-control' id='cal_member_input' name='cal_member' style='width: 9rem; border-radius: 10px;' /></div></div><div id='selected_members'></div>")
 
       .append("<div class='col-md-6' style='max-width: 46rem; height: 10rem; transform: translate(-1px, -75px;)'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
@@ -107,7 +107,7 @@
         cal_title: i.find("input[name='cal_title']").val(),
         beginning: i.find("input[name='beginning']").val(),
         ending: i.find("input[name='ending']").val(),
-        cal_category: i.find("select[name='cal_category'] option:checked").val(),
+        cal_cate: i.find("select[name='cal_cate'] option:checked").val(),
         cal_content: i.find("input[name='cal_content']").val(),
         cal_startDate: i.find("input[name='cal_startDate']").val(),
         cal_endDate: i.find("input[name='cal_endDate']").val()
@@ -131,7 +131,7 @@
       var e = i.find("input[name='cal_title']").val(),
         a = (i.find("input[name='beginning']").val(),
           i.find("input[name='ending']").val(),
-          i.find("select[name='cal_category']").val(),
+          i.find("select[name='cal_cate']").val(),
           i.find("input[name='cal_content']").val(),
           i.find("input[name='cal_startDate']").val(),
         i.find("input[name='cal_endDate']").val());
@@ -142,7 +142,7 @@
         allDay: !1,
         className: a,
         cal_content: i,
-        cal_category: i,
+        cal_cate: i,
         cal_startDate: i,
         cal_endDate: i
       }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
