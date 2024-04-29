@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/mainbasic}"  >
+<head>
+    <meta charset="UTF-8">
+    <title>카카오로그인 비밀번호 변경</title>
+</head>
+<body>
+
+<th:block layout:fragment="content">
+
+  <div style="width: 100%;height: 60rem; margin-top: 10rem;">
+
+    <div class="login-form-bg h-100">
+      <div class="container h-100">
+        <div class="row justify-content-center h-100">
+          <div class="col-xl-6">
+            <div class="form-input-content">
+              <div class="card login-form mb-0">
+                <div class="card-body pt-5">
+                  <a class="text-center" th:href="@{/}"> <h4>비밀번호 설정</h4></a>
+                  <div class="alert alert-success">
+                    소셜계정 로그인을 위해 새로운 비밀번호를 설정해주세요! <br/>
+                    비밀번호 설정 후 일반 로그인으로 로그인 가능합니다!
+                  </div>
+
+                  <form class="mt-5 mb-5 login-input" action="/member/socialLogin" method="post">
+                    <th:block th:with="user=${#authentication.principal}">
+                      <input type="hidden" th:value="${user.mid}" name="mid">
+                    </th:block>
+                    <div class="form-group">
+                      <input type="password" class="form-control" placeholder="비밀번호 설정" name="newPw">
+                    </div>
+                    <button class="btn login-form__btn submit w-100">변경하기</button>
+                  </form>
+                  <!-- <a href="/oauth2/authorization/kakao"> 카카오 계정으로 로그인 </a>-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+  </div>
+
+</th:block>
+
+
+
+</body>
+</html>

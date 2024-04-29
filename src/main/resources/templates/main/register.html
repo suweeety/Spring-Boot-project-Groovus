@@ -1,10 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/mainbasic}"  >
 <head>
     <meta charset="UTF-8">
-    <title>프로젝트 생성 페이지</title>
+    <title>프로젝트 생성</title>
 </head>
-<body>
+<th:block layout:fragment="content">
+    <div style="width: 100%;height: 80rem; position: relative;">
+        <div class="bg-curve" style="background-image: url('/img/core-img/curve.png'); background-repeat: no-repeat; height:40rem; width:60%; position: absolute; right: 0;z-index: -5;"></div>
 
-</body>
+        <!--**********************************
+            Content body start
+        ***********************************-->
+        <div class="content-body" style="padding-top: 8rem;" th:with="user=${#authentication.principal}">
+
+            <div class="row page-titles mx-0" style="margin-bottom: 0;">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb" style="margin-bottom: 0; border-radius: 0;" >
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">GroovUs</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">프로젝트 생성</a></li>
+                    </ol>
+                </div>
+            </div>
+            <!-- row -->
+
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="card" style="width: 50rem; left: 26rem; margin-bottom: 1rem; margin-top: 1rem; text-align: center;">
+
+                            <div class="card-body">
+                                <div class="inline-editor">
+                                    <h4 class="card-title m-b-40">협업의 비전, 우리의 혁신</h4>
+                                    <h3>GroovUs <b>프로젝트 생성</b></h3>
+                                    <p>프로젝트 생성후 협업을 진행하세요!</p>
+                                    <ul class="list-icons">
+                                        <li><i class="fa fa-check text-success"></i> 프로젝트 생성후에도 멤버 초대가 가능합니다.</li>
+                                        <li><i class="fa fa-check text-success"></i> 관련 설정은 프로젝트 생성 후 설정 가능합니다. </li>
+                                        <li><i class="fa fa-check text-success"></i> 프로젝트 비밀번호는 프로젝트 접근시 사용합니다.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card" style="width: 50rem; left: 26rem;">
+                            <div class="card-body">
+                                <div class="form-validation">
+                                    <form class="form-valide" action="/project/register" method="post" name="regiForm">
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-username">프로젝트명 <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" id="val-username" name="projectName" placeholder="프로젝트명">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-password">비밀번호 <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="val-password" name="projectPassword" placeholder="프로젝트 비밀번호 입력">
+                                            </div>
+                                        </div>
+
+                                        <p style="color: red; display: none; margin-left: 17rem;" name="wrongPw" >비밀번호가 일치하지 않습니다.</p>
+                                        <p style="color: green; display: none; margin-left: 17rem;" name="correctPw">비밀번호가 일치합니다.</p>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-confirm-password">비밀번호 확인 <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-lg-6">
+                                                <input type="password" class="form-control" id="val-confirm-password" name="re-projectPassword" placeholder="비밀번호 입력 확인">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-4 col-form-label" for="val-suggestions">프로젝트 설명</label>
+                                            <div class="col-lg-6">
+                                                <textarea class="form-control" id="val-suggestions"  rows="5" placeholder="프로젝트 설명 입력" name="projectDescription"></textarea>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row" style="position: relative; height: 15rem;">
+                                            <label class="col-lg-4 col-form-label" for="val-suggestions">멤버 초대</label>
+                                            <div class="col-lg-6">
+                                                <input type="text" class="form-control" placeholder="초대 멤버 ID입력" name="inviteMember" style="display: inline-block;">
+                                               <span> <button type="button" class="btn btn-dark mb-2" style="position: absolute; right: -26px; top: 1px;" name="addBtn"> + </button> </span>
+
+                                            </div>
+                                                <div name="memberTags" style="display: block;width: 26rem;height: 10rem;position: absolute;left: 35%;top: 4rem;padding: 10px;border: 1px solid gray;">
+
+                                                    <span class='badge badge-pill badge-success'>[[${user.uid}]]</span>
+                                                    <input type="hidden" name="projectMember" th:value="${user.uid}">
+
+                                                </div>
+                                        </div>
+                                        <th:block th:with="user=${#authentication.principal}">
+                                            <input type="hidden" name="adminUid" th:value="${user.uid}">
+                                            <input type="hidden" name="mid" th:value="${user.mid}">
+                                        </th:block>
+                                        <div class="form-group row">
+                                            <div class="col-lg-8 ml-auto">
+                                                <button type="button" class="btn btn-primary" name="registerProject">프로젝트 생성</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- #/ container -->
+        </div>
+        <!--**********************************
+            Content body end
+        ***********************************-->
+    </div>
+
+    <script th:inline="javascript">
+
+        $(document).ready(function(){
+
+            var memberInputs='';
+
+            $("button[name='addBtn']").on("click" , function(){
+
+                var memberInput = $("input[name='inviteMember']").val();
+
+                if(memberInput === '' || memberInput === null){
+                    alert("추가할 멤버 ID를 입력해주세요");
+                }else{
+
+                    memberInputs = "<span class='badge badge-pill badge-primary'>"+memberInput+"</span><button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='"+memberInput+"'><i class=\"fa-solid fa-xmark\"></i></button>" +
+                        "<input type='hidden' name='projectMember' value='"+ memberInput +"'/>";
+
+                    $("div[name='memberTags']").append(memberInputs);
+                    $("input[name='inviteMember']").val('');
+                    memberInputs ='';
+                }
+            });
+
+            $("button[name='registerProject']").on("click",function (e){
+                e.preventDefault();
+
+                var regiForm = $("form[name='regiForm']");
+
+                if($("input[name='projectName']").val() === '' || $("input[name='projectName']").val()== null){
+                    alert("프로젝트명을 입력해주세요.");
+                    $("input[name='projectName']").focus();
+                    return;
+                }
+                if($("input[name='projectPassword']").val() === '' || $("input[name='projectPassword']").val()== null){
+                    alert("비밀번호를 입력해주세요.");
+                    $("input[name='projectPassword']").focus();
+                    return;
+                }
+                if($("input[name='re-projectPassword']").val()=== '' ||$("input[name='re-projectPassword']").val() === null ){
+
+                    alert("재확인 비밀번호를 입력해주세요.");
+                    $("input[name='re-projectPassword']").focus();
+                    return;
+                }
+
+
+                regiForm.submit();
+            });
+
+            $("input[name='re-projectPassword']").blur(function (){
+                var InputPassword = $("input[name='projectPassword']").val();
+                var reInputPassword = $("input[name='re-projectPassword']").val();
+
+                if(InputPassword !== reInputPassword){
+                    $("p[name='correctPw']").hide();
+                    $("p[name='wrongPw']").show();
+                    $("input[name='re-projectPassword']").val('');
+                }else{
+                    $("p[name='correctPw']").show();
+                    $("p[name='wrongPw']").hide();
+                }
+
+            });
+        });
+
+        $(document).on('click','button[name="deleteInviteMember"]',function (){
+            $(this).prev("span").remove();
+            $(this).next("input").remove();
+            $(this).remove();
+        });
+
+    </script>
+</th:block>
 </html>
