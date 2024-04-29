@@ -18,6 +18,9 @@ public class CalendarCategory {
 
     private String cal_category;
 
+    @ManyToOne
+    private Calendar calendar;
+
     public void change(String cal_category) {
         this.cal_category = cal_category;
     }

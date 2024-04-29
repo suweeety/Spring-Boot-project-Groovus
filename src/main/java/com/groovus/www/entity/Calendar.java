@@ -3,7 +3,9 @@ package com.groovus.www.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +15,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name="tb_calendar")
-@ToString
+@ToString(exclude = "imageSet")
 public class Calendar extends BaseEntity{
     /*
     Calendar Entity 여러 개가 하나의 Project Entity를 가짐
@@ -31,6 +33,7 @@ public class Calendar extends BaseEntity{
     private String cal_content; // 일정 내용
 
     @OneToOne
+    @Column(nullable = true)
     private CalendarCategory cal_category;
 
     @Column(nullable = true)
@@ -38,6 +41,31 @@ public class Calendar extends BaseEntity{
 
     @Column(nullable = true)
     private String cal_endDate;
+
+    @ManyToMany
+    @Column(nullable = true)
+    private List<CalendarAttach> cal_attach;
+
+    @OneToMany(mappedBy = "calendar",
+            cascade = {CascadeType.ALL},
+            fetch = FetchType.LAZY) //CalendarImage의 calendar 변수
+    @Builder.Default
+    private Set<CalendarImage> imageSet = new HashSet<>();
+
+    public void addImage(String uuid, String fileName) {
+        CalendarImage calendarImage = CalendarImage.builder()
+                .uuid(uuid)
+                .fileName(fileName)
+                .calendar(this)
+                .ord(imageSet.size())
+                .build();
+        imageSet.add(calendarImage);
+    }
+
+    public void clearImages() {
+        imageSet.forEach(calendarImage -> calendarImage.changeCalendar(null));
+        this.imageSet.clear();
+    }
 
     public void change(String cal_title, String cal_content, CalendarCategory cal_category, String cal_startDate, String cal_endDate) {
 

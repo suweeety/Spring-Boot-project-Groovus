@@ -31,14 +31,12 @@ public class CalendarDTO {
     @NotEmpty
     private String cal_content;
 
-    private CalendarCategory cal_category;
+    private String cal_category;
 
     private String cal_startDate;
 
     private String cal_endDate;
 
-    private LocalDateTime regDate;
-
-    private LocalDateTime modDate;
+    private List<CalendarAttach> cal_attach;
 
 }

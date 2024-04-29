@@ -55,24 +55,48 @@
       .append("<option name='cal_category' value='bg-business-trip'>출장</option>")
       .append("<option name='cal_category' value='bg-etc'>기타</option></div></div>")
       .end()
-      .append("<div class='col-md-6'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+      .append("<div class='col-md-6' style='width: 9rem; transform: translate(567px, -94px);'><div class='form-group'><label class='control-label'>참여자</label>" +
+        "<input class='form-control' id='cal_member_input' name='cal_member' style='width: 9rem; border-radius: 10px;' /></div></div><div id='selected_members'></div>")
+
+      .append("<div class='col-md-6' style='max-width: 46rem; height: 10rem; transform: translate(-1px, -75px;)'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
         "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-      .append("<div class='col-md-6 start-time'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_startDate' /></div>")
-      .append("<div class='col-md-6 end-time'><div class='form-group'><label class='control-label'>종료 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_endDate' /></div></div>")
-      // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
+      .append("<div class='col-md-6' style='text-align: center; transform: translate(-10px, -26px);'><div class='form-group'><label class='control-label'>이벤트 시간 설정</label>" +
+        "<div class='btn-group' style='transform: translate(-106px, 41px);' data-toggle='buttons'>" +
+        "<label class='btn btn-primary active' style='border-radius: 20px;'>" +
+        "<input type='radio' name='cal_allDay' id='option1' autocomplete='off' checked> 하루 종일" +
+        "</label>" +
+        "<label class='btn btn-primary' style='border-radius: 20px;'>" +
+        "<input type='radio' name='cal_allDay' id='option2' autocomplete='off'> 시간 설정" +
+        "</label></div>")
+      .append("<div class='col-md-6 start-time' style='display:none'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_startDate' /></div></div>")
+      .append("<div class='col-md-6 end-time' style='display:none'><div class='form-group'><label class='control-label'>종료 날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_endDate' /></div></div></div>")
+
+      .append("<div class='col-md-6' style='transform: translate(-380px, 75px);'><div class='form-group'><label class='control-label'>첨부파일</label>" +
+        "<div class='dropdown' style='float: right;'><button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown'" +
+        "aria-haspopup='true' aria-expanded='false'>v</button>" +
+        "<div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>첨부파일 표시</div></div></div>")
+    $(function() {
+      var availableMembers = [
+        "멤버1",
+        "멤버2",
+        "멤버3",
+        // 추가 멤버들
+      ];
+    })
+    // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
     // 라디오 버튼의 변경 이벤트 핸들러 등록
-    $("input[name='cal_allDay']").click(function() {
+    , $("input[name='cal_allDay']").change(function() {
+      // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
       // 선택된 라디오 버튼의 값을 확인
-      if ($('#option2')) {
-        // '시간 설정' 버튼이 선택되었을 때, '시작 날짜'와 '종료 날짜' 표시
+      if ($(this).is('checked')) {
         $(".start-time, .end-time").show();
       } else {
-        // '하루 종일' 버튼이 선택되었을 때, '시작 날짜'와 '종료 날짜' 숨김
         $(".start-time, .end-time").hide();
       }
     })
+
   , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()

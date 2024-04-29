@@ -35,6 +35,22 @@ public class CalendarController {
             rttr.addFlashAttribute("errors", bindingResult.getAllErrors());
         }
 
+        if(calendarDTO.getCal_category().equals("bg-team")) {
+            calendarDTO.setCal_category("팀 회의");
+        } else if(calendarDTO.getCal_category().equals("bg-dept")) {
+            calendarDTO.setCal_category("부서 회의");
+        } else if(calendarDTO.getCal_category().equals("bg-company-event")) {
+            calendarDTO.setCal_category("사내 행사");
+        } else if(calendarDTO.getCal_category().equals("bg-personal-event")) {
+            calendarDTO.setCal_category("개인 일정");
+        } else if(calendarDTO.getCal_category().equals("bg-account-event")) {
+            calendarDTO.setCal_category("거래처 일정");
+        } else if(calendarDTO.getCal_category().equals("bg-business-trip")) {
+            calendarDTO.setCal_category("출장");
+        } else {
+            calendarDTO.setCal_category("기타");
+        }
+
         log.info("calendarDTO: " + calendarDTO);
 
         Long cal_id = calendarService.register(calendarDTO);

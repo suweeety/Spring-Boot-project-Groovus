@@ -203,7 +203,8 @@
     <!--**********************************
         Scripts
     ***********************************-->
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+
     <script layout:fragment="script" th:inline="javascript">
         const errors = [[${errors}]]
         console.log(errors)
