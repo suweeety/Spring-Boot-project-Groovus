@@ -21,7 +21,7 @@
                 justify-content: center;
                 top:0;
                 left:0;
-                z-index:100;
+                z-index:99999;
                 width:100%;
                 height:100%;
 
@@ -135,8 +135,9 @@
             <span  name="modal_close_btn" style="width: 3rem; height: 3rem; font-size: 30px; float:right ; margin-bottom: 1rem; cursor: pointer;"> X </span>
             <br/>
 
+            <form name="taskForm" method="post" >
             <span><b>업무 제목</b></span>
-            <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTile" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+            <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
             <br/>
             <br/>
             <span><b>작성자</b></span>
@@ -145,42 +146,68 @@
             <br/>
             <br/>
             <span><b>담당자</b></span>
-            <select name="memberSelect" style="width: 10rem; margin-left: 2rem;">
+            <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
                 <option value="">------</option>
                 <!--여기에 멤버들 보임-->
+
             </select>
-            <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>
+    <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
 
-
-        </div>
+                <!--에디터-->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="summernote" style="display: none;" method="post" name="taskContent">
+                            <h3>업무내용입력</h3>
+                        </div>
+                    </div>
+                 </div>
+            </form>
+            <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
+         </div>
     </div>
-
     <!--모달 끝-->
-
 
     <!--스크립트-->
     <script th:inline="javascript">
 
+        var pid = [[${pid}]];
+
+
         $(document).ready(function (){
+
+
+            $.ajax({
+                url:'/project/memberList',
+                data:{'pid':pid},
+                method:'post',
+                success:function (result){
+                    insertMemberList(result);
+                }
+            });
 
             $("button[name='registerTaskBtn']").on("click",function (e){
                e.preventDefault();
-
                 $(".modal_").show();
-
             });
 
             $(document).on("click","span[name='modal_close_btn']",function(){
-
                 $(".modal_").hide();
-
             });
 
+            function insertMemberList(result){
 
+                var selectList = $("select[name='responsibleMember']");
+                var str ='';
+                for(var member of result){
+
+                    str+='<option value="'+member.mid+'">'+member.uid+'</option>';
+
+                }
+                selectList.append(str);
+            }
         });
 
     </script>
-
 
 
 

@@ -1,13 +1,11 @@
 package com.groovus.www.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.lang.management.MemoryManagerMXBean;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +16,6 @@ import java.util.Objects;
 public class MemberDTO extends User implements OAuth2User {
 
     private Long mid;
-
     private String uid;
     private String upw;
 
@@ -30,6 +27,7 @@ public class MemberDTO extends User implements OAuth2User {
 
     //소셜 로그인 정보
     private Map<String, Object> props;
+
 
     public MemberDTO(String username, String password, Long mid , String uname,String email, boolean del, boolean social, Collection<? extends GrantedAuthority> authorities) {
 

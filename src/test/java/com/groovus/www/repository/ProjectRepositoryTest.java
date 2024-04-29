@@ -122,6 +122,18 @@ public class ProjectRepositoryTest {
 
 
     }
+    @Test
+    @Transactional
+    public void selectMemberInfo(){
+
+       Optional<Project> project = projectRepository.findByIdWithMember(11L);
+
+       Project result = project.get();
+
+       log.info("=========================================");
+       log.info( result.getProjectMember());
+       log.info("=========================================");
+    }
 
 
 }
