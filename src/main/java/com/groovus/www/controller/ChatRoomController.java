@@ -1,7 +1,7 @@
 package com.groovus.www.controller;
 
-import com.groovus.www.dto.ChatRoomDto;
-import com.groovus.www.dto.ChatRoomMap;
+import com.groovus.www.dto.chat.ChatRoomDto;
+import com.groovus.www.dto.chat.ChatRoomMap;
 import com.groovus.www.service.ChatService.ChatServiceMain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

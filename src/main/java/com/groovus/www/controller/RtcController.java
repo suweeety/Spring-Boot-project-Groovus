@@ -1,6 +1,6 @@
 package com.groovus.www.controller;
 
-import com.groovus.www.dto.WebSocketMessage;
+import com.groovus.www.dto.chat.WebSocketMessage;
 import com.groovus.www.service.ChatService.RtcChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

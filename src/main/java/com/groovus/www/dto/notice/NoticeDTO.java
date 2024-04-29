@@ -1,4 +1,4 @@
-package com.groovus.www.dto;
+package com.groovus.www.dto.notice;
 
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;

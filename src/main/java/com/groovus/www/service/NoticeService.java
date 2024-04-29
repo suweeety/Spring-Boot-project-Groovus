@@ -1,6 +1,6 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.NoticeDTO;
+import com.groovus.www.dto.notice.NoticeDTO;
 
 public interface NoticeService {
 

@@ -1,6 +1,6 @@
 package com.groovus.www.entity;
 
-import com.groovus.www.dto.NoticeRequestDTO;
+import com.groovus.www.dto.notice.NoticeRequestDTO;
 import groovy.transform.ToString;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,8 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
-
-import java.time.LocalDateTime;
 
 @ToString
 @Entity

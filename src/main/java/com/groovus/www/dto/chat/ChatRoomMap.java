@@ -1,4 +1,4 @@
-package com.groovus.www.dto;
+package com.groovus.www.dto.chat;
 
 import lombok.Getter;
 import lombok.Setter;
