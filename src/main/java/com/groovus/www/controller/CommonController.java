@@ -69,11 +69,6 @@ public class CommonController {
         //드라이브 휴지통
 
     }
-    @GetMapping("/conference/webConference")
-    public void goConference(){
-        //화상회의로 이동
-
-    }
     
     @GetMapping("/setting")
     public void goSetting(){

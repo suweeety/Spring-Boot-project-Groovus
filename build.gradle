@@ -87,6 +87,23 @@ dependencies {
     //카카오로그인을위핸 oauth2 추가 // 743 추가 외부 인증용 카카오, 구글,  네이버 등....
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    //webSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // sockjs
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    // stomp
+    implementation 'org.webjars:stomp-websocket:2.3.4'
+    // gson
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    // mapstruct
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+    implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.4.2.Final'
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
+    annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.4.2.Final'
+
+    // mapstruct - lombok
+    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 }
 
 tasks.named('bootBuildImage') {
