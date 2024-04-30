@@ -70,7 +70,7 @@
                             <button type="button" class="btn btn-primary btn-block" style="background-color: #0435d7;" name="registerTaskBtn">업무등록</button>
 
                             <div class="mail-list mt-4">
-                                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5">198</span> </a>
+                                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholeTask">0</span> </a>
                                 <a href="#" class="list-group-item border-0 p-r-0"><span class="fa fa-tags f-s-14 mr-2"></span>참조업무</a>
                                 <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-star-o font-18 align-middle mr-2"></i>중요업무 <span class="badge badge-danger badge-sm float-right m-t-5">47</span> </a>
                                 <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2"></i>삭제업무</a>
@@ -87,24 +87,41 @@
                             </div>
 
                             <!--업무리스트 시작-->
-                            <div class="email-list m-t-15">
-
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk2">
-                                                <label class="toggle" for="chk2"></label>
-                                            </div><span class="star-toggle ti-star"></span>
+                                    <div class="card-body">
+                                        <div class="card-title">
+                                            <h4>[[${projectName}]]의 업무 목록</h4>
                                         </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>업무제목</th>
+                                                    <th>상태</th>
+                                                    <th>등록일</th>
+                                                    <th>담당자</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
 
-                            </div>
+                                                <th:block th:each="task ,i : ${responseDTO.dtoList}">
+                                                        <tr>
+                                                            <th>[[${i.index + responseDTO.start }]]</th>
+                                                            <td name="readTask" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
+                                                            <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
+                                                            <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
+                                                            <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
+                                                            <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
+                                                            <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
+                                                            <td class="color-primary">[[${task.responsibleMember}]]</td>
+                                                        </tr>
+
+                                                </th:block>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
                             <!--업무리스트 끝-->
 
                             <!-- panel -->
@@ -135,14 +152,13 @@
             <span  name="modal_close_btn" style="width: 3rem; height: 3rem; font-size: 30px; float:right ; margin-bottom: 1rem; cursor: pointer;"> X </span>
             <br/>
 
-            <form name="taskForm" method="post" >
+            <form name="taskForm" method="post" action="/task/register">
             <span><b>업무 제목</b></span>
             <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
             <br/>
             <br/>
             <span><b>작성자</b></span>
             <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
-            <input type="hidden" name="mid" th:value="${#authentication.principal.mid}">
             <br/>
             <br/>
             <span><b>담당자</b></span>
@@ -154,13 +170,18 @@
     <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
 
                 <!--에디터-->
+                <!--'note-editable panel-body' 안에 들어감-->
                 <div class="card">
                     <div class="card-body">
-                        <div class="summernote" style="display: none;" method="post" name="taskContent">
+                        <div class="summernote" style="display: none;" method="post">
                             <h3>업무내용입력</h3>
                         </div>
                     </div>
                  </div>
+
+                <input type="hidden" name="taskContent" value="">
+                <input type="hidden" name="pid" th:value="${pid}">
+                <input type="hidden" name="projectName" th:value="${projectName}">
             </form>
             <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
          </div>
@@ -172,10 +193,9 @@
 
         var pid = [[${pid}]];
 
-
         $(document).ready(function (){
 
-
+            /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
             $.ajax({
                 url:'/project/memberList',
                 data:{'pid':pid},
@@ -184,6 +204,17 @@
                     insertMemberList(result);
                 }
             });
+
+            /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
+            $.ajax({
+                url:'/task/countall',
+                type:'post',
+                data:{'pid':pid},
+                success:function (result){
+                    $("span[name='wholeTask']").text(result);
+                }
+            })
+
 
             $("button[name='registerTaskBtn']").on("click",function (e){
                e.preventDefault();
@@ -205,7 +236,47 @@
                 }
                 selectList.append(str);
             }
+
+
+            $(document).keydown(function(event){
+                if(event.keyCode == 116) { // F5 키 눌렸을 때
+                    event.preventDefault(); // 기본 동작 방지
+                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
+                    location.href = newUrl;
+                }
+            });
         });
+
+        $(document).on("click","button[name='registerBtn']",function (e){
+            //업무 등록 버튼 눌렀을때
+
+            e.preventDefault();
+
+            var taskForm = $("form[name='taskForm']");
+            var htmlStr = $("div.note-editable").html();
+
+            $("input[name='taskContent']").val(htmlStr);
+
+            taskForm.submit();
+
+        })
+
+        $(document).on("click","td[name='readTask']",function (e){
+            e.preventDefault();
+            var tid = $(this).data("tid");
+
+            $.ajax({
+                url:'/task/view',
+                type:'post',
+                data:{'tid':tid},
+                success:function (result){
+                   console.log(result);
+                }
+            });
+
+        });
+
+
 
     </script>
 

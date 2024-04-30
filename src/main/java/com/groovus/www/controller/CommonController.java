@@ -14,7 +14,6 @@ public class CommonController {
     //페이지 분기시에 사용합니다.!
     //메인화면에서 이동할때나....
 
-
     @PreAuthorize("permitAll()")
     @GetMapping("/")
     public String helloGroovus(){
@@ -37,10 +36,9 @@ public class CommonController {
     @GetMapping("/reply/myreply")
     public void goMyReply(){
         //내가 쓴 댓글로 이동
-
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/task/taskList")
     public void goTaskList(){
         //업무리스트로 이동

@@ -1,14 +1,14 @@
 package com.groovus.www.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 @Data
 @Log4j2
 @ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberInfoDTO {
 
     private String mid;
