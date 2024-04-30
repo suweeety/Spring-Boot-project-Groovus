@@ -21,7 +21,11 @@
               <div class="card login-form mb-0">
                 <div class="card-body pt-5">
                   <a class="text-center" th:href="@{/}"> <h4>비밀번호 설정</h4></a>
-                    <p>소셜계정 로그인을 위해 새로운 비밀번호를 설정해주세요</p>
+                  <div class="alert alert-success">
+                    소셜계정 로그인을 위해 새로운 비밀번호를 설정해주세요! <br/>
+                    비밀번호 설정 후 일반 로그인으로 로그인 가능합니다!
+                  </div>
+
                   <form class="mt-5 mb-5 login-input" action="/member/socialLogin" method="post">
                     <th:block th:with="user=${#authentication.principal}">
                       <input type="hidden" th:value="${user.mid}" name="mid">

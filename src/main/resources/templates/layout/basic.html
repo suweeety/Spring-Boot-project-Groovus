@@ -64,7 +64,7 @@
 
   <div class="nav-header" id="logoImg">
     <div class="brand-logo">
-      <a th:href="@{/}" >
+      <a th:href="@{'/project/'+${pid}+'/'+${projectName}+'?type=yes'}" >
         <b class="logo-abbr"><img src="/quixlab-bootstrap-main/theme/images/groovuslogo2.png" alt="" style="
     width: 10rem;
     height: 47px;
@@ -283,15 +283,15 @@
           </ul>
         </li>
 
-        <li class="nav-label">Collaboration(프로젝트명)</li>
+        <li class="nav-label">Collaboration([[${projectName}]])</li>
         <li>
           <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
             <i class="fa-regular fa-clipboard"></i><span class="nav-text">Task</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{/task/taskList}">업무리스트</a></li>
-            <li><a th:href="@{/task/taskList}">담당업무</a></li>
-            <li><a th:href="@{/task/taskList}">참조업무</a></li>
+            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">업무리스트</a></li>
+            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">담당업무</a></li>
+            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">참조업무</a></li>
             <!-- <li><a href="./index-2.html">Home 2</a></li> -->
           </ul>
         </li>

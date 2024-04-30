@@ -31,6 +31,12 @@ public class Member extends BaseEntity {
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
+    @ManyToMany(mappedBy = "projectMember",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @Builder.Default
+    private Set<Project> projectList = new HashSet<>();
+
     public void changePassword(String upw){this.upw = upw; }
     public void changeDel(boolean del){
 
@@ -40,4 +46,7 @@ public class Member extends BaseEntity {
         this.roleSet.add(memberRole);
     }
 
+    public void addProject(Project project){
+        this.projectList.add(project);
+    }
 }

@@ -1,5 +1,6 @@
 package com.groovus.www.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ public class CommonController {
     //메인화면에서 이동할때나....
 
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/")
     public String helloGroovus(){
 
