@@ -2,6 +2,7 @@ package com.groovus.www.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +28,9 @@ public class Drive extends com.groovus.www.entity.BaseEntity {
         this.title = title;
     }
 
-    @OneToMany(mappedBy = "drive", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "drive", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, orphanRemoval = true )
     @Builder.Default
+    @BatchSize(size = 20)
     private Set<DriveImage> imageSet = new HashSet<>();
 
     public void addImage(String uuid, String fileName){

@@ -1,5 +1,6 @@
 package com.groovus.www.service;
 
+import com.groovus.www.dto.DriveAllDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,21 +31,28 @@ public class DriveServiceImpl implements DriveService{
     @Override
     public Long register(DriveDTO driveDTO) {
 
-        Drive drive = modelMapper.map(driveDTO, Drive.class);
+        Drive drive = dtoToEntity(driveDTO);
 
         Long bno = driveRepository.save(drive).getBno();
 
         return bno;
+//        Drive drive = modelMapper.map(driveDTO, Drive.class);
+//
+//        Long bno = driveRepository.save(drive).getBno();
+//
+//        return bno;
     }
 
     @Override
     public DriveDTO readOne(Long bno) {
 
-        Optional<Drive> result = driveRepository.findById(bno);
+        Optional<Drive> result = driveRepository.findByIdWithImages(bno);
 
         Drive drive = result.orElseThrow();
 
-        DriveDTO driveDTO = modelMapper.map(drive, DriveDTO.class);
+        // DriveDTO driveDTO = modelMapper.map(drive, DriveDTO.class);
+
+        DriveDTO driveDTO = entityToDTO(drive);
 
         return driveDTO;
     }
@@ -58,6 +66,14 @@ public class DriveServiceImpl implements DriveService{
 
         drive.change(driveDTO.getTitle());
 
+        drive.clearImages();
+
+        if(driveDTO.getFileNames() != null){
+            for (String fileName : driveDTO.getFileNames()) {
+                String[] arr = fileName.split("_");
+                drive.addImage(arr[0], arr[1]);
+            }
+        }
         driveRepository.save(drive);
     }
 
@@ -86,5 +102,20 @@ public class DriveServiceImpl implements DriveService{
                 .build();
 
     }
+
+//    @Override
+//    public PageResponseDTO<DriveAllDTO> listWithALl(PageRequestDTO pageRequestDTO) {
+//        String[] types = pageRequestDTO.getTypes();
+//        String keyword = pageRequestDTO.getKeyword();
+//        Pageable pageable = pageRequestDTO.getPageable("bno");
+//
+//        Page<DriveAllDTO> result = driveRepository.searchAll(types, keyword, pageable);
+//
+//        return PageResponseDTO.<DriveAllDTO>withAll()
+//                .pageRequestDTO(pageRequestDTO)
+//                .dtoList(result.getContent())
+//                .total((int)result.getTotalElements())
+//                .build();
+//    }
 
 }
