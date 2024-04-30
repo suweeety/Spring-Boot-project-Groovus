@@ -1,7 +1,10 @@
 package com.groovus.www.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class CommonController {
@@ -17,13 +20,17 @@ public class CommonController {
         return "/main/main";
     }
 
+    @PostMapping ("/")
+    public String LoginGroovus(){
+
+        return "/main/main";
+    }
+
     @GetMapping("/main/test")
     public String tesPage(){
 
         return "/main/test";
     }
-
-
 
     @GetMapping("/reply/myreply")
     public void goMyReply(){
@@ -84,6 +91,19 @@ public class CommonController {
     @GetMapping("/main/register")
     public void  goRegister(){
         //프로젝트 생성 페이지로 이동
+    }
+
+    @GetMapping("/member/login")
+    public void  goLogin(@RequestParam(value = "error" ,required = false) String error , Model model){
+        //로그인 페이지로 이동
+
+        if( error != null &&error.equals("wrongInfo")){
+
+            model.addAttribute("msg","loginerror");
+        }
+        if( error != null &&error.equals("existEmail")){
+            model.addAttribute("socialMsg","loginerror");
+        }
     }
 
 }
