@@ -42,10 +42,10 @@
       backdrop: "static"
     });
     var i = e("<form></form>");
-    i.append("<div class='row'></div>"), i.find(".row")
-      .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group'><label class='control-label'>일정 제목</label>" +
-        "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
-      .append("<div class='col-md-6' style='max-width: 11rem;'><div class='form-group'><label class='control-label'>카테고리</label>" +
+    i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
+      .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group' style='width: 16rem;'><label class='control-label'>일정 제목</label>" +
+        "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/></div></div>")
+      .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-87px, -1px);'><div class='form-group'><label class='control-label'>카테고리</label>" +
         "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
       .append("<option value='bg-team'>팀 회의</option>")
       .append("<option value='bg-dept'>부서 회의</option>")
@@ -55,13 +55,13 @@
       .append("<option value='bg-business-trip'>출장</option>")
       .append("<option value='bg-etc'>기타</option></div></div>")
       .end()
-      .append("<div class='col-md-6' style='width: 11rem; transform: translate(538px, -94px);'><div class='form-group'><label class='control-label'>참여자</label>" +
-        "<input class='form-control' id='cal_member_input' style='width: 13rem; border-radius: 10px;' /><span><button type='submit' style='width: 2rem; height: 36px; transform: translate(171px, -41px); border-radius: 10px; color: gray; background-color: ghostwhite; border: none;'></button></span>" +
-        "</div><div name='memberTags' style='display: block;width: 10rem;height: 3rem; transform: translate(39px, -78px); position: absolute;left: 35%;top: 4rem;padding: 10px;border: 1px solid gray;'>" +
+      .append("<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(460px, -96px); padding: 0;'><div class='form-group' style='margin: 0; height: 5rem;'><label class='control-label'>참여자</label>" +
+        "<input class='form-control' id='cal_member_input' style='width: 18rem; border-radius: 10px;' /><span><button type='submit' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background-color: ghostwhite; border: none;'></button></span>" +
+        "</div><div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
         "<span class='badge badge-pill badge-success'>[[${user.uid}]]<button type='button' name='removeTagBtn'>x</button></span>" +
         "<input type='hidden' name='cal_member' th:value='${user.uid}'></div></div>")
 
-      .append("<div class='col-md-6' style='max-width: 46rem; height: 10rem; transform: translate(2px, -10px;)'><div class='form-group' style='transform: translate(0px, -84px);'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+      .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px;)'><div class='form-group' style='transform: translate(0px, -84px);'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
         "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
       .append("<div class='col-md-6' transform: translate(-2px, -22px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
         "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
@@ -70,7 +70,7 @@
       .append("<div class='row'></div>")
       .append("<div class='attach-button' style='transform: translate(-337px, 96px); height: 0rem;'>파일 첨부</div><div class='file-upload-form' style='transform: translate(-396px, 127px); height: 2rem;'>" +
         "<input type='file' name='cal_attach' multiple class='file-input'/><button class='upload-button'>업로드</button><div class='uploadResult'></div></div></div>")
-      .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group'><label class='control-label'>링크</label>" +
+      .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(377px, -89px);'><div class='form-group'><label class='control-label'>링크</label>" +
         "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
       , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
