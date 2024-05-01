@@ -1,6 +1,5 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.CalendarCategoryDTO;
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.entity.Calendar;
 import com.groovus.www.repository.CalendarRepository;
@@ -8,7 +7,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,15 +24,18 @@ public class CalendarServiceImpl implements CalendarService{
     @Override
     public Long register(CalendarDTO calendarDTO) {
 
-        Calendar calendar = modelMapper.map(calendarDTO, Calendar.class);
+        log.info("DTO--------------------------------");
+        log.info(calendarDTO);
 
-        Long cal_id = calendarRepository.save(calendar).getCal_id();
+       Calendar calendar = dtoToEntity(calendarDTO);
 
-        log.info("calendarDTO.getCal_id() 값 확인: " + calendarDTO.getCal_id());
-        log.info("cal_id 값 확인: " + cal_id);
+       log.info(calendar);
 
-        return cal_id;
+       calendarRepository.save(calendar);
+
+       return calendar.getCal_id();
     }
+
 
     @Override
     public CalendarDTO readOne(Long cal_id) {
@@ -66,5 +67,8 @@ public class CalendarServiceImpl implements CalendarService{
         calendarRepository.deleteById(cal_id);
 
     }
+
+
+
 
 }

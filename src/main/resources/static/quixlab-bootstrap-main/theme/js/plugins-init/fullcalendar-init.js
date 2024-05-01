@@ -45,7 +45,7 @@
     i.append("<div class='row'></div>"), i.find(".row")
       .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group'><label class='control-label'>일정 제목</label>" +
         "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
-      .append("<div class='col-md-6'><div class='form-group'><label class='control-label'>카테고리</label>" +
+      .append("<div class='col-md-6' style='max-width: 11rem;'><div class='form-group'><label class='control-label'>카테고리</label>" +
         "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
       .append("<option value='bg-team'>팀 회의</option>")
       .append("<option value='bg-dept'>부서 회의</option>")
@@ -55,51 +55,71 @@
       .append("<option value='bg-business-trip'>출장</option>")
       .append("<option value='bg-etc'>기타</option></div></div>")
       .end()
-      .append("<div class='col-md-6' style='width: 9rem; tracnsform: translate(567px, -94px);'><div class='form-group'><label class='control-label'>참여자</label>" +
-        "<input class='form-control' id='cal_member_input' name='cal_member' style='width: 9rem; border-radius: 10px;' /></div></div><div id='selected_members'></div>")
+      .append("<div class='col-md-6' style='width: 11rem; transform: translate(538px, -94px);'><div class='form-group'><label class='control-label'>참여자</label>" +
+        "<input class='form-control' id='cal_member_input' style='width: 13rem; border-radius: 10px;' /><span><button type='submit' style='width: 2rem; height: 36px; transform: translate(171px, -41px); border-radius: 10px; color: gray; background-color: ghostwhite; border: none;'></button></span>" +
+        "</div><div name='memberTags' style='display: block;width: 10rem;height: 3rem; transform: translate(39px, -78px); position: absolute;left: 35%;top: 4rem;padding: 10px;border: 1px solid gray;'>" +
+        "<span class='badge badge-pill badge-success'>[[${user.uid}]]<button type='button' name='removeTagBtn'>x</button></span>" +
+        "<input type='hidden' name='cal_member' th:value='${user.uid}'></div></div>")
 
-      .append("<div class='col-md-6' style='max-width: 46rem; height: 10rem; transform: translate(-1px, -75px;)'><div class='form-group'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+      .append("<div class='col-md-6' style='max-width: 46rem; height: 10rem; transform: translate(2px, -10px;)'><div class='form-group' style='transform: translate(0px, -84px);'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
         "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-      .append("<div class='col-md-6' style='text-align: center; transform: translate(-10px, -26px);'><div class='form-group'><label class='control-label'>이벤트 시간 설정</label>" +
-        "<div class='btn-group' style='transform: translate(-106px, 41px);' data-toggle='buttons'>" +
-        "<label class='btn btn-primary active' style='border-radius: 20px;'>" +
-        "<input type='radio' name='cal_allDay' id='option1' autocomplete='off' checked> 하루 종일" +
-        "</label>" +
-        "<label class='btn btn-primary' style='border-radius: 20px;'>" +
-        "<input type='radio' name='cal_allDay' id='option2' autocomplete='off'> 시간 설정" +
-        "</label></div>")
-      .append("<div class='col-md-6 start-time' style='display:none'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_startDate' /></div></div>")
-      .append("<div class='col-md-6 end-time' style='display:none'><div class='form-group'><label class='control-label'>종료 날짜</label>" +
-        "<input class='form-control' type='datetime-local' name='cal_endDate' /></div></div></div>")
-
-      .append("<div class='col-md-6' style='transform: translate(-380px, 75px);'><div class='form-group'><label class='control-label'>첨부파일</label>" +
-        "<div class='dropdown' style='float: right;'><button class='btn btn-secondary dropdown-toggle' type='button' id='dropdownMenuButton' data-toggle='dropdown'" +
-        "aria-haspopup='true' aria-expanded='false'>v</button>" +
-        "<div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>첨부파일 표시</div></div></div>")
-    $(function() {
-      var availableMembers = [
-        "멤버1",
-        "멤버2",
-        "멤버3",
-        // 추가 멤버들
-      ];
-    })
-    // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
-    // 라디오 버튼의 변경 이벤트 핸들러 등록
-    , $("input[name='cal_allDay']").change(function() {
-      // 시간 설정 라디오 버튼 클릭 이벤트 핸들러
-      // 선택된 라디오 버튼의 값을 확인
-      if ($(this).is('checked')) {
-        $(".start-time, .end-time").show();
-      } else {
-        $(".start-time, .end-time").hide();
-      }
-    })
-
-  , o.$modal.find(".delete-event").hide().end()
+      .append("<div class='col-md-6' transform: translate(-2px, -22px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
+        "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
+      "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
+        "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' /></div></div>")
+      .append("<div class='row'></div>")
+      .append("<div class='attach-button' style='transform: translate(-337px, 96px); height: 0rem;'>파일 첨부</div><div class='file-upload-form' style='transform: translate(-396px, 127px); height: 2rem;'>" +
+        "<input type='file' name='cal_attach' multiple class='file-input'/><button class='upload-button'>업로드</button><div class='uploadResult'></div></div></div>")
+      .append("<div class='col-md-6' style='border-bottom: #0b0b0b'><div class='form-group'><label class='control-label'>링크</label>" +
+        "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
+      , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()
+
+    ,
+      $('.upload-button').click(function () {
+      var formData = new FormData();
+
+      var inputFile = $("input[type='file']");
+
+      var files = inputFile[0].files;
+
+      for (var i=0; i<files.length; i++) {
+        console.log(files[i]);
+        formData.append("cal_attach", files[i]);
+      }
+
+      $.ajax({
+        url: '/uploadAjax',
+        processData: false,
+        contentType: false,
+        data: formData,
+        type: 'POST',
+        dataType: 'json',
+        success: function (result) {
+          showUploadedImages(result);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus);
+        }
+      })
+    })
+      ,
+      function showUploadedImages(arr) {
+        console.log(arr);
+
+        const divArea = $(".uploadResult");
+
+        var str = "";
+
+        for (let i=0; i<arr.length; i++) {
+          str += "<div>";
+          str += "<img src='/display?fileName=" + arr[i].thumbnailURL + "'>";
+          str += "<button class='removeBtn' data-name='" + arr[i].imageURL + "'>Remove</button>"
+          str += "</div>";
+        }
+        divArea.append(str);
+      }
 
     // 이벤트 핸들러 등록
     o.$modal.find(".save-event").unbind("click").on("click", function () {
@@ -110,7 +130,9 @@
         cal_cate: i.find("select[name='cal_cate'] option:checked").val(),
         cal_content: i.find("input[name='cal_content']").val(),
         cal_startDate: i.find("input[name='cal_startDate']").val(),
-        cal_endDate: i.find("input[name='cal_endDate']").val()
+        cal_endDate: i.find("input[name='cal_endDate']").val(),
+        cal_attach: i.find("input[name='cal_attach']").val(),
+        cal_link: i.find("input[name='cal_link']").val()
       }
 
       $.ajax({
@@ -126,15 +148,15 @@
           console.error("일정 저장에 실패했습니다:", error);
         }
       })
-
+    i.submit();
     }), o.$modal.find("form").on("submit", function () {
       var e = i.find("input[name='cal_title']").val(),
-        a = (i.find("input[name='beginning']").val(),
-          i.find("input[name='ending']").val(),
-          i.find("select[name='cal_cate']").val(),
+        a = (i.find("select[name='cal_cate']").val(),
           i.find("input[name='cal_content']").val(),
           i.find("input[name='cal_startDate']").val(),
-        i.find("input[name='cal_endDate']").val());
+        i.find("input[name='cal_endDate']").val(),
+      i.find("input[name='cal_attach']").val(),
+      i.find("input[name='cal_link']").val());
       return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
         cal_title: e,
         start: t,
@@ -144,7 +166,9 @@
         cal_content: i,
         cal_cate: i,
         cal_startDate: i,
-        cal_endDate: i
+        cal_endDate: i,
+        cal_attach: i,
+        cal_link: i
       }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
     }), o.$calendarObj.fullCalendar("unselect")
   }, t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능

@@ -14,7 +14,6 @@ public class CommonController {
     //페이지 분기시에 사용합니다.!
     //메인화면에서 이동할때나....
 
-
     @PreAuthorize("permitAll()")
     @GetMapping("/")
     public String helloGroovus(){

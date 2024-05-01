@@ -33,9 +33,9 @@ public class Calendar extends BaseEntity{
     @Column(length = 5000, nullable = false)
     private String cal_content; // 일정 내용
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "cal_cate_id")
-    private CalendarCategory cal_cate;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "cal_cate_id")
+    private String cal_cate;
 
     @Column(nullable = true)
     private String cal_startDate;
@@ -46,6 +46,9 @@ public class Calendar extends BaseEntity{
     @ManyToMany
     @Column(nullable = true)
     private List<CalendarAttach> cal_attach;
+
+    @Column(nullable = true)
+    private String cal_link;
 
     @OneToMany(mappedBy = "calendar",
             cascade = {CascadeType.ALL},
@@ -68,7 +71,7 @@ public class Calendar extends BaseEntity{
         this.imageSet.clear();
     }
 
-    public void change(String cal_title, String cal_content, CalendarCategory cal_cate, String cal_startDate, String cal_endDate) {
+    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate) {
 
         this.cal_title = cal_title;
         this.cal_content = cal_content;
