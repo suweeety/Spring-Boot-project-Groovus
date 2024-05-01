@@ -46,9 +46,20 @@
                     </div>
                     <!-- 까지 검색-->
 
+                    <!-- 등록 버튼-->
+                    <div class="float-end">
+                        <button type="button" class="btn btn-primary registerBtn">등록</button>
+                    </div>
+
+                    <div class="float-end">
+                        <button type="button" class="btn btn-danger moveToTrashBtn">삭제</button> <!-- 휴지통으로 -->
+                    </div>
+
+
                     <table class="table">
                         <thead>
                         <tr>
+                            <th scope="col"></th>
                             <th scope="col">번호</th>
                             <th scope="col">제목</th>
                             <th scope="col">작성자</th>
@@ -58,7 +69,10 @@
 
                         <tbody th:with="link = ${pageRequestDTO.getLink()}">
 
-                        <tr th:each="dto:${responseDTO.dtoList}"  >
+                        <tr th:each="dto:${responseDTO.dtoList}">
+                            <td>
+                                <input type="checkbox" name="selectedItems" th:value="${dto.bno}" class="form-check-input">
+                            </td>
 
                             <th scope="row">[[${dto.bno}]]</th>
                             <td>
@@ -145,6 +159,15 @@
 
 
     </script>
+
+    <script layout:fragment="script" th:inline="javascript">
+        document.querySelector(".registerBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = "/drive/register";
+        });
+    </script>
+
 </th:block>
 
 </html>

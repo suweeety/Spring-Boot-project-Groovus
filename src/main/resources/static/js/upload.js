@@ -2,18 +2,30 @@ async function uploadToServer (formObj) {
 
     console.log("upload to server......")
     console.log(formObj)
-
-   $.ajax({
+    var response;
+  /*  const response = await axios({
         method: 'post',
         url: '/upload',
         data: formObj,
+        processData:false,
+        contentType:false,
         headers: {
             'Content-Type': 'multipart/form-data',
         },
-       success: function (result){
-           console.log(result);
-       }
-    });
+    });*/
+
+    $.ajax({
+        type: 'post',
+        url: '/upload',
+        data: formObj,
+        processData:false,
+        contentType:false,
+        success:function (result){
+            response = result;
+        }
+
+    })
+
 
     return response.data;
 }

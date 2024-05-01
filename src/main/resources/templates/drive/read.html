@@ -58,16 +58,41 @@
 
                             <a th:href="|@{/drive/drive}?${link}|" class="text-decoration-none">
 
-                                <button type="button" class="btn btn-primary">목록</button>
+                                <button type="button" class="btn btn-primary">List</button>
                             </a>
                             <a th:href="|@{/drive/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
 
-                                <button type="button" class="btn btn-secondary">수정</button>
+                                <button type="button" class="btn btn-secondary">Modify</button>
                             </a>
                         </div>
                     </div>
 
                 </div> <!-- card-body -->
+
+
+                <!-- 파일 다운로드 링크 추가 -->
+                <div class="col">
+                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                        <div class="card-header">
+                            Attachments
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" th:each="fileName: ${dto.fileNames}">
+                                <a th:href="@{'/download/' + ${fileName}}" download th:text="${fileName}">Download</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col">
+                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                        <img class="card-img-top"
+                             th:each="fileName: ${dto.fileNames}"
+                             th:src="|/view/${fileName}|">
+                    </div>
             </div> <!-- card -->
         </div> <!-- col-lg-6 col-md-12 -->
     </div> <!-- row -->

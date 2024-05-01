@@ -3,6 +3,7 @@ package com.groovus.www.controller;
 import com.groovus.www.dto.upload.UploadResultDTO;
 import lombok.extern.log4j.Log4j2;
 import net.coobird.thumbnailator.Thumbnailator;
+import org.hibernate.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.groovus.www.dto.upload.UploadFileDTO;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -29,9 +32,9 @@ public class UpDownController {
 
     @PreAuthorize("permitAll()")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-
     public List<UploadResultDTO> upload(UploadFileDTO uploadFileDTO){
-
+        
+        log.info("==============여기는 업로드 컨트롤러====================");
         log.info(uploadFileDTO);
 
        if(uploadFileDTO.getFiles() != null){
@@ -48,6 +51,9 @@ public class UpDownController {
 
                Path savePath = Paths.get(uploadPath, uuid+"_"+originalName);
 
+               log.info("==================================");
+               log.info(savePath);
+               log.info("==================================");
                boolean image = false;
 
                try {
@@ -122,5 +128,6 @@ public class UpDownController {
 
         return  resultMap;
     }
+
 
 }

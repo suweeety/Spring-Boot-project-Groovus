@@ -69,18 +69,23 @@ public class DriveController {
     } // read
 
     @PostMapping("/modify")
-    public String modify(PageRequestDTO pageRequestDTO, @Valid DriveDTO driveDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String modify( PageRequestDTO pageRequestDTO,
+                          @Valid DriveDTO driveDTO,
+                          BindingResult bindingResult,
+                          RedirectAttributes redirectAttributes){
 
-        if (bindingResult.hasErrors()) {
-            log.info("has errors......");
+        log.info("drive modify post......." + driveDTO);
+
+        if(bindingResult.hasErrors()) {
+            log.info("has errors.......");
 
             String link = pageRequestDTO.getLink();
 
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
 
             redirectAttributes.addAttribute("bno", driveDTO.getBno());
 
-            return "redirect:/drive/modify?" + link;
+            return "redirect:/drive/modify?"+link;
         }
 
         driveService.modify(driveDTO);
@@ -89,8 +94,9 @@ public class DriveController {
 
         redirectAttributes.addAttribute("bno", driveDTO.getBno());
 
-        return "redirect:/drive/read";
+        return "redirect:/drive/drive";
     }
+
 
     @PostMapping("/remove")
     public String remove(Long bno, RedirectAttributes redirectAttributes){
@@ -100,5 +106,6 @@ public class DriveController {
 
         return "redirect:/drive/drive";
     }
+
 
 }
