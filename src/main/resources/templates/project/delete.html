@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/mainbasic}"  >
+
+<head>
+  <meta charset="UTF-8">
+  <title>프로젝트 삭제 비밀번호 확인</title>
+</head>
+
+<th:block layout:fragment="content">
+
+  <div style="width: 100%;height: 60rem; position: relative;">
+    <div class="bg-curve" style="background-image: url('/img/core-img/curve.png'); background-repeat: no-repeat; height:40rem; width:60%; position: absolute; right: 0;z-index: -5;"></div>
+
+    <div class="login-form-bg h-100">
+      <div class="container h-100">
+        <div class="row justify-content-center h-100">
+          <div class="col-xl-6">
+            <div class="form-input-content" style="margin-top: 10rem">
+              <div class="card login-form mb-0">
+                <div class="card-body pt-5">
+                  <div class="text-center"> <h4>[[${projectName}]]</h4></div>
+
+                  <div class="alert alert-danger">
+                    해당 프로젝트 삭제시 <a href="#" class="alert-link">멤버 정보를 제외한 모든 데이터가 삭제됩니다.</a><br/>
+                    삭제 후 해당 프로젝트는 <a href="#" class="alert-link">복구가 불가능합니다.</a>
+                    관련 내용은 관리자에게 문의하시길 바랍니다.
+                  </div>
+
+                  <form class="mt-5 mb-5 login-input" action="/project/delete" method="post" th:with="user=${#authentication.principal}">
+
+                    <th:block th:if="${not #strings.isEmpty(msg)}">
+                      <p style="color: red;">[[${msg}]]</p>
+                    </th:block>
+                    <div class="form-group">
+                      <input type="password" class="form-control" placeholder="비밀번호" name="projectPw">
+                    </div>
+                    <input type="hidden" name="pid" th:value="${pid}">
+                    <input type="hidden" name="mid" th:value="${user.mid}">
+                    <input type="hidden" name="projectName" th:value="${projectName}">
+                    <button class="btn mb-1 btn-danger submit w-100">프로젝트 삭제</button>
+
+                  </form>
+
+                  <p class="mt-5 login-form__footer">프로젝트를 직접 생성해보세요! <a th:href="@{/main/register}" class="text-primary">프로젝트생성</a> now</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</th:block>
+
+</html>
