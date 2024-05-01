@@ -63,7 +63,4 @@ public class ProjectPageResponseDTO<E> {
         this.next = total > this.end;
 
     }
-
-
-
 }

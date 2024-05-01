@@ -25,7 +25,17 @@
   <!-- 폰트 어썸 -->
   <script src="https://kit.fontawesome.com/c96d31bca3.js"
           crossorigin="anonymous"></script>
-<th:block layout:fragment="css">
+
+  <!--jquery-->
+  <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+
+<!--에디터용-->
+  <link th:href="@{/quixlab-bootstrap-main/theme/plugins/summernote/dist/summernote.css}" rel="stylesheet">
+
+  <th:block layout:fragment="css">
 
 
 
@@ -34,7 +44,6 @@
     #logoImg{
       background-color: #005fdb;
     }
-
 
   </style>
 
@@ -827,8 +836,11 @@
 <script th:src="@{/quixlab-bootstrap-main/theme/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
 
 
-
 <script th:src="@{/quixlab-bootstrap-main/theme/js/dashboard/dashboard-1.js}"></script>
+
+<!--에디터-->
+<script th:src="@{/quixlab-bootstrap-main/theme/plugins/summernote/dist/summernote.min.js}"></script>
+<script th:src="@{/quixlab-bootstrap-main/theme/plugins/summernote/dist/summernote-init.js}"></script>
 
 </body>
 </html>

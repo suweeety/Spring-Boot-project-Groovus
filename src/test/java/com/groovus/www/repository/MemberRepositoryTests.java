@@ -23,9 +23,9 @@ public class MemberRepositoryTests {
     public void insertMember(){
 
         Member member = Member.builder()
-                .uid("jeongeun3")
+                .uid("user")
                 .upw(passwordEncoder.encode("1111"))
-                .email("jeongeun2@aaa.com")
+                .email("user@aaa.com")
                 .uname("김정은")
                 .build();
 

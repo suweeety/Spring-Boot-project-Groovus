@@ -1,9 +1,6 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.ProjectPageRequestDTO;
-import com.groovus.www.dto.ProjectPageResponseDTO;
-import com.groovus.www.dto.RegisterProjectDTO;
-import com.groovus.www.dto.RegisterProjectRequestDTO;
+import com.groovus.www.dto.*;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
 import com.groovus.www.repository.MemberRepository;
@@ -120,6 +117,28 @@ public class ProjectServiceImpl implements ProjectService{
                 .dtoList(resultList)
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    @Override
+    public List<MemberInfoDTO> getProjectMembers(String pid) {
+
+         Optional<Project> result =  projectRepository.findByIdWithMember(Long.parseLong(pid));
+
+         Project project = result.get();
+
+         List<MemberInfoDTO>memberList = project.getProjectMember().stream().map(member -> {
+
+             MemberInfoDTO dto = MemberInfoDTO.builder()
+                     .uid(member.getUid())
+                     .mid(member.getMid()+"")
+                     .del(member.isDel())
+                     .uname(member.getUname())
+                     .email(member.getEmail())
+                     .build();
+             return dto;
+
+         }).collect(Collectors.toList());
+        return memberList;
     }
 
 

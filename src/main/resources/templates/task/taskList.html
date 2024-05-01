@@ -15,6 +15,35 @@
                 background-color: #0435d7;
             }
 
+            .modal_{
+                position:absolute;
+                display:none;
+                justify-content: center;
+                top:0;
+                left:0;
+                z-index:99999;
+                width:100%;
+                height:100%;
+
+                background-color: rgba(0,0,0,0.4);
+            }
+
+            .modal_body{
+                position:absolute;
+                top:5%; /* 모달을 화면가운데 놓기위함.  */
+
+                width:50rem;  /* 모달의 가로크기  */
+                height:55rem; /* 모달의 세로크기  */
+                padding:40px;
+
+                background-color: rgb(255,255,255);
+                border-radius:10px;
+                box-shadow:0 2px 3px 0 rgba(34,36,38,0.15);
+
+                transform:translateX(25%);
+            }
+
+
         </style>
 
     </th:block>
@@ -36,9 +65,12 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="email-left-box"><a href="#" class="btn btn-primary btn-block" style="background-color: #0435d7;">업무등록</a>
+                        <div class="email-left-box">
+
+                            <button type="button" class="btn btn-primary btn-block" style="background-color: #0435d7;" name="registerTaskBtn">업무등록</button>
+
                             <div class="mail-list mt-4">
-                                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5">198</span> </a>
+                                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholeTask">0</span> </a>
                                 <a href="#" class="list-group-item border-0 p-r-0"><span class="fa fa-tags f-s-14 mr-2"></span>참조업무</a>
                                 <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-star-o font-18 align-middle mr-2"></i>중요업무 <span class="badge badge-danger badge-sm float-right m-t-5">47</span> </a>
                                 <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2"></i>삭제업무</a>
@@ -53,291 +85,70 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="email-list m-t-15">
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk2">
-                                                <label class="toggle" for="chk2"></label>
-                                            </div><span class="star-toggle ti-star"></span>
+
+                            <!--업무리스트 시작-->
+                                    <div class="card-body" name="mainContent">
+                                        <div name="mainList">
+                                        <div class="card-title">
+                                            <h4>[[${projectName}]]의 업무 목록</h4>
                                         </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
+                                        <div class="table-responsive" >
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>업무제목</th>
+                                                    <th>상태</th>
+                                                    <th>등록일</th>
+                                                    <th>담당자</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                <th:block th:each="task ,i : ${responseDTO.dtoList}">
+                                                        <tr>
+                                                            <th>[[${i.index + responseDTO.start }]]</th>
+                                                            <td name="readTask" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
+                                                            <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
+                                                            <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
+                                                            <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
+                                                            <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
+                                                            <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
+                                                            <td class="color-primary">[[${task.responsibleMember}]]</td>
+                                                        </tr>
+
+                                                </th:block>
+                                                </tbody>
+                                            </table>
+                                            <!--페이징-->
+                                            <div class="bootstrap-pagination">
+                                                <nav>
+                                                    <ul class="pagination justify-content-end">
+                                                        <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                        </li>
+
+                                                        <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
+                                                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                                            </li>
+                                                        </th:block>
+
+                                                        <li class="page-item" th:if="${responseDTO.next}">
+                                                            <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                            <!--페이징 끝-->
                                         </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk3">
-                                                <label class="toggle" for="chk3"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk4">
-                                                <label class="toggle" for="chk4"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk5">
-                                                <label class="toggle" for="chk5"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk6">
-                                                <label class="toggle" for="chk6"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk7">
-                                                <label class="toggle" for="chk7"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk8">
-                                                <label class="toggle" for="chk8"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk9">
-                                                <label class="toggle" for="chk9"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk10">
-                                                <label class="toggle" for="chk10"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk11">
-                                                <label class="toggle" for="chk11"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk12">
-                                                <label class="toggle" for="chk12"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk13">
-                                                <label class="toggle" for="chk13"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk14">
-                                                <label class="toggle" for="chk14"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk15">
-                                                <label class="toggle" for="chk15"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk16">
-                                                <label class="toggle" for="chk16"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk17">
-                                                <label class="toggle" for="chk17"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk18">
-                                                <label class="toggle" for="chk18"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk19">
-                                                <label class="toggle" for="chk19"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk20">
-                                                <label class="toggle" for="chk20"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk21">
-                                                <label class="toggle" for="chk21"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+                                    </div>
+                                    </div>
+                            <!--업무리스트 끝-->
+
                             <!-- panel -->
+                            <!--여기에 페이징 예정-->
                             <div class="row">
-                                <div class="col-7">
+                               <!-- <div class="col-7">
                                     <div class="text-left">1 - 20 of 568</div>
                                 </div>
                                 <div class="col-5">
@@ -346,7 +157,7 @@
                                         </button>
                                         <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
                                         </button>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -356,9 +167,288 @@
         </div>
     </div>
 
+    <!--모달창-->
+    <div class="modal_">
+        <div class="modal_body">
+            <span  name="modal_close_btn" style="width: 3rem; height: 3rem; font-size: 30px; float:right ; margin-bottom: 1rem; cursor: pointer;"> X </span>
+            <br/>
+
+            <form name="taskForm" method="post" action="/task/register">
+            <span><b>업무 제목</b></span>
+            <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+            <br/>
+            <br/>
+            <span><b>작성자</b></span>
+            <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/>
+            <br/>
+            <span><b>담당자</b></span>
+            <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
+                <option value="">------</option>
+                <!--여기에 멤버들 보임-->
+
+            </select>
+    <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
+
+                <div class="card-body">
+                    <span><b>첨부</b></span>
+                    <div class="basic-form">
+                            <div class="form-group">
+                                <input type="file" class="form-control-file">
+                            </div>
+                    </div>
+                </div>
+
+                <!--에디터-->
+                <!--'note-editable panel-body' 안에 들어감-->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="summernote" style="display: none;" method="post">
+                            <h3>업무내용입력</h3>
+                        </div>
+                    </div>
+                 </div>
+                <!--에디터 끝-->
+
+                <input type="hidden" name="taskContent" value="">
+                <input type="hidden" name="pid" th:value="${pid}">
+                <input type="hidden" name="projectName" th:value="${projectName}">
+            </form>
+            <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
+         </div>
+    </div>
+    <!--모달 끝-->
+
+    <div name="taskDetailsArea">
+
+        <!--업무 상세보기-->
+        <div name="taskDetails" style="display: none">
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-light" name="readTaskBack">뒤로</button></span>
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-success" name="readTaskModify">수정</button></span>
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-danger" name="readTaskDelete">삭제</button></span>
+
+            <!--숨김항목-->
+            <input type="hidden" name="readTaskTid">
+
+            <br/> <br/>
+            <span><b>업무 제목</b></span>
+            <input type="text" class="form-control input-default" name="readTaskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;" readonly>
+            <br/> <br/>
+            <span><b>상태</b></span>
+            <select name="readTaskStatus" style="width: 10rem; margin-left: 3rem; height: 2rem;">
+                <option value="TODO" name="status0" style="color: #6fd96f">할일</option>
+                <option value="INPROGRESS"  name="status1" style="color: #4d7cff">진행중</option>
+                <option value="BLOCK"  name="status2" style="color:#ff5e5e;">보류</option>
+                <option value="DONE"  name="status3" style="color:#aaa;">완료</option>
+            </select>
+
+            <span><button type="button" class="btn mb-1 btn-info" name="statusChangeBtn" style="display: none">변경</button></span>
+
+            <br/> <br/>
+            <span><b>작성자</b></span>
+            <input type="text" class="form-control input-default" name="readTaskWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/> <br/>
+            <span><b>담당자</b></span>
+            <input type="text" class="form-control input-default" name="readResponsibleMember"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/> <br/>
+            <span><b>작성일</b></span>
+            <input type="text" class="form-control input-default" name="readTaskRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+            <br/> <br/> <br/>  <br/>
+            <div name="readTaskContent" class="form-control input-default" style="height:auto;">
+
+            </div>
+
+
+
+        </div>
+
+        <!--업무 상세보기창 끝-->
+
+
+    </div>
+
+
+    <!--스크립트-->
+    <script th:inline="javascript">
+
+        var pid = [[${pid}]];
+
+        $(document).ready(function (){
+
+            var mainList = $("div[name='mainList']");
+
+            $(document).keydown(function(event){
+                if(event.keyCode == 116) { // F5 키 눌렸을 때
+                    event.preventDefault(); // 기본 동작 방지
+                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
+                    location.href = newUrl;
+                }
+            });
+
+            /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
+            $.ajax({
+                url:'/project/memberList',
+                data:{'pid':pid},
+                method:'post',
+                success:function (result){
+                    insertMemberList(result);
+                }
+            });
+
+            /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
+            $.ajax({
+                url:'/task/countall',
+                type:'post',
+                data:{'pid':pid},
+                success:function (result){
+                    $("span[name='wholeTask']").text(result);
+                }
+            })
+
+            //프로젝트 등록하기 버튼을 눌렀을 때
+            $("button[name='registerTaskBtn']").on("click",function (e){
+               e.preventDefault();
+                $(".modal_").show();
+            });
+
+            //모달 닫기 버튼을 눌렀을 때
+            $(document).on("click","span[name='modal_close_btn']",function(){
+                $(".modal_").hide();
+            });
+
+            //멤버 리스트 출력하는 모달
+            function insertMemberList(result){
+
+                var selectList = $("select[name='responsibleMember']");
+                var str ='';
+                for(var member of result){
+
+                    str+='<option value="'+member.mid+'">'+member.uid+'</option>';
+
+                }
+                selectList.append(str);
+            }
+
+            //업무읽기에서 뒤로가기 버튼이 눌렸을 때
+            $(document).on("click","button[name='readTaskBack']",function (e){
+                e.preventDefault();
+
+                $("button[name='statusChangeBtn']").hide();
+                $("div[name='taskDetailsArea']").html( $("div[name='taskDetails']")); //업무 상세보기창 이동
+
+                $("div[name='taskDetails']").hide(); //숨김
+
+                $("div[name='mainContent']").html(mainList); //메인콘텐츠공간에 메인리스트 이동
+            })
+
+
+            //업무 제목을 눌렀을때 (업무내용 보일예정)
+            $(document).on("click","td[name='readTask']",function (e){
+
+                e.preventDefault();
+                var tid = $(this).data("tid");
+
+                $.ajax({
+                    url:'/task/view',
+                    type:'post',
+                    data:{'tid':tid},
+                    success:function (result){
+                        console.log(result);
+                        readTask(result);
+                    }
+                });
+
+            });
+
+            //업무 읽기
+            function readTask(result){
+
+                var taskDetails = $("div[name='taskDetails']"); //업무 상세보기 창
+
+                var selectStatus = $("select[name='readTaskStatus']");
+
+                $("input[name='readTaskTid']").val(result.tid);
+                $("input[name='readTaskTitle']").val(result.taskTitle);
+                $("input[name='readTaskWriter']").val(result.taskWriter);
+                $("input[name='readResponsibleMember']").val(result.responsibleMember);
+                $("input[name='readTaskRegDate']").val(result.regDate);
+                selectStatus.val( result.status);
+                $("div[name='readTaskContent']").html(result.taskContent);
+                taskDetails.show();
+
+                $("div[name='mainContent']").html(taskDetails); //메인 콘텐츠쪽에 넣음
+            }
+
+        });
+
+        //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
+       $("select[name='readTaskStatus']").change(function (){
+
+           //변경 버튼 노출
+           $("button[name='statusChangeBtn']").show();
+       })
+
+        //업무의 상세보기 -> 변경 버튼이 눌렸을 때
+        $("button[name='statusChangeBtn']").on("click",function (e){
+            e.preventDefault();
+
+            var tid = $("input[name='readTaskTid']").val();
+            alert(tid);
+
+        })
+
+
+
+        $(document).on("click","button[name='registerBtn']",function (e){
+            //업무 등록 버튼 눌렀을때
+            e.preventDefault();
+
+            var taskForm = $("form[name='taskForm']");
+            var htmlStr = $("div.note-editable").html();
+
+            $("input[name='taskContent']").val(htmlStr);
+
+            taskForm.submit();
+
+        })
+
+        //페이징 버튼을 눌렀을 때
+        $("a.page-link").on("click", function (event) {
+
+            event.preventDefault(); // 링크의 기본 동작을 중단합니다.
+
+            var pageNum = $(this).data("num");
+            var mid = [[${mid}]];
+            var type = [[${pageRequestDTO.type}]];
+            var keyword = [[${pageRequestDTO.keyword}]];
+
+            if(type != null && keyword!=null){
+                var url = '/task/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
+            }else{
+                var url = '/task/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum;
+            }
+            window.location.href = url; // 새로운 URL로 이동합니다.
+        });
+
+    </script>
+
 </th:block>
 
-
-
-
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
