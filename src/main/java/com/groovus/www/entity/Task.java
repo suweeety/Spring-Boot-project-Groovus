@@ -24,7 +24,7 @@ public class Task extends BaseEntity{
 
     private Long responsibleMember; //mid => 담장자
 
-    @Column(length = 3000)
+    @Column(length = 300000)
     private String taskContent; //업무 내용
 
     @Builder.Default

@@ -30,10 +30,10 @@
 
             .modal_body{
                 position:absolute;
-                top:10%; /* 모달을 화면가운데 놓기위함.  */
+                top:5%; /* 모달을 화면가운데 놓기위함.  */
 
                 width:50rem;  /* 모달의 가로크기  */
-                height:50rem; /* 모달의 세로크기  */
+                height:55rem; /* 모달의 세로크기  */
                 padding:40px;
 
                 background-color: rgb(255,255,255);
@@ -87,11 +87,12 @@
                             </div>
 
                             <!--업무리스트 시작-->
-                                    <div class="card-body">
+                                    <div class="card-body" name="mainContent">
+                                        <div name="mainList">
                                         <div class="card-title">
                                             <h4>[[${projectName}]]의 업무 목록</h4>
                                         </div>
-                                        <div class="table-responsive">
+                                        <div class="table-responsive" >
                                             <table class="table">
                                                 <thead>
                                                 <tr>
@@ -119,9 +120,29 @@
                                                 </th:block>
                                                 </tbody>
                                             </table>
+                                            <!--페이징-->
+                                            <div class="bootstrap-pagination">
+                                                <nav>
+                                                    <ul class="pagination justify-content-end">
+                                                        <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                        </li>
+
+                                                        <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
+                                                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                                            </li>
+                                                        </th:block>
+
+                                                        <li class="page-item" th:if="${responseDTO.next}">
+                                                            <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                            <!--페이징 끝-->
                                         </div>
                                     </div>
-
+                                    </div>
                             <!--업무리스트 끝-->
 
                             <!-- panel -->
@@ -169,6 +190,15 @@
             </select>
     <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
 
+                <div class="card-body">
+                    <span><b>첨부</b></span>
+                    <div class="basic-form">
+                            <div class="form-group">
+                                <input type="file" class="form-control-file">
+                            </div>
+                    </div>
+                </div>
+
                 <!--에디터-->
                 <!--'note-editable panel-body' 안에 들어감-->
                 <div class="card">
@@ -178,6 +208,7 @@
                         </div>
                     </div>
                  </div>
+                <!--에디터 끝-->
 
                 <input type="hidden" name="taskContent" value="">
                 <input type="hidden" name="pid" th:value="${pid}">
@@ -188,12 +219,71 @@
     </div>
     <!--모달 끝-->
 
+    <div name="taskDetailsArea">
+
+        <!--업무 상세보기-->
+        <div name="taskDetails" style="display: none">
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-light" name="readTaskBack">뒤로</button></span>
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-success" name="readTaskModify">수정</button></span>
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-danger" name="readTaskDelete">삭제</button></span>
+
+            <!--숨김항목-->
+            <input type="hidden" name="readTaskTid">
+
+            <br/> <br/>
+            <span><b>업무 제목</b></span>
+            <input type="text" class="form-control input-default" name="readTaskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;" readonly>
+            <br/> <br/>
+            <span><b>상태</b></span>
+            <select name="readTaskStatus" style="width: 10rem; margin-left: 3rem; height: 2rem;">
+                <option value="TODO" name="status0" style="color: #6fd96f">할일</option>
+                <option value="INPROGRESS"  name="status1" style="color: #4d7cff">진행중</option>
+                <option value="BLOCK"  name="status2" style="color:#ff5e5e;">보류</option>
+                <option value="DONE"  name="status3" style="color:#aaa;">완료</option>
+            </select>
+
+            <span><button type="button" class="btn mb-1 btn-info" name="statusChangeBtn" style="display: none">변경</button></span>
+
+            <br/> <br/>
+            <span><b>작성자</b></span>
+            <input type="text" class="form-control input-default" name="readTaskWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/> <br/>
+            <span><b>담당자</b></span>
+            <input type="text" class="form-control input-default" name="readResponsibleMember"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/> <br/>
+            <span><b>작성일</b></span>
+            <input type="text" class="form-control input-default" name="readTaskRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+            <br/> <br/> <br/>  <br/>
+            <div name="readTaskContent" class="form-control input-default" style="height:auto;">
+
+            </div>
+
+
+
+        </div>
+
+        <!--업무 상세보기창 끝-->
+
+
+    </div>
+
+
     <!--스크립트-->
     <script th:inline="javascript">
 
         var pid = [[${pid}]];
 
         $(document).ready(function (){
+
+            var mainList = $("div[name='mainList']");
+
+            $(document).keydown(function(event){
+                if(event.keyCode == 116) { // F5 키 눌렸을 때
+                    event.preventDefault(); // 기본 동작 방지
+                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
+                    location.href = newUrl;
+                }
+            });
 
             /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
             $.ajax({
@@ -215,16 +305,18 @@
                 }
             })
 
-
+            //프로젝트 등록하기 버튼을 눌렀을 때
             $("button[name='registerTaskBtn']").on("click",function (e){
                e.preventDefault();
                 $(".modal_").show();
             });
 
+            //모달 닫기 버튼을 눌렀을 때
             $(document).on("click","span[name='modal_close_btn']",function(){
                 $(".modal_").hide();
             });
 
+            //멤버 리스트 출력하는 모달
             function insertMemberList(result){
 
                 var selectList = $("select[name='responsibleMember']");
@@ -237,19 +329,78 @@
                 selectList.append(str);
             }
 
+            //업무읽기에서 뒤로가기 버튼이 눌렸을 때
+            $(document).on("click","button[name='readTaskBack']",function (e){
+                e.preventDefault();
 
-            $(document).keydown(function(event){
-                if(event.keyCode == 116) { // F5 키 눌렸을 때
-                    event.preventDefault(); // 기본 동작 방지
-                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
-                    location.href = newUrl;
-                }
+                $("button[name='statusChangeBtn']").hide();
+                $("div[name='taskDetailsArea']").html( $("div[name='taskDetails']")); //업무 상세보기창 이동
+
+                $("div[name='taskDetails']").hide(); //숨김
+
+                $("div[name='mainContent']").html(mainList); //메인콘텐츠공간에 메인리스트 이동
+            })
+
+
+            //업무 제목을 눌렀을때 (업무내용 보일예정)
+            $(document).on("click","td[name='readTask']",function (e){
+
+                e.preventDefault();
+                var tid = $(this).data("tid");
+
+                $.ajax({
+                    url:'/task/view',
+                    type:'post',
+                    data:{'tid':tid},
+                    success:function (result){
+                        console.log(result);
+                        readTask(result);
+                    }
+                });
+
             });
+
+            //업무 읽기
+            function readTask(result){
+
+                var taskDetails = $("div[name='taskDetails']"); //업무 상세보기 창
+
+                var selectStatus = $("select[name='readTaskStatus']");
+
+                $("input[name='readTaskTid']").val(result.tid);
+                $("input[name='readTaskTitle']").val(result.taskTitle);
+                $("input[name='readTaskWriter']").val(result.taskWriter);
+                $("input[name='readResponsibleMember']").val(result.responsibleMember);
+                $("input[name='readTaskRegDate']").val(result.regDate);
+                selectStatus.val( result.status);
+                $("div[name='readTaskContent']").html(result.taskContent);
+                taskDetails.show();
+
+                $("div[name='mainContent']").html(taskDetails); //메인 콘텐츠쪽에 넣음
+            }
+
         });
+
+        //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
+       $("select[name='readTaskStatus']").change(function (){
+
+           //변경 버튼 노출
+           $("button[name='statusChangeBtn']").show();
+       })
+
+        //업무의 상세보기 -> 변경 버튼이 눌렸을 때
+        $("button[name='statusChangeBtn']").on("click",function (e){
+            e.preventDefault();
+
+            var tid = $("input[name='readTaskTid']").val();
+            alert(tid);
+
+        })
+
+
 
         $(document).on("click","button[name='registerBtn']",function (e){
             //업무 등록 버튼 눌렀을때
-
             e.preventDefault();
 
             var taskForm = $("form[name='taskForm']");
@@ -261,27 +412,43 @@
 
         })
 
-        $(document).on("click","td[name='readTask']",function (e){
-            e.preventDefault();
-            var tid = $(this).data("tid");
+        //페이징 버튼을 눌렀을 때
+        $("a.page-link").on("click", function (event) {
 
-            $.ajax({
-                url:'/task/view',
-                type:'post',
-                data:{'tid':tid},
-                success:function (result){
-                   console.log(result);
-                }
-            });
+            event.preventDefault(); // 링크의 기본 동작을 중단합니다.
 
+            var pageNum = $(this).data("num");
+            var mid = [[${mid}]];
+            var type = [[${pageRequestDTO.type}]];
+            var keyword = [[${pageRequestDTO.keyword}]];
+
+            if(type != null && keyword!=null){
+                var url = '/task/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
+            }else{
+                var url = '/task/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum;
+            }
+            window.location.href = url; // 새로운 URL로 이동합니다.
         });
 
-
-
     </script>
-
-
 
 </th:block>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
