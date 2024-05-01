@@ -13,12 +13,10 @@ import lombok.*;
 public class NoticeRequestDTO {
     private String title;
     private String content;
-    private String imageUrl;
     public Notice toEntity() {
         return Notice.builder()
                 .title(title)
                 .content(content)
-                .imageUrl(imageUrl)
                 .build();
     }
 

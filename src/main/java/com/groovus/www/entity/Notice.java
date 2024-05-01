@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minidev.json.annotate.JsonIgnore;
+import org.springframework.security.core.userdetails.User;
 
 @ToString
 @Entity
@@ -24,6 +25,7 @@ public class Notice extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Lob
     @Column(nullable = false)
     private String content;
 
@@ -34,7 +36,7 @@ public class Notice extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "mid", nullable = false)
+    @JoinColumn(name = "mid", nullable = false)
     private Member member;
 
     private String imageUrl = null; //이미지 URL을 저장
@@ -42,7 +44,6 @@ public class Notice extends BaseEntity {
     public void updateNotice(NoticeRequestDTO dto) { //공지사항 업데이트
         this.title = dto.getTitle();
         this.content = dto.getContent();
-        this.imageUrl = dto.getImageUrl();
     }
 
 }

@@ -22,7 +22,14 @@ public class NoticeResponseDTO {
 
     public static NoticeResponseDTO of(Notice notice) {
         return NoticeResponseDTO.builder()
-
+                .nid(notice.getNid())
+                .uname(notice.getMember().getUname())
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .pid(notice.getProject().getPid())
+                .uid(notice.getMember().getUid())
+                .regDate(notice.getRegDate())
+                .modDate(notice.getModDate())
                 .build();
     }
 
