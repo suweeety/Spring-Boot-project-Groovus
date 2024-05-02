@@ -1,7 +1,7 @@
 async function uploadToServer (formObj) {
 
-    console.log("upload to server......")
-    console.log(formObj)
+    console.log("upload to server......");
+    console.log(formObj);
     var response;
   /*  const response = await axios({
         method: 'post',
@@ -21,13 +21,17 @@ async function uploadToServer (formObj) {
         processData:false,
         contentType:false,
         success:function (result){
-            response = result;
+            console.log("result값");
+            console.log(result);
+
+            response = result; //uploadDTO List
         }
 
     })
+    console.log("respose에영");
+    console.log(response[0]);
 
-
-    return response.data;
+    return response;
 }
 
 async function removeFileToServer(uuid, fileName){

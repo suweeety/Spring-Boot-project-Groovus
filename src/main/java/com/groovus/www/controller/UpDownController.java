@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,14 +33,14 @@ public class UpDownController {
 
     @PreAuthorize("permitAll()")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public List<UploadResultDTO> upload(UploadFileDTO uploadFileDTO){
+    public  ResponseEntity<List<UploadResultDTO>> upload(UploadFileDTO uploadFileDTO){
         
         log.info("==============여기는 업로드 컨트롤러====================");
         log.info(uploadFileDTO);
 
        if(uploadFileDTO.getFiles() != null){
 
-           final List<UploadResultDTO> list = new ArrayList<>();
+            List<UploadResultDTO> list = new ArrayList<>();
 
            uploadFileDTO.getFiles().forEach(multipartFile -> {
 
@@ -79,7 +80,10 @@ public class UpDownController {
                        .build());
            });
 
-           return list;
+           log.info("==============업로드리스트================");
+           log.info(list);
+           log.info("=====================================");
+           return new ResponseEntity<>(list , HttpStatus.OK);
        }
        return null;
     }
