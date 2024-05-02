@@ -4,11 +4,10 @@ import groovy.util.logging.Slf4j;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -24,8 +23,9 @@ public class ResponseExeptionHandler extends ResponseEntityExceptionHandler {
 
     @Getter
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
-    class ErrorResponseDTO {
+    public static class ErrorResponseDTO {
         private String errorCode;
         private String message;
         private HttpStatus httpStatus;
