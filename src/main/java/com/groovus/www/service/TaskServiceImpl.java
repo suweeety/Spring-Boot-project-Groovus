@@ -1,14 +1,8 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.ProjectPageRequestDTO;
-import com.groovus.www.dto.ProjectPageResponseDTO;
-import com.groovus.www.dto.StatusHistoryDTO;
-import com.groovus.www.dto.TaskDTO;
+import com.groovus.www.dto.*;
 import com.groovus.www.entity.*;
-import com.groovus.www.repository.MemberRepository;
-import com.groovus.www.repository.ProjectRepository;
-import com.groovus.www.repository.StatusHistoryRepository;
-import com.groovus.www.repository.TaskRepository;
+import com.groovus.www.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.RGBImageFilter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +25,8 @@ public class TaskServiceImpl implements TaskService {
     private  final MemberRepository memberRepository;
 
     private final StatusHistoryRepository statusHistoryRepository;
+
+    private final TaskReplyRepository taskReplyRepository;
 
     @Override
     public Long getTaskCount(Long pid) {
@@ -171,5 +168,62 @@ public class TaskServiceImpl implements TaskService {
             return null;
         }
 
+    }
+
+    @Override
+    public int registerReply(TaskReplyDTO taskReplyDTO) {
+        //댓글 등록하기
+
+        Optional<Task> result = taskRepository.getTaskByTid(Long.parseLong(taskReplyDTO.getTid()));
+
+        if(!result.isEmpty()){
+            Task task = result.get();
+
+            TaskReply taskReply = TaskReply.builder()
+                    .task(task)
+                    .uid(taskReplyDTO.getUid())
+                    .replyContent(taskReplyDTO.getReplyContent())
+                    .build();
+
+            taskReplyRepository.save(taskReply);
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @Override
+    public List<TaskReplyDTO> getTaskRepltList(String tid) {
+       //댓글 리스트 받아오기
+
+        Optional<Task> result = taskRepository.getTaskByTid(Long.parseLong(tid));
+
+        if(!result.isEmpty()) {
+            Task task = result.get();
+
+            List<TaskReply> taskReplyList = taskReplyRepository.getTaskReplyByTid(task);
+
+            if(taskReplyList==null){
+                return  null;
+            }else {
+
+                List<TaskReplyDTO> taskDTOList= taskReplyList.stream().map(taskReply -> {
+
+                    TaskReplyDTO dto = TaskReplyDTO.builder()
+                            .uid(taskReply.getUid())
+                            .replyContent(taskReply.getReplyContent())
+                            .regDate(taskReply.getRegDate())
+                            .modDate(taskReply.getModDate())
+                            .build();
+                    return dto;
+
+                }).collect(Collectors.toList());
+
+                return taskDTOList;
+            }
+
+        }else {
+            return null;
+        }
     }
 }

@@ -1,9 +1,6 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.ProjectPageRequestDTO;
-import com.groovus.www.dto.ProjectPageResponseDTO;
-import com.groovus.www.dto.StatusHistoryDTO;
-import com.groovus.www.dto.TaskDTO;
+import com.groovus.www.dto.*;
 import com.groovus.www.entity.Task;
 
 import java.util.List;
@@ -28,5 +25,11 @@ public interface TaskService {
     //tid로 변경 이력을 가져오는 메서드
     public List<StatusHistoryDTO> getHistory(String tid);
 
+
+    //댓글을 저장하는 메서드
+    public int registerReply(TaskReplyDTO replyDTO);
+
+    //tid로 댓글 리스트를 가져오는 메서드
+    public List<TaskReplyDTO> getTaskRepltList(String tid);
 
 }

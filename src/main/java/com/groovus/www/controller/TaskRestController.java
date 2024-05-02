@@ -2,14 +2,17 @@ package com.groovus.www.controller;
 
 import com.groovus.www.dto.StatusHistoryDTO;
 import com.groovus.www.dto.TaskDTO;
+import com.groovus.www.dto.TaskReplyDTO;
 import com.groovus.www.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
@@ -77,14 +80,52 @@ public class TaskRestController {
         }
     }
 
-
     @PostMapping("/task/history")
     public ResponseEntity<List<StatusHistoryDTO>> getHistory(String tid){
+
+        //업무 상태변경 이력 리스트 반환 컨트롤러
 
         List<StatusHistoryDTO> list = taskService.getHistory(tid);
 
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
+
+    @PostMapping("/task/register/reply")
+    public ResponseEntity<List<TaskReplyDTO>> registerReply(@RequestParam("readTaskTid") String tid, String uid, String replyContent){
+
+        TaskReplyDTO taskReplyDTO = TaskReplyDTO.builder()
+                .replyContent(replyContent)
+                .tid(tid)
+                .uid(uid)
+                .build();
+
+        int result = taskService.registerReply(taskReplyDTO);
+
+        if(result>0){
+
+            List<TaskReplyDTO> taskReplyDTOList = taskService.getTaskRepltList(tid);
+
+           return new ResponseEntity<>(taskReplyDTOList,HttpStatus.OK);
+
+        }else{
+            return new ResponseEntity<>(null,HttpStatus.OK);
+        }
+
+    }
+
+    @PostMapping("/task/replyList")
+    public ResponseEntity<List<TaskReplyDTO>> getReplyList(String tid){
+
+        List<TaskReplyDTO> taskReplyDTOList = taskService.getTaskRepltList(tid);
+
+        if(taskReplyDTOList!=null){
+            return new ResponseEntity<>(taskReplyDTOList,HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null,HttpStatus.OK);
+        }
+
+    }
+
 
 
 }

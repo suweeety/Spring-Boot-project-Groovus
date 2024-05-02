@@ -253,10 +253,11 @@
             <span><b>작성일</b></span>
             <input type="text" class="form-control input-default" name="readTaskRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
             <br/> <br/> <br/>  <br/>
-            <div name="readTaskContent" class="form-control input-default" style="height:auto;">
+            <!--업무 내용-->
+            <div name="readTaskContent" class="form-control input-default" style="height:auto; margin-bottom: 1rem;">
 
             </div>
-
+            <!--업무 내용 끝-->
             <button type="button" class="btn mb-1 btn-outline-primary btn-xs" name="showHistoryBtn">상태 변경 이력 보기</button>
             <button type="button" class="btn mb-1 btn-outline-primary btn-xs" name="closeHistoryBtn" style="display: none;">상태 변경 이력 닫기</button>
             <!--상태변경 히스토리-->
@@ -275,20 +276,59 @@
                                 <th>변경자</th>
                             </tr>
                             </thead>
-                            <tbody th:name="historyBody">
 
+                            <tbody th:name="historyBody">
+                                <!--상태 변경이력-->
 
 
                             </tbody>
+
                         </table>
                     </div>
                 </div>
             </div>
             <!--상태변경 히스토리 끝-->
+            <!--댓글 리스트-->
+            <div name="replyList">
+
+
+
+            </div>
+            <!--댓글 리스트 끝-->
+            <!--댓글 쓰는 부분 시작-->
+            <div class="card">
+                <div class="card-body">
+                    <form action="#" class="form-profile" name="replyForm">
+                        <div class="form-group">
+                            <textarea class="form-control" name="replyText" id="textarea" cols="30" rows="2" placeholder="댓글을 입력하세요"></textarea>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <ul class="mb-0 form-profile__icons">
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-user"></i></button>
+                                </li>
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-paper-plane"></i></button>
+                                </li>
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-camera"></i></button>
+                                </li>
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-smile"></i></button>
+                                </li>
+                            </ul>
+
+                            <input type="hidden" name="readTaskTid">
+                            <input type="hidden" name="uid" th:value="${#authentication.principal.uid}">
+                            <button class="btn btn-primary px-3 ml-4" name="regusterReplyBtn">등록</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <!--댓글 끝-->
+
         </div>
         <!--업무 상세보기창 끝-->
-
-
     </div>
 
 
@@ -382,6 +422,7 @@
                     success:function (result){
                         console.log(result);
                         readTask(result);
+                        readReply(tid)
                     }
                 });
             });
@@ -409,6 +450,68 @@
             }
 
         });
+
+        //댓글 읽어오기
+        function readReply(tid){
+
+            $.ajax({
+                url:'/task/replyList',
+                type:'post',
+                data:{'tid':tid},
+                success:function (result){
+
+                        var str ='';
+                        if(result != null){
+                          for(var i=0;i<result.length;i++){
+
+                              str+= '<div class="media-body">'+
+                                  '<div class="d-sm-flex justify-content-between mb-2">' +
+                                  '<h5 class="mb-sm-0">'+ result[i].uid +'<small class="text-muted ml-3">'+result[i].regDate+'</small></h5>' +
+                                  '<div class="media-reply__link">'+
+                                  '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
+                                  '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
+                                  '<button class="btn btn-transparent p-0 ml-3 font-weight-bold">Reply</button>' +
+                                  '</div></div>' +
+                                  '<p>'+result[i].replyContent+'</p></div>';
+                          }
+
+                          $("div[name='replyList']").html(str);
+
+                        }
+                    }
+            });
+        }
+
+        $(document).on("click","button[name='regusterReplyBtn']",function (e){
+            //댓글 등록 버튼이 눌렸을 때
+
+            e.preventDefault();
+
+            var replyContent= $("textarea[name='replyText']").val();
+
+            if(replyContent != null){
+
+                var readTaskTid = $("input[name='readTaskTid']").val();
+                var uid = $("input[name='uid']").val();
+
+                $.ajax({
+                   url:'/task/register/reply',
+                    type:'post',
+                    data:{'readTaskTid':readTaskTid,
+                          'uid':uid,
+                          'replyContent':replyContent
+                    } ,
+                    success:function (result){
+                       if(result != null){
+                           alert("댓글이 등록되었습니다.");
+                           $("textarea[name='replyText']").val(''); //댓글 입력창 비워둠
+                           readReply(readTaskTid); //댓글 리스트 불러옴
+                       }
+                    }
+                }); //ajax끝
+            }
+        });
+
 
         //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
        $("select[name='readTaskStatus']").change(function (){
