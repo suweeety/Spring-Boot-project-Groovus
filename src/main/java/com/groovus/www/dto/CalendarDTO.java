@@ -1,6 +1,7 @@
 package com.groovus.www.dto;
 
 import com.groovus.www.entity.CalendarAttach;
+import com.groovus.www.entity.Member;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,14 +25,23 @@ public class CalendarDTO {
     @NotEmpty
     private String cal_content;
 
+    @NotEmpty
     private String cal_cate;
 
+    @NotEmpty
     private String cal_startDate;
 
+    @NotEmpty
     private String cal_endDate;
 
     private List<CalendarAttach> cal_attach;
 
     private String cal_link;
+
+    private List<Member> cal_member;
+
+    private String create_user_id;
+
+    private String update_user_id;
 
 }

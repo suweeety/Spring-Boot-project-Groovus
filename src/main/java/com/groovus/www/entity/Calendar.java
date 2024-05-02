@@ -33,14 +33,13 @@ public class Calendar extends BaseEntity{
     @Column(length = 5000, nullable = false)
     private String cal_content; // 일정 내용
 
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name = "cal_cate_id")
+    @Column(nullable = false)
     private String cal_cate;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String cal_startDate;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String cal_endDate;
 
     @ManyToMany
@@ -50,11 +49,23 @@ public class Calendar extends BaseEntity{
     @Column(nullable = true)
     private String cal_link;
 
+    @Column(nullable = true)
+    @ManyToMany
+    private List<Member> cal_member;
+
     @OneToMany(mappedBy = "calendar",
             cascade = {CascadeType.ALL},
             fetch = FetchType.LAZY) //CalendarImage의 calendar 변수
     @Builder.Default
     private Set<CalendarImage> imageSet = new HashSet<>();
+
+    @JoinColumn(name = "uid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member create_user_id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member update_user_id;
+
 
     public void addImage(String uuid, String fileName) {
         CalendarImage calendarImage = CalendarImage.builder()

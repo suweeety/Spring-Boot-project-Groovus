@@ -3,6 +3,7 @@
   var t = function () {
     this.$body = e("body"),
       this.$modal = e("#event-modal"),
+      this.$modal2 = e("#event-modal2"),
       this.$event = "#external-events div.external-event",
       this.$calendar = e("#calendar"),
       this.$saveCategoryBtn = e(".save-category"),
@@ -18,23 +19,23 @@
   }, t.prototype.onEventClick = function (t, n, a) {
     var o = this,
       i = e("<form></form>");
-    i.append("<label>Change event name</label>"), i
+    i.append("<label>일정 제목</label>"), i
       .append("<div class='input-group'>" +
-        "<input class='form-control' type=text value='" + t.title + "' />" +
+        "<input class='form-control' type=text value='" + t.title + "' style='border-radius: 10px; width: '/>" +
         "<span class='input-group-btn'>" +
         "<button type='submit' class='btn btn-success waves-effect waves-light'>" +
-        "<i class='fa fa-check'></i> Save</button></span></div>"),
-      o.$modal.modal({
+        "<i class='fa fa-check'></i>변경</button></span></div>"),
+      o.$modal2.modal({
       backdrop: "static"
-    }), o.$modal.find(".cancel-event").show().end()
+    }), o.$modal2.find(".cancel-event").show().end()
       .find(".save-event").hide().end()
       .find(".modal-body").empty().prepend(i).end()
       .find(".cancel-event").unbind("click").on("click", function () {
       o.$calendarObj.fullCalendar("removeEvents", function (e) {
         return e._id == t._id
-      }), o.$modal.modal("hide")
-    }), o.$modal.find("form").on("submit", function () {
-      return t.title = i.find("input[type=text]").val(), o.$calendarObj.fullCalendar("updateEvent", t), o.$modal.modal("hide"), !1
+      }), o.$modal2.modal("hide")
+    }), o.$modal2.find("form").on("submit", function () {
+      return t.title = i.find("input[type=text]").val(), o.$calendarObj.fullCalendar("updateEvent", t), o.$modal2.modal("hide"), !1
     })
   }, t.prototype.onSelect = function (t, n, a) {
     var o = this;
@@ -56,22 +57,26 @@
       .append("<option value='bg-etc'>기타</option></div></div>")
       .end()
       .append("<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(460px, -96px); padding: 0;'><div class='form-group' style='margin: 0; height: 5rem;'><label class='control-label'>참여자</label>" +
-        "<input class='form-control' id='cal_member_input' style='width: 18rem; border-radius: 10px;' /><span><button type='submit' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background-color: ghostwhite; border: none;'></button></span>" +
-        "</div><div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-        "<span class='badge badge-pill badge-success'>[[${user.uid}]]<button type='button' name='removeTagBtn'>x</button></span>" +
-        "<input type='hidden' name='cal_member' th:value='${user.uid}'></div></div>")
+        "<input class='form-control' id='cal_member_input' style='width: 18rem; border-radius: 10px;' /><span><button type='submit' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>➕</button></span>" +
+        "</div><div name='cal_member' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+        "<span class='badge badge-pill badge-success'>${create_user_id}<button type='button' name='removeTagBtn' style='border-radius: 10px; border: none;'>x</button></span>" +
+        "<input type='hidden' name='cal_member' value='${user.uid}'></div>"+
+        "<div class ='col' style='transform: translate(265px, -78px);'><div class='dropdown custom-dropdown'><div data-toggle='dropdown'><i class='fa fa-ellipsis-v'></i></div>"+
+        "<div class='dropdown-menu dropdown-menu-right'><a class='dropdown-item' href='#'>Option 1</a><a class='dropdown-item' href='#'>Option 2</a>" +
+        "<a class='dropdown-item' href='#'>Option 3</a></div></div></div></div>")
 
       .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px;)'><div class='form-group' style='transform: translate(0px, -84px);'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
-        "<input class='form-control' placeholder='Contents...' type='text' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
+        "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
       .append("<div class='col-md-6' transform: translate(-2px, -22px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
         "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
       "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
         "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' /></div></div>")
-      .append("<div class='row'></div>")
-      .append("<div class='attach-button' style='transform: translate(-337px, 96px); height: 0rem;'>파일 첨부</div><div class='file-upload-form' style='transform: translate(-396px, 127px); height: 2rem;'>" +
-        "<input type='file' name='cal_attach' multiple class='file-input'/><button class='upload-button'>업로드</button><div class='uploadResult'></div></div></div>")
+      .append("<div class='attach-button' style='transform: translate(-337px, 98px); height: 0rem;'>첨부파일</div><div class='file-upload-form' style='transform: translate(-388px, 137px); height: 2rem;'>" +
+        "<input type='file' name='cal_attach' multiple class='file-input' style='width: 19rem;'/><button class='upload-button' style='border: none; background: none;'><i class='fa-solid fa-link'></i></button><div class='uploadResult'></div></div></div>")
       .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(377px, -89px);'><div class='form-group'><label class='control-label'>링크</label>" +
         "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
+      .append("<button type='button' class='btn btn-primary openReply' data-toggle='modal' data-target='.bd-example-modal-sm' style='border-radius: 12px;background-color: red;color: white;right: 10%;transform: translate(384px, -532px);height: 40px;'>💬</button>")
+
       , o.$modal.find(".delete-event").hide().end()
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()
@@ -158,17 +163,11 @@
       i.find("input[name='cal_attach']").val(),
       i.find("input[name='cal_link']").val());
       return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
-        cal_title: e,
+        title: e,
         start: t,
         end: n,
         allDay: !1,
-        className: a,
-        cal_content: i,
-        cal_cate: i,
-        cal_startDate: i,
-        cal_endDate: i,
-        cal_attach: i,
-        cal_link: i
+        className: a
       }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
     }), o.$calendarObj.fullCalendar("unselect")
   }, t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능

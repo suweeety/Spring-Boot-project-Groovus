@@ -1,17 +1,28 @@
 package com.groovus.www.controller;
 
 import com.groovus.www.dto.CalendarDTO;
+import com.groovus.www.dto.MemberDTO;
+import com.groovus.www.entity.Calendar;
+import com.groovus.www.entity.Member;
+import com.groovus.www.repository.CalendarRepository;
+import com.groovus.www.repository.MemberRepository;
 import com.groovus.www.service.CalendarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @Controller
 @Log4j2
@@ -22,6 +33,9 @@ public class CalendarController {
     @Autowired
     private CalendarService calendarService;
 
+    @Autowired
+    private CalendarRepository calendarRepository;
+    
 
     @PreAuthorize("permitAll()")
     @PostMapping("/register")

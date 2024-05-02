@@ -1,18 +1,30 @@
 package com.groovus.www.controller;
 
+import com.groovus.www.dto.MemberDTO;
+import com.groovus.www.entity.Member;
+import com.groovus.www.repository.CalendarRepository;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
+@Log4j2
 public class CommonController {
 
     //공통 컨트롤러입니다.
     //페이지 분기시에 사용합니다.!
     //메인화면에서 이동할때나....
+    @Autowired
+    private CalendarRepository calendarRepository;
 
     @PreAuthorize("permitAll()")
     @GetMapping("/")

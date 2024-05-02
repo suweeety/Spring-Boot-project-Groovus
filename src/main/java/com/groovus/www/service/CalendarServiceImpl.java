@@ -2,7 +2,9 @@ package com.groovus.www.service;
 
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.entity.Calendar;
+import com.groovus.www.entity.Member;
 import com.groovus.www.repository.CalendarRepository;
+import com.groovus.www.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +22,7 @@ public class CalendarServiceImpl implements CalendarService{
     private final ModelMapper modelMapper;
 
     private final CalendarRepository calendarRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public Long register(CalendarDTO calendarDTO) {
@@ -27,7 +30,10 @@ public class CalendarServiceImpl implements CalendarService{
         log.info("DTO--------------------------------");
         log.info(calendarDTO);
 
-       Calendar calendar = dtoToEntity(calendarDTO);
+        Optional<Member> result = memberRepository.getMemberByMid(Long.parseLong(calendarDTO.getCreate_user_id()));
+        Member member = result.get();
+
+       Calendar calendar = dtoToEntity(calendarDTO,member);
 
        log.info(calendar);
 

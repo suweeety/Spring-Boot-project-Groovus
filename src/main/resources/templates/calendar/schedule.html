@@ -108,13 +108,17 @@
         <!-- #/ container -->
     </div>
     <!-- BEGIN MODAL -->
-    <div class="modal fade none-border" id="event-modal">
+
+    <div class="modal fade none-border" id="event-modal" th:with="user=${#authentication.principal}">
         <div class="modal-dialog" style="max-width: 48rem; transform: translate(10px, 89px);">
             <div class="modal-content" style="height: 41rem">
+                <form action="/calendar/register" method="post">
                 <div class="modal-header">
                     <h4 class="modal-title"><strong>✅ 새 일정</strong></h4>
-                    <div class="modal-Subtitle" name="create_user_id" style="transform: translate(-4px, 5px);">작성자 아이디(예정)</div>
+                    <div class="modal-Subtitle" name="create_user_id" style="transform: translate(-4px, 5px);">Writer: [[${user.uid}]]</div>
+                    <input type="hidden" name="create_user_id" th:value="${user.uid}"/>
                 </div>
+                </form>
                 <div class="modal-body"></div>
                 <div class="modal-footer" style="transform: translate(10px, -35px);">
                     <button type="button" class="btn btn-default waves-effect"
@@ -124,9 +128,26 @@
                             class="btn btn-success save-event waves-effect waves-light" style="background-color: red; border-color: red;">
                         ➕ 생성
                     </button>
-                    <button type="button"
-                            class="btn btn-danger cancel-event waves-effect waves-light"
-                            data-dismiss="modal">삭제
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade none-border" id="event-modal2" th:with="user=${#authentication.principal}">
+        <div class="modal-dialog" style="max-width: 48rem; transform: translate(10px, 89px);">
+            <div class="modal-content" style="height: 41rem">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong>📅 내 일정</strong></h4>
+                        <div class="modal-Subtitle" name="create_user_id" style="transform: translate(-4px, 5px);">Writer: [[${user.uid}]]</div>
+                    </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer" style="transform: translate(10px, -35px);">
+                    <button type="button" class="btn btn-default waves-effect"
+                            data-dismiss="modal">✖ Close
+                    </button>
+                    <button type="submit"
+                            class="btn btn-success save-event waves-effect waves-light" style="background-color: red; border-color: red;">
+                        ➕ 생성
                     </button>
                 </div>
             </div>
