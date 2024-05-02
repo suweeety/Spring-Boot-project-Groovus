@@ -2,12 +2,12 @@ package com.groovus.www.service;
 
 import com.groovus.www.dto.ProjectPageRequestDTO;
 import com.groovus.www.dto.ProjectPageResponseDTO;
+import com.groovus.www.dto.StatusHistoryDTO;
 import com.groovus.www.dto.TaskDTO;
-import com.groovus.www.entity.Member;
-import com.groovus.www.entity.Project;
-import com.groovus.www.entity.Task;
+import com.groovus.www.entity.*;
 import com.groovus.www.repository.MemberRepository;
 import com.groovus.www.repository.ProjectRepository;
+import com.groovus.www.repository.StatusHistoryRepository;
 import com.groovus.www.repository.TaskRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,8 @@ public class TaskServiceImpl implements TaskService {
     private final ProjectRepository projectRepository;
 
     private  final MemberRepository memberRepository;
+
+    private final StatusHistoryRepository statusHistoryRepository;
 
     @Override
     public Long getTaskCount(Long pid) {
@@ -98,5 +101,75 @@ public class TaskServiceImpl implements TaskService {
                 .build();
 
         return taskDTO;
+    }
+
+    @Override
+    public String changeTaskStatus(String tid, String status ,String uid ,String prevStatus ,String modDate) {
+        //업무의 상태를 변경
+
+        Optional<Task> result = taskRepository.getTaskByTid(Long.parseLong(tid));
+
+
+        if(!result.isEmpty()){
+            Task task = result.get();
+
+            if(status.equals("TODO")){
+                task.changeStatus(TaskStatus.TODO);
+            }else if(status.equals("INPROGRESS")){
+                task.changeStatus(TaskStatus.INPROGRESS);
+            } else if (status.equals("BLOCK")) {
+                task.changeStatus(TaskStatus.BLOCK);
+            }else if(status.equals("DONE")){
+                task.changeStatus(TaskStatus.DONE);
+            }
+            taskRepository.save(task);
+
+            StatusHistory statusHistory = StatusHistory.builder()
+                    .tid(task)
+                    .status(status)
+                    .prevStatus(prevStatus)
+                    .uid(uid)
+                    .modDate(modDate)
+                    .build();
+
+            statusHistoryRepository.save(statusHistory);
+
+            return "success";
+        }else{
+            return "fail";
+        }
+
+    }
+
+    @Override
+    public List<StatusHistoryDTO> getHistory(String tid) {
+
+        Optional<Task> result = taskRepository.getTaskByTid(Long.parseLong(tid));
+
+        List<StatusHistory> statusHistoryList = statusHistoryRepository.getStatusHistoryBytid(result.get());
+
+        if(!statusHistoryList.isEmpty()){
+
+            List<StatusHistoryDTO> statusHistoryDTOList = statusHistoryList.stream().map(statusHistory -> {
+
+                StatusHistoryDTO dto = StatusHistoryDTO.builder()
+                        .hid(statusHistory.getHid().toString())
+                        .tid(statusHistory.getTid().getTid().toString())
+                        .uid(statusHistory.getUid())
+                        .status(statusHistory.getStatus())
+                        .prevStatus(statusHistory.getPrevStatus())
+                        .modDate(statusHistory.getModDate())
+                        .build();
+
+                return dto;
+
+            }).collect(Collectors.toList());
+
+            return  statusHistoryDTOList;
+
+        }else{
+            return null;
+        }
+
     }
 }

@@ -96,7 +96,7 @@
                                             <table class="table">
                                                 <thead>
                                                 <tr>
-                                                    <th>#</th>
+                                                    <th>💼</th>
                                                     <th>업무제목</th>
                                                     <th>상태</th>
                                                     <th>등록일</th>
@@ -146,7 +146,6 @@
                             <!--업무리스트 끝-->
 
                             <!-- panel -->
-                            <!--여기에 페이징 예정-->
                             <div class="row">
                                <!-- <div class="col-7">
                                     <div class="text-left">1 - 20 of 568</div>
@@ -258,10 +257,35 @@
 
             </div>
 
+            <button type="button" class="btn mb-1 btn-outline-primary btn-xs" name="showHistoryBtn">상태 변경 이력 보기</button>
+            <button type="button" class="btn mb-1 btn-outline-primary btn-xs" name="closeHistoryBtn" style="display: none;">상태 변경 이력 닫기</button>
+            <!--상태변경 히스토리-->
+            <div name="history" style="display: none">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h4>상태변경 이력</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>변경일</th>
+                                <th>변경전</th>
+                                <th>변경후</th>
+                                <th>변경자</th>
+                            </tr>
+                            </thead>
+                            <tbody th:name="historyBody">
 
 
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--상태변경 히스토리 끝-->
         </div>
-
         <!--업무 상세보기창 끝-->
 
 
@@ -272,6 +296,7 @@
     <script th:inline="javascript">
 
         var pid = [[${pid}]];
+        var PrevStatus; // 상태 변경시 저장될 임시 공간
 
         $(document).ready(function (){
 
@@ -305,7 +330,7 @@
                 }
             })
 
-            //프로젝트 등록하기 버튼을 눌렀을 때
+            //업무 등록하기 버튼을 눌렀을 때
             $("button[name='registerTaskBtn']").on("click",function (e){
                e.preventDefault();
                 $(".modal_").show();
@@ -316,7 +341,7 @@
                 $(".modal_").hide();
             });
 
-            //멤버 리스트 출력하는 모달
+            //멤버 리스트 출력
             function insertMemberList(result){
 
                 var selectList = $("select[name='responsibleMember']");
@@ -333,14 +358,16 @@
             $(document).on("click","button[name='readTaskBack']",function (e){
                 e.preventDefault();
 
+                $("button[name='showHistoryBtn']").show();
+                $("button[name='closeHistoryBtn']").hide();
                 $("button[name='statusChangeBtn']").hide();
                 $("div[name='taskDetailsArea']").html( $("div[name='taskDetails']")); //업무 상세보기창 이동
 
                 $("div[name='taskDetails']").hide(); //숨김
+                $("div[name='history']").hide(); //숨김
 
                 $("div[name='mainContent']").html(mainList); //메인콘텐츠공간에 메인리스트 이동
-            })
-
+            });
 
             //업무 제목을 눌렀을때 (업무내용 보일예정)
             $(document).on("click","td[name='readTask']",function (e){
@@ -357,7 +384,6 @@
                         readTask(result);
                     }
                 });
-
             });
 
             //업무 읽기
@@ -372,8 +398,11 @@
                 $("input[name='readTaskWriter']").val(result.taskWriter);
                 $("input[name='readResponsibleMember']").val(result.responsibleMember);
                 $("input[name='readTaskRegDate']").val(result.regDate);
-                selectStatus.val( result.status);
+                selectStatus.val(result.status);
                 $("div[name='readTaskContent']").html(result.taskContent);
+
+                PrevStatus = $("select[name='readTaskStatus']").val(); //상태 임시 저장
+
                 taskDetails.show();
 
                 $("div[name='mainContent']").html(taskDetails); //메인 콘텐츠쪽에 넣음
@@ -388,16 +417,100 @@
            $("button[name='statusChangeBtn']").show();
        })
 
-        //업무의 상세보기 -> 변경 버튼이 눌렸을 때
+        //업무의 상세보기 -> 상태 변경 버튼이 눌렸을 때
         $("button[name='statusChangeBtn']").on("click",function (e){
             e.preventDefault();
 
-            var tid = $("input[name='readTaskTid']").val();
-            alert(tid);
+            var tid = $("input[name='readTaskTid']").val()+"";
+            var status = $("select[name='readTaskStatus']").val();
+            var uid = [[${#authentication.principal.uid}]];
+            var prevStatus = PrevStatus;
+            //해당 업무의 상태를 변경
+            $.ajax({
+               url:'/task/changestatus',
+               data:{'tid':tid,
+                     'status':status,
+                      'uid' : uid,
+                      'prevStatus':prevStatus
+               },
+               type:'post',
+               success:function(result){
 
-        })
+                   location.reload();
+               }
+            });
+        });
 
+       //상태 변경이력보기 버튼이 눌렸다면
+       $(document).on("click","button[name='showHistoryBtn']",function (e){
+           e.preventDefault();
+           $(this).hide();
+           $("button[name='closeHistoryBtn']").show();
 
+           var tid =  $("input[name='readTaskTid']").val();
+
+           $.ajax({
+              url:'/task/history',
+              type:'post',
+              data:{'tid':tid},
+              success:function (result){
+                  console.log(result);
+                  showHistory(result);
+              }
+           });
+       });
+
+       $(document).on("click","button[name='closeHistoryBtn']",function (e){
+           //상태 이력 보기 닫기버튼이 눌렸다면
+           e.preventDefault();
+           $(this).hide();
+           $("button[name='showHistoryBtn']").show();
+
+           $("div[name='history']").hide();
+       });
+
+       function showHistory(result){
+            var str ='';
+
+            if(result==null){
+
+                str = "<b>상태 변경 이력이 존재하지 않습니다.</b>";
+
+            }else {
+
+                for(var i=0;i<result.length;i++){
+
+                    var prevStatus;
+                    var status;
+
+                    if(result[i].status=='TODO'){
+                        status='할일';
+                    }else if(result[i].status=='INPROGRESS'){
+                        status='진행중';
+                    }else if(result[i].status=='BLOCK'){
+                        status='보류';
+                    }else if(result[i].status=='DONE'){
+                        status='완료';
+                    }
+
+                    if(result[i].prevStatus=='TODO'){
+                        prevStatus='할일';
+                    }else if(result[i].prevStatus=='INPROGRESS'){
+                        prevStatus='진행중';
+                    }else if(result[i].prevStatus=='BLOCK'){
+                        prevStatus='보류';
+                    }else if(result[i].prevStatus=='DONE'){
+                        prevStatus='완료';
+                    }
+
+                    str += "<tr><th>"+result[i].modDate+"</th><td>"+prevStatus+"</td>"
+                        +"<td>"+status+"</span></td>"
+                        +"<td>"+result[i].uid+"</td></tr>";
+                }
+            }
+            $("tbody[name='historyBody']").html(str);
+            $("div[name='history']").show();
+       };
 
         $(document).on("click","button[name='registerBtn']",function (e){
             //업무 등록 버튼 눌렀을때
