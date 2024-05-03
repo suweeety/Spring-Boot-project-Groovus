@@ -20,10 +20,10 @@
 <br><br>
 
 ### ⚙️ 개발 환경
-- **BE** : Java, Gradle, JPA
+- **BE** : Java, Gradle, JPA, Querydsl
 - **FE** : JavaScript, jQuery, Thymeleaf
 - **Framework** : Spring Boot, Spring Security
-- **DB** : PostgreSQL, Querydsl
+- **DB** : PostgreSQL
 - **IDE** : IntelliJ
 - **배포환경** : AWS EC2, Docker
 - **VCS** : git&github
