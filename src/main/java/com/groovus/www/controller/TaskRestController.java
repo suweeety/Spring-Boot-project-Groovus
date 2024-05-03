@@ -2,6 +2,7 @@ package com.groovus.www.controller;
 
 import com.groovus.www.dto.StatusHistoryDTO;
 import com.groovus.www.dto.TaskDTO;
+import com.groovus.www.dto.TaskReReplyDTO;
 import com.groovus.www.dto.TaskReplyDTO;
 import com.groovus.www.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -93,6 +94,8 @@ public class TaskRestController {
     @PostMapping("/task/register/reply")
     public ResponseEntity<List<TaskReplyDTO>> registerReply(@RequestParam("readTaskTid") String tid, String uid, String replyContent){
 
+        //업무에 댓글 달기
+
         TaskReplyDTO taskReplyDTO = TaskReplyDTO.builder()
                 .replyContent(replyContent)
                 .tid(tid)
@@ -115,6 +118,7 @@ public class TaskRestController {
 
     @PostMapping("/task/replyList")
     public ResponseEntity<List<TaskReplyDTO>> getReplyList(String tid){
+        //댓글 리스트를 가져옴
 
         List<TaskReplyDTO> taskReplyDTOList = taskService.getTaskRepltList(tid);
 
@@ -126,6 +130,31 @@ public class TaskRestController {
 
     }
 
+    @PostMapping("/task/register/rereply")
+    public ResponseEntity<String> registerReReply(String parentRid ,String uid , String replyText){
+        //대댓글 등록
+        TaskReReplyDTO taskReReplyDTO = TaskReReplyDTO.builder()
+                .replyText(replyText)
+                .rid(parentRid)
+                .uid(uid)
+                .build();
 
+        int result = taskService.registerReReply(taskReReplyDTO);
+
+        if(result>0){
+            return new ResponseEntity<>("success",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("fail",HttpStatus.OK);
+        }
+    }
+
+
+    @PostMapping("/task/rereplyList")
+    public ResponseEntity<List<TaskReReplyDTO>> getReReplyList(String rid){
+
+        List<TaskReReplyDTO> replyDTOList = taskService.getTaskReReplyList(rid);
+
+        return new ResponseEntity<>(replyDTOList, HttpStatus.OK);
+    }
 
 }

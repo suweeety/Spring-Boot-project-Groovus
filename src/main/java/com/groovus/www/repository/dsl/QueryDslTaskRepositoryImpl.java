@@ -59,6 +59,8 @@ public class QueryDslTaskRepositoryImpl extends QuerydslRepositorySupport implem
                     case "w":
                         booleanBuilder.or(task.taskWriter.contains(keyword));
                         break;
+                    case "r":
+                        booleanBuilder.or(task.responsibleMember.eq(Long.parseLong(keyword)));
                 }
             }//end for
 

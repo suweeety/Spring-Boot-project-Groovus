@@ -161,12 +161,23 @@ public class ProjectController {
 
         log.info("==============================");
         log.info(pid);
+        log.info(pageRequestDTO);
         log.info("==============================");
 
         return "/task/taskList";
     }
 
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/message/{pid}/{projectName}")
+    public String goMessageList(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName,Model model){
+
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+
+        return "/message/messageList";
+
+    }
 
 
 }

@@ -298,9 +298,9 @@
             <i class="fa-regular fa-clipboard"></i><span class="nav-text">Task</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">업무리스트</a></li>
-            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">담당업무</a></li>
-            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">참조업무</a></li>
+            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">전체업무</a></li>
+            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}+'?type=r&keyword='+${#authentication.principal.mid}}">담당업무</a></li>
+            <li><a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}">삭제업무</a></li>
             <!-- <li><a href="./index-2.html">Home 2</a></li> -->
           </ul>
         </li>
@@ -329,7 +329,7 @@
             <i class="fa-regular fa-envelope"></i> <span class="nav-text">Message</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{/message/messageList}">쪽지함</a></li>
+            <li><a th:href="@{'/project/message/' + ${pid}+'/'+${projectName}}">쪽지함</a></li>
 
           </ul>
         </li>

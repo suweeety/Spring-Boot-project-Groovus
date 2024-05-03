@@ -43,6 +43,10 @@
                 transform:translateX(25%);
             }
 
+            .taskTitle:hover{
+                color: #0d4dff;
+                cursor: pointer;
+            }
 
         </style>
 
@@ -70,10 +74,9 @@
                             <button type="button" class="btn btn-primary btn-block" style="background-color: #0435d7;" name="registerTaskBtn">업무등록</button>
 
                             <div class="mail-list mt-4">
-                                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholeTask">0</span> </a>
-                                <a href="#" class="list-group-item border-0 p-r-0"><span class="fa fa-tags f-s-14 mr-2"></span>참조업무</a>
-                                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-star-o font-18 align-middle mr-2"></i>중요업무 <span class="badge badge-danger badge-sm float-right m-t-5">47</span> </a>
-                                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2"></i>삭제업무</a>
+                                <a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}" class="list-group-item border-0 text-primary p-r-0" id="wholeTask"><span class="fa fa-briefcase f-s-14 mr-2" ></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholeTask">0</span> </a>
+                                <a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}+'?type=r&keyword='+${#authentication.principal.mid}}" class="list-group-item border-0 p-r-0" id="myTask"><span class="fa fa-tags f-s-14 mr-2"></span><b>담당업무</b></a>
+                                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2" id="delTask"></i><b>삭제업무</b></a>
                             </div>
                         </div>
                         <div class="email-right-box">
@@ -108,7 +111,7 @@
                                                 <th:block th:each="task ,i : ${responseDTO.dtoList}">
                                                         <tr>
                                                             <th>[[${i.index + responseDTO.start }]]</th>
-                                                            <td name="readTask" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
+                                                            <td name="readTask" class="taskTitle" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
                                                             <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
                                                             <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
                                                             <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
@@ -342,11 +345,16 @@
 
             var mainList = $("div[name='mainList']");
 
-            $(document).keydown(function(event){
-                if(event.keyCode == 116) { // F5 키 눌렸을 때
-                    event.preventDefault(); // 기본 동작 방지
-                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
-                    location.href = newUrl;
+            var type = [[${pageRequestDTO.type}]];
+
+
+            /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
+            $.ajax({
+                url:'/task/countall',
+                type:'post',
+                data:{'pid':pid},
+                success:function (result){
+                    $("span[name='wholeTask']").text(result);
                 }
             });
 
@@ -360,15 +368,21 @@
                 }
             });
 
-            /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
-            $.ajax({
-                url:'/task/countall',
-                type:'post',
-                data:{'pid':pid},
-                success:function (result){
-                    $("span[name='wholeTask']").text(result);
+            $(document).keydown(function(event){
+                if(event.keyCode == 116) { // F5 키 눌렸을 때
+                    event.preventDefault(); // 기본 동작 방지
+                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
+                    location.href = newUrl;
                 }
-            })
+            });
+
+            if(type =='r'){
+                //담당업무탭
+                $("#myTask").addClass("text-primary");
+                $("#wholeTask").removeClass("text-primary");
+                $("#delTask").removeClass("text-primary");
+            };
+
 
             //업무 등록하기 버튼을 눌렀을 때
             $("button[name='registerTaskBtn']").on("click",function (e){
@@ -411,7 +425,6 @@
 
             //업무 제목을 눌렀을때 (업무내용 보일예정)
             $(document).on("click","td[name='readTask']",function (e){
-
                 e.preventDefault();
                 var tid = $(this).data("tid");
 
@@ -452,35 +465,102 @@
         });
 
         //댓글 읽어오기
-        function readReply(tid){
+         function readReply(tid){
 
+             //댓글과 대댓글 가져옴
             $.ajax({
                 url:'/task/replyList',
                 type:'post',
                 data:{'tid':tid},
-                success:function (result){
+                success:async function (result){
 
                         var str ='';
                         if(result != null){
                           for(var i=0;i<result.length;i++){
 
-                              str+= '<div class="media-body">'+
+                             var rereplyStr = await readReReply(result[i]);
+
+                              str+= '<div class="media-body" name="reply" data-rid="'+result[i].rid+'">'+
                                   '<div class="d-sm-flex justify-content-between mb-2">' +
                                   '<h5 class="mb-sm-0">'+ result[i].uid +'<small class="text-muted ml-3">'+result[i].regDate+'</small></h5>' +
                                   '<div class="media-reply__link">'+
                                   '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
                                   '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
-                                  '<button class="btn btn-transparent p-0 ml-3 font-weight-bold">Reply</button>' +
+                                  '<button class="btn btn-transparent p-0 ml-3 font-weight-bold" name="re-reply">🗨️댓글</button>' +
                                   '</div></div>' +
-                                  '<p>'+result[i].replyContent+'</p></div>';
+                                  '<p>'+result[i].replyContent+'</p>'+
+                                  '<div name="re-reply">';
+
+                              str+= rereplyStr; //대댓글
+
+                              str+= '</div></div>'+
+                                  '<div class="card" name="re-replyInput" style="display: none;">'+
+                                  '<div class="card-body" style="background-color: whitesmoke;">' +
+                                  '<form action="#" class="form-profile" name="re-replyForm">'+
+                                  '<div class="form-group">'+
+                                  '<textarea class="form-control" name="re-replyText" id="textarea" cols="30" rows="2" placeholder="댓글을 입력하세요"></textarea>' +
+                                  '</div>' +
+                                  '<div class="d-flex align-items-center">' +
+                                  '<input type="hidden" name="parentReplyRid" value="'+result[i].rid+'">'+
+                                  '<button class="btn btn-primary px-3 ml-4" name="registerRe-ReplyBtn">등록</button>'+
+                                  '</div>'+
+                                  '</form>'+
+                                  '</div>'+
+                                  '</div>'+
+                                  '</div>';
                           }
-
                           $("div[name='replyList']").html(str);
-
                         }
                     }
             });
+        } //댓글 읽어오기 끝
+
+        async function readReReply(result) {
+            var rid = result.rid;
+            var resultStr = '';
+
+            try {
+                var reply = await $.ajax({
+                    url: '/task/rereplyList',
+                    data: {'rid': rid},
+                    type: 'post'
+                });
+
+                if (reply != null) {
+                    for (var i = 0; i < reply.length; i++) {
+
+                        resultStr += '<div class="media-body"style="margin-left: 3rem; background-color:aliceblue; padding: 10px; " name="re-reply" data-rid="' + reply[i].rrid + '">' +
+                            '<div class="d-sm-flex justify-content-between mb-2">' +
+                            '<h5 class="mb-sm-0">' + reply[i].uid + '<small class="text-muted ml-3">' + reply[i].regDate + '</small></h5>' +
+                            '<div class="media-reply__link">' +
+                            '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
+                            '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
+                            '</div></div>' +
+                            '<p>' + reply[i].replyText + '</p></div>';
+                    }
+                    return resultStr;
+                }
+            } catch (error) {
+                console.error("에러 발생:", error);
+                throw error;
+            }
         }
+
+        $(document).on("click","button[name='re-reply']",function (e){
+            //대댓글 달기 버튼이 눌렸을 때
+            e.preventDefault();
+            $(this).text("취소");
+            $(this).attr("name","re-reply-close");
+            $(this).closest("div[name='reply']").next("div[name='re-replyInput']").show();
+        });
+
+        $(document).on("click","button[name='re-reply-close']",function (e){
+            //대댓글 달기 취소 버튼이 눌렸을 때
+            e.preventDefault();
+            $(this).text("🗨️댓글");
+            $(this).attr("name","re-reply");
+            $(this).closest("div[name='reply']").next("div[name='re-replyInput']").hide();
+        });
 
         $(document).on("click","button[name='regusterReplyBtn']",function (e){
             //댓글 등록 버튼이 눌렸을 때
@@ -489,7 +569,7 @@
 
             var replyContent= $("textarea[name='replyText']").val();
 
-            if(replyContent != null){
+            if(replyContent.length > 0 && replyContent != null){
 
                 var readTaskTid = $("input[name='readTaskTid']").val();
                 var uid = $("input[name='uid']").val();
@@ -509,7 +589,44 @@
                        }
                     }
                 }); //ajax끝
+            }else{
+                alert("댓글을 입력하세요!");
+                $("textarea[name='replyText']").focus();
             }
+        });
+
+        $(document).on("click","button[name='registerRe-ReplyBtn']",function (e){
+            //대댓글 등록 버튼이 눌렸을 때
+            e.preventDefault();
+            var readTaskTid = $("input[name='readTaskTid']").val();
+
+           var replyText = $(this).parent().prev().children("textarea[name='re-replyText']").val();
+
+           if(replyText.length > 0 && replyText != null){
+
+               var parentRid =$(this).prev("input[name='parentReplyRid']").val();
+               var uid = [[${#authentication.principal.uid}]];
+
+               $.ajax({
+                  url:'/task/register/rereply',
+                   type:'post',
+                   data:{'parentRid': parentRid,
+                        'uid':uid,
+                         'replyText':replyText
+                  },
+                   success:function (result){
+                       if(result){
+                           alert("댓글이 등록되었습니다.");
+                           $("button[name='registerRe-ReplyBtn']").parent().prev().children("textarea[name='re-replyText']").val('');
+                           readReply(readTaskTid);
+                       }
+                  }
+               });
+
+           }else{
+               alert("댓글을 입력하세요!");
+               $(this).focus();
+           }
         });
 
 
@@ -616,8 +733,19 @@
        };
 
         $(document).on("click","button[name='registerBtn']",function (e){
-            //업무 등록 버튼 눌렀을때
+            //업무 등록 버튼 눌렀을때 (업무 등록 모달에서 등록 버튼)
             e.preventDefault();
+
+            if($("select[name='responsibleMember']").val() == null || $("select[name='responsibleMember']").val().length<=0){
+                alert("담당자를 지정해주세요");
+                $("select[name='responsibleMember']").focus();
+                return;S
+            }
+            if($("input[name='taskTitle']").val().length<=0){
+                alert("업무 제목을 입력해주세요");
+                $("input[name='taskTitle']").focus();
+                return;
+            }
 
             var taskForm = $("form[name='taskForm']");
             var htmlStr = $("div.note-editable").html();

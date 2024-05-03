@@ -30,5 +30,9 @@ public interface TaskRepository extends JpaRepository<Task,Long> , QueryDslTaskR
     @Query("select t from Task t where t.tid=:tid")
     Optional<Task> getTaskByTid(Long tid);
 
+    //작성자 아이디로 업무를 가져오는 메서드
+    @EntityGraph(attributePaths = "project")
+    @Query("select t from Task t where t.taskWriter=:taskWriter")
+    List<Task> getTaskBytaskWriter(String taskWriter);
 
 }

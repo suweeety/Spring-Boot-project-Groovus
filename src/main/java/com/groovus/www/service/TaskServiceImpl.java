@@ -28,6 +28,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskReplyRepository taskReplyRepository;
 
+    private final TaskReReplyRepository taskReReplyRepository;
+
     @Override
     public Long getTaskCount(Long pid) {
 
@@ -210,6 +212,7 @@ public class TaskServiceImpl implements TaskService {
                 List<TaskReplyDTO> taskDTOList= taskReplyList.stream().map(taskReply -> {
 
                     TaskReplyDTO dto = TaskReplyDTO.builder()
+                            .rid(taskReply.getRid().toString())
                             .uid(taskReply.getUid())
                             .replyContent(taskReply.getReplyContent())
                             .regDate(taskReply.getRegDate())
@@ -222,6 +225,59 @@ public class TaskServiceImpl implements TaskService {
                 return taskDTOList;
             }
 
+        }else {
+            return null;
+        }
+    }
+
+    @Override
+    public int registerReReply(TaskReReplyDTO reReplyDTO) {
+        //대댓글을 등록하는 메서드
+
+        Optional<TaskReply> taskReplyResult = taskReplyRepository.getTaskReplyByRid(Long.parseLong(reReplyDTO.getRid()));
+
+        if(!taskReplyResult.isEmpty()){
+
+            TaskReply taskReply = taskReplyResult.get();
+
+            TaskReReply taskReReply = TaskReReply.builder()
+                    .replyText(reReplyDTO.getReplyText())
+                    .taskReply(taskReply)
+                    .uid(reReplyDTO.getUid())
+                    .build();
+
+            taskReReplyRepository.save(taskReReply);
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @Override
+    public List<TaskReReplyDTO> getTaskReReplyList(String rid) {
+        //대댓글 리스트 가져오는 메서드
+
+        Optional<TaskReply> result = taskReplyRepository.getTaskReplyByRid(Long.parseLong(rid));
+
+        if(!result.isEmpty()){
+
+            TaskReply taskReply = result.get();
+
+            List<TaskReReply> taskReReplyList = taskReReplyRepository.getTaskReRepliesByRid(taskReply);
+
+            List<TaskReReplyDTO> taskReplyDTOList = taskReReplyList.stream().map(taskReReply -> {
+
+                TaskReReplyDTO taskReReplyDTO = TaskReReplyDTO.builder()
+                        .rrid(taskReReply.getRrid().toString())
+                        .uid(taskReReply.getUid())
+                        .replyText(taskReReply.getReplyText())
+                        .regDate(taskReReply.getRegDate())
+                        .modDate(taskReReply.getModDate())
+                        .build();
+                return  taskReReplyDTO;
+
+            }).collect(Collectors.toList());
+            return taskReplyDTOList;
         }else {
             return null;
         }

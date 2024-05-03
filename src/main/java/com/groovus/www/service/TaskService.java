@@ -32,4 +32,10 @@ public interface TaskService {
     //tid로 댓글 리스트를 가져오는 메서드
     public List<TaskReplyDTO> getTaskRepltList(String tid);
 
+    //대댓글을 저장하는 메서드
+    public int registerReReply(TaskReReplyDTO taskReReplyDTO);
+
+    //rid로 대댓글 리스트를 가져오는 메서드
+    public List<TaskReReplyDTO> getTaskReReplyList(String rid);
+
 }
