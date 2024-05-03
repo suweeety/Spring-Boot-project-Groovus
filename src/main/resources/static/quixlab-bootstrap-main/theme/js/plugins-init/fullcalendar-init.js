@@ -37,7 +37,8 @@
     }), o.$modal2.find("form").on("submit", function () {
       return t.title = i.find("input[type=text]").val(), o.$calendarObj.fullCalendar("updateEvent", t), o.$modal2.modal("hide"), !1
     })
-  }, t.prototype.onSelect = function (t, n, a) {
+  }
+  t.prototype.onSelect = function (t, n, a) {
     var o = this;
     o.$modal.modal({
       backdrop: "static"
@@ -69,7 +70,7 @@
         "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
       .append("<div class='col-md-6' transform: translate(-2px, -22px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
         "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
-      "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
+        "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
         "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' /></div></div>")
       .append("<div class='attach-button' style='transform: translate(-337px, 98px); height: 0rem;'>첨부파일</div><div class='file-upload-form' style='transform: translate(-388px, 137px); height: 2rem;'>" +
         "<input type='file' name='cal_attach' multiple class='file-input' style='width: 19rem;'/><button class='upload-button' style='border: none; background: none;'><i class='fa-solid fa-link'></i></button><div class='uploadResult'></div></div></div>")
@@ -81,34 +82,34 @@
       .find(".save-event").show().end()
       .find(".modal-body").empty().prepend(i).end()
 
-    ,
+      ,
       $('.upload-button').click(function () {
-      var formData = new FormData();
+        var formData = new FormData();
 
-      var inputFile = $("input[type='file']");
+        var inputFile = $("input[type='file']");
 
-      var files = inputFile[0].files;
+        var files = inputFile[0].files;
 
-      for (var i=0; i<files.length; i++) {
-        console.log(files[i]);
-        formData.append("cal_attach", files[i]);
-      }
-
-      $.ajax({
-        url: '/uploadAjax',
-        processData: false,
-        contentType: false,
-        data: formData,
-        type: 'POST',
-        dataType: 'json',
-        success: function (result) {
-          showUploadedImages(result);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          console.log(textStatus);
+        for (var i=0; i<files.length; i++) {
+          console.log(files[i]);
+          formData.append("cal_attach", files[i]);
         }
+
+        $.ajax({
+          url: '/uploadAjax',
+          processData: false,
+          contentType: false,
+          data: formData,
+          type: 'POST',
+          dataType: 'json',
+          success: function (result) {
+            showUploadedImages(result);
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+          }
+        })
       })
-    })
       ,
       function showUploadedImages(arr) {
         console.log(arr);
@@ -153,15 +154,15 @@
           console.error("일정 저장에 실패했습니다:", error);
         }
       })
-    i.submit();
+      i.submit();
     }), o.$modal.find("form").on("submit", function () {
       var e = i.find("input[name='cal_title']").val(),
         a = (i.find("select[name='cal_cate']").val(),
           i.find("input[name='cal_content']").val(),
           i.find("input[name='cal_startDate']").val(),
-        i.find("input[name='cal_endDate']").val(),
-      i.find("input[name='cal_attach']").val(),
-      i.find("input[name='cal_link']").val());
+          i.find("input[name='cal_endDate']").val(),
+          i.find("input[name='cal_attach']").val(),
+          i.find("input[name='cal_link']").val());
       return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
         title: e,
         start: t,
@@ -170,7 +171,8 @@
         className: a
       }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
     }), o.$calendarObj.fullCalendar("unselect")
-  }, t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능
+  }
+  , t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능
     e(this.$event).each(function () {
       var t = {
         title: e.trim(e(this).text())

@@ -74,5 +74,16 @@ public class CalendarController {
 
     }
 
+    @RequestMapping(value="/read")
+    public void readGET(Long cal_id, Model model) {
+
+        log.info("readGET 메서드 확인");
+
+        CalendarDTO calendarDTO = calendarService.readOne(cal_id);
+
+        log.info("readGET 메서드 calendarDTO 확인: " + calendarDTO);
+
+        model.addAttribute("calendarDTO", calendarDTO);
+    }
 
 }

@@ -9,9 +9,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 @Service
 @Log4j2
@@ -30,7 +34,8 @@ public class CalendarServiceImpl implements CalendarService{
         log.info("DTO--------------------------------");
         log.info(calendarDTO);
 
-        Optional<Member> result = memberRepository.getMemberByMid(Long.parseLong(calendarDTO.getCreate_user_id()));
+        Optional<Member> result = memberRepository.findByUid(calendarDTO.getCreate_user_id());
+
         Member member = result.get();
 
        Calendar calendar = dtoToEntity(calendarDTO,member);
@@ -41,6 +46,18 @@ public class CalendarServiceImpl implements CalendarService{
 
        return calendar.getCal_id();
     }
+
+//    @Override
+//    public PageResultDTO<CalendarDTO, Calendar> getList(PageRequestDTO requestDTO) {
+//
+//        Pageable pageable = requestDTO.getPageable(Sort.by("cal_id"));
+//
+//        Page<Calendar> result = calendarRepository.findAll(pageable);
+//
+//        Function<Calendar, CalendarDTO> fn = (entity -> entityToDto(entity));
+//
+//        return new PageResultDTO<>(result, fn);
+//    }
 
 
     @Override

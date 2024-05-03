@@ -3,6 +3,7 @@ package com.groovus.www.controller;
 import com.groovus.www.dto.MemberDTO;
 import com.groovus.www.entity.Member;
 import com.groovus.www.repository.CalendarRepository;
+import com.groovus.www.service.CalendarService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,8 +24,9 @@ public class CommonController {
     //공통 컨트롤러입니다.
     //페이지 분기시에 사용합니다.!
     //메인화면에서 이동할때나....
+
     @Autowired
-    private CalendarRepository calendarRepository;
+    private CalendarService calendarService;
 
     @PreAuthorize("permitAll()")
     @GetMapping("/")
@@ -60,6 +62,10 @@ public class CommonController {
     @GetMapping("/calendar/schedule")
     public String goScheduleManagement(){
         //일정관리로 이동
+//
+//        log.info("list......................." + pageRequestDTO);
+//
+//        model.addAttribute("result", calendarService.getList(pageRequestDTO));
 
         return "/calendar/schedule";
     }
