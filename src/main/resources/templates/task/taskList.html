@@ -87,84 +87,84 @@
                             </div>
 
                             <!--업무리스트 시작-->
-                                    <div class="card-body" name="mainContent">
-                                        <div name="mainList">
-                                        <div class="card-title">
-                                            <h4>[[${projectName}]]의 업무 목록</h4>
-                                        </div>
-                                        <div class="table-responsive" >
-                                            <table class="table">
-                                                <thead>
+                            <div class="card-body" name="mainContent">
+                                <div name="mainList">
+                                    <div class="card-title">
+                                        <h4>[[${projectName}]]의 업무 목록</h4>
+                                    </div>
+                                    <div class="table-responsive" >
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>업무제목</th>
+                                                <th>상태</th>
+                                                <th>등록일</th>
+                                                <th>담당자</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            <th:block th:each="task ,i : ${responseDTO.dtoList}">
                                                 <tr>
-                                                    <th>#</th>
-                                                    <th>업무제목</th>
-                                                    <th>상태</th>
-                                                    <th>등록일</th>
-                                                    <th>담당자</th>
+                                                    <th>[[${i.index + responseDTO.start }]]</th>
+                                                    <td name="readTask" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
+                                                    <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
+                                                    <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
+                                                    <td class="color-primary">[[${task.responsibleMember}]]</td>
                                                 </tr>
-                                                </thead>
-                                                <tbody>
 
-                                                <th:block th:each="task ,i : ${responseDTO.dtoList}">
-                                                        <tr>
-                                                            <th>[[${i.index + responseDTO.start }]]</th>
-                                                            <td name="readTask" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
-                                                            <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
-                                                            <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
-                                                            <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
-                                                            <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
-                                                            <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
-                                                            <td class="color-primary">[[${task.responsibleMember}]]</td>
-                                                        </tr>
+                                            </th:block>
+                                            </tbody>
+                                        </table>
+                                        <!--페이징-->
+                                        <div class="bootstrap-pagination">
+                                            <nav>
+                                                <ul class="pagination justify-content-end">
+                                                    <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                    </li>
 
-                                                </th:block>
-                                                </tbody>
-                                            </table>
-                                            <!--페이징-->
-                                            <div class="bootstrap-pagination">
-                                                <nav>
-                                                    <ul class="pagination justify-content-end">
-                                                        <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                    <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
+                                                        <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                                            <a class="page-link" th:data-num="${i}">[[${i}]]</a>
                                                         </li>
+                                                    </th:block>
 
-                                                        <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
-                                                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
-                                                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
-                                                            </li>
-                                                        </th:block>
-
-                                                        <li class="page-item" th:if="${responseDTO.next}">
-                                                            <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
-                                                        </li>
-                                                    </ul>
-                                                </nav>
-                                            </div>
-                                            <!--페이징 끝-->
+                                                    <li class="page-item" th:if="${responseDTO.next}">
+                                                        <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
                                         </div>
+                                        <!--페이징 끝-->
                                     </div>
-                                    </div>
+                                </div>
+                            </div>
                             <!--업무리스트 끝-->
 
                             <!-- panel -->
                             <!--여기에 페이징 예정-->
                             <div class="row">
-                               <!-- <div class="col-7">
-                                    <div class="text-left">1 - 20 of 568</div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="btn-group float-right">
-                                        <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
-                                        </button>
-                                        <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
-                                        </button>
-                                    </div>-->
-                                </div>
+                                <!-- <div class="col-7">
+                                     <div class="text-left">1 - 20 of 568</div>
+                                 </div>
+                                 <div class="col-5">
+                                     <div class="btn-group float-right">
+                                         <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
+                                         </button>
+                                         <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
+                                         </button>
+                                     </div>-->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!--모달창-->
@@ -174,28 +174,28 @@
             <br/>
 
             <form name="taskForm" method="post" action="/task/register">
-            <span><b>업무 제목</b></span>
-            <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
-            <br/>
-            <br/>
-            <span><b>작성자</b></span>
-            <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
-            <br/>
-            <br/>
-            <span><b>담당자</b></span>
-            <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
-                <option value="">------</option>
-                <!--여기에 멤버들 보임-->
+                <span><b>업무 제목</b></span>
+                <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+                <br/>
+                <br/>
+                <span><b>작성자</b></span>
+                <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+                <br/>
+                <br/>
+                <span><b>담당자</b></span>
+                <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
+                    <option value="">------</option>
+                    <!--여기에 멤버들 보임-->
 
-            </select>
-    <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
+                </select>
+                <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
 
                 <div class="card-body">
                     <span><b>첨부</b></span>
                     <div class="basic-form">
-                            <div class="form-group">
-                                <input type="file" class="form-control-file">
-                            </div>
+                        <div class="form-group">
+                            <input type="file" class="form-control-file">
+                        </div>
                     </div>
                 </div>
 
@@ -207,7 +207,7 @@
                             <h3>업무내용입력</h3>
                         </div>
                     </div>
-                 </div>
+                </div>
                 <!--에디터 끝-->
 
                 <input type="hidden" name="taskContent" value="">
@@ -215,7 +215,7 @@
                 <input type="hidden" name="projectName" th:value="${projectName}">
             </form>
             <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
-         </div>
+        </div>
     </div>
     <!--모달 끝-->
 
@@ -307,7 +307,7 @@
 
             //프로젝트 등록하기 버튼을 눌렀을 때
             $("button[name='registerTaskBtn']").on("click",function (e){
-               e.preventDefault();
+                e.preventDefault();
                 $(".modal_").show();
             });
 
@@ -382,11 +382,11 @@
         });
 
         //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
-       $("select[name='readTaskStatus']").change(function (){
+        $("select[name='readTaskStatus']").change(function (){
 
-           //변경 버튼 노출
-           $("button[name='statusChangeBtn']").show();
-       })
+            //변경 버튼 노출
+            $("button[name='statusChangeBtn']").show();
+        })
 
         //업무의 상세보기 -> 변경 버튼이 눌렸을 때
         $("button[name='statusChangeBtn']").on("click",function (e){
@@ -435,20 +435,3 @@
 </th:block>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

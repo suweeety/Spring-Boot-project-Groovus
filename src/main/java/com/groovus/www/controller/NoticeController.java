@@ -6,17 +6,19 @@ import com.groovus.www.dto.notice.NoticeRequestDTO;
 import com.groovus.www.dto.notice.NoticeResponseDTO;
 import com.groovus.www.security.MemberDetailsImpl;
 import com.groovus.www.service.NoticeService;
-import groovy.util.logging.Slf4j;
+import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@Log4j2
 public class NoticeController {
     private final NoticeService noticeService;
 
@@ -26,6 +28,7 @@ public class NoticeController {
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> createNotice(@RequestBody NoticeRequestDTO noticeRequestDTO,
                                                                        @PathVariable Long pid,
                                                                        @AuthenticationPrincipal MemberDetailsImpl userDetails) {
+
         return noticeService.createNotice(noticeRequestDTO, pid, userDetails);
     }
 
