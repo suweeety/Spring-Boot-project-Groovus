@@ -241,7 +241,6 @@
     <script th:inline="javascript">
         const errors = [[${errors}]];
         var uid = [[${#authentication.principal.uid}]];
-        /*var calTitle = [[${calendarDTO.cal_title}]]*/
 
         console.log(errors);
 
@@ -270,6 +269,7 @@
             });
         })
 
+
         !function (e) {
             "use strict";
             var t = function () {
@@ -290,7 +290,7 @@
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
             }, t.prototype.onEventClick = function (t, n, a) {
                 var o = this,
-                    i = e("<form method='get' action='/calendar'></form>");
+                    i = e("<form method='get' action='/calendar/modify'></form>");
                 i.append("<label>일정 제목</label>"), i
                     .append("<div class='input-group'>" +
                         "<input class='form-control' type=text value='" +  + "' style='border-radius: 10px; width: '/>" +
@@ -476,7 +476,7 @@
                         cal_link: i.find("input[name='cal_link']").val(),
                         create_user_id: i.find("input[name='create_user_id']").val()
                     }
-
+                    console.log(eventData.cal_cate);
                     $.ajax({
                         url: '/calendar/register',
                         type: 'POST',

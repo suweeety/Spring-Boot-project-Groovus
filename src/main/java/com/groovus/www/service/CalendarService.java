@@ -15,7 +15,7 @@ public interface CalendarService {
 //
 //    PageResultDTO<CalendarDTO, Calendar> getList(PageRequestDTO requestDTO);
 
-//    CalendarDTO readOne(Long cal_id);
+    CalendarDTO readOne(Long cal_id);
 
     void modify(CalendarDTO calendarDTO);
 

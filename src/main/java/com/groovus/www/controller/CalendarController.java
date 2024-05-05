@@ -67,6 +67,7 @@ public class CalendarController {
 
         log.info("calendarDTO: " + calendarDTO);
 
+
         Long cal_id = calendarService.register(calendarDTO);
 
         rttr.addFlashAttribute("result", cal_id);
@@ -75,7 +76,7 @@ public class CalendarController {
 
     }
 
-    @PutMapping("/modify")
+    @GetMapping({"/read", "/modify"})
     public void readAndModify(@Valid CalendarDTO calendarDTO, Model model) throws Exception{
 
         log.info("readAndModify 메서드 확인");
