@@ -82,13 +82,16 @@ public class Calendar extends BaseEntity{
         this.imageSet.clear();
     }
 
-    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate) {
+    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate, List<CalendarAttach> cal_attach, String cal_link, List<Member> cal_member) {
 
         this.cal_title = cal_title;
         this.cal_content = cal_content;
         this.cal_cate = cal_cate;
         this.cal_startDate = cal_startDate;
         this.cal_endDate = cal_endDate;
+        this.cal_attach = cal_attach;
+        this.cal_link = cal_link;
+        this.cal_member = cal_member;
     }
 
     // 수정일 및 등록일은 BaseEntity 참고

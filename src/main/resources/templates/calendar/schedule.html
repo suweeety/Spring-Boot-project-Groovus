@@ -241,7 +241,7 @@
     <script th:inline="javascript">
         const errors = [[${errors}]];
         var uid = [[${#authentication.principal.uid}]];
-        var calTitle = [[${calendarDTO.cal_title}]]
+        /*var calTitle = [[${calendarDTO.cal_title}]]*/
 
         console.log(errors);
 
@@ -270,7 +270,6 @@
             });
         })
 
-
         !function (e) {
             "use strict";
             var t = function () {
@@ -294,7 +293,7 @@
                     i = e("<form method='get' action='/calendar'></form>");
                 i.append("<label>일정 제목</label>"), i
                     .append("<div class='input-group'>" +
-                        "<input class='form-control' type=text value='" + calTitle + "' style='border-radius: 10px; width: '/>" +
+                        "<input class='form-control' type=text value='" +  + "' style='border-radius: 10px; width: '/>" +
                         "</div>")
                     .append("<label>일정 내용</label><div class='input-group'>" +
                         "<input class='form-control' type=text value='" + t.cal_content + "' style='border-radius: 10px; width: '/>" +

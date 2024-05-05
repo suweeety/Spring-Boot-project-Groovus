@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -74,14 +75,14 @@ public class CalendarController {
 
     }
 
-    @RequestMapping(value="/read")
-    public void readGET(Long cal_id, Model model) {
+    @PutMapping("/modify")
+    public void readAndModify(@Valid CalendarDTO calendarDTO, Model model) throws Exception{
 
-        log.info("readGET 메서드 확인");
+        log.info("readAndModify 메서드 확인");
 
-        CalendarDTO calendarDTO = calendarService.readOne(cal_id);
+        calendarService.modify(calendarDTO);
 
-        log.info("readGET 메서드 calendarDTO 확인: " + calendarDTO);
+        log.info("readAndModify 메서드 calendarDTO 확인: " + calendarDTO);
 
         model.addAttribute("calendarDTO", calendarDTO);
     }

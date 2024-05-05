@@ -60,28 +60,30 @@ public class CalendarServiceImpl implements CalendarService{
 //    }
 
 
-    @Override
-    public CalendarDTO readOne(Long cal_id) {
-
-        Optional<Calendar> result = calendarRepository.findById(cal_id);
-
-        Calendar calendar = result.orElseThrow();
-
-        CalendarDTO calendarDTO = modelMapper.map(calendar, CalendarDTO.class);
-
-        return calendarDTO;
-    }
+//    @Override
+//    public CalendarDTO readOne(Long cal_id) {
+//
+//        Optional<Calendar> result = calendarRepository.findById(cal_id);
+//
+//        Calendar calendar = result.orElseThrow();
+//
+//        CalendarDTO calendarDTO = modelMapper.map(calendar, CalendarDTO.class);
+//
+//        return calendarDTO;
+//    }
 
     @Override
     public void modify(CalendarDTO calendarDTO) {
 
-//        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
-//
-//        Calendar calendar = result.orElseThrow();
-//
-//        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content(), calendarDTO.getCal_Categories(), calendarDTO.getCal_endDate(), calendarDTO.getCal_startDate());
-//
-//        calendarRepository.save(calendar);
+        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
+
+        Calendar calendar = result.orElseThrow();
+
+        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content()
+                , calendarDTO.getCal_cate(), calendarDTO.getCal_endDate(), calendarDTO.getCal_startDate()
+                , calendarDTO.getCal_attach(), calendarDTO.getCal_link(), calendarDTO.getCal_member());
+
+        calendarRepository.save(calendar);
     }
 
     @Override
