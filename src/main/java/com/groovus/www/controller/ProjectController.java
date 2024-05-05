@@ -151,6 +151,12 @@ public class ProjectController {
         //업무탭으로 이동
         //여기서 ProjectPageRequestDTO를 받아서 처리할 예정
 
+
+        log.info("============키워드=====================");
+        log.info(pageRequestDTO.getKeyword());
+        log.info(pageRequestDTO.getType());
+        log.info("============키워드끝=====================");
+
         ProjectPageResponseDTO<TaskDTO> responseDTO = taskService.getTaskListWithPaging(pageRequestDTO,Long.parseLong(pid));
 
         model.addAttribute("responseDTO",responseDTO);
@@ -166,18 +172,5 @@ public class ProjectController {
 
         return "/task/taskList";
     }
-
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/message/{pid}/{projectName}")
-    public String goMessageList(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName,Model model){
-
-        model.addAttribute("pid",pid);
-        model.addAttribute("projectName",projectName);
-
-        return "/message/messageList";
-
-    }
-
 
 }

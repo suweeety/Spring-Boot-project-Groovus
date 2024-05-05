@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.RGBImageFilter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,9 +32,18 @@ public class TaskServiceImpl implements TaskService {
     private final TaskReReplyRepository taskReReplyRepository;
 
     @Override
-    public Long getTaskCount(Long pid) {
+    public List<Long> getTaskCount(Long pid , Long mid , String uid) {
 
-        return taskRepository.countTask(pid);
+        List<Long> taskCountList = new ArrayList<>();
+
+        Long allCount = taskRepository.countTask(pid);
+        Long myTaskCount = taskRepository.countMyTask(pid,mid);
+        Long delTaskCount = taskRepository.countDelTask(pid,uid);
+
+        taskCountList.add(allCount);
+        taskCountList.add(myTaskCount);
+        taskCountList.add(delTaskCount);
+        return taskCountList;
     }
 
     @Override
@@ -103,6 +113,34 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public int modifyTask(TaskDTO taskDTO) {
+        //업무 수정 메서드
+
+        Optional<Task> result = taskRepository.findById(Long.parseLong(taskDTO.getTid()));
+        if(!result.isEmpty()){
+
+            Optional<Member> memberResult = memberRepository.findByMid(Long.parseLong(taskDTO.getResponsibleMember()));
+
+            if(!memberResult.isEmpty()){
+
+                Member member = memberResult.get();
+
+                Task task = result.get();
+                task.changeTitle(taskDTO.getTaskTitle());
+                task.changeContent(taskDTO.getTaskContent());
+                task.changeResponsibleMember(member.getMid());
+
+                taskRepository.save(task);
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+
+        return 0;
+    }
+
+    @Override
     public String changeTaskStatus(String tid, String status ,String uid ,String prevStatus ,String modDate) {
         //업무의 상태를 변경
 
@@ -168,6 +206,26 @@ public class TaskServiceImpl implements TaskService {
 
         }else{
             return null;
+        }
+
+    }
+
+    @Override
+    public int deleteTask(String tid) {
+        //업무 delete처리
+
+        Optional<Task> result = taskRepository.getTaskByTid(Long.parseLong(tid));
+
+        if(!result.isEmpty()){
+
+            Task task = result.get();
+
+            task.changeDel(true);
+            taskRepository.save(task);
+
+            return 1;
+        }else{
+            return 0;
         }
 
     }

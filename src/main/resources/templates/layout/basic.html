@@ -329,8 +329,7 @@
             <i class="fa-regular fa-envelope"></i> <span class="nav-text">Message</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{'/project/message/' + ${pid}+'/'+${projectName}}">쪽지함</a></li>
-
+            <li><a th:href="@{'/message/list/' + ${pid}+'/'+${#authentication.principal.mid}+'/'+${projectName}}">쪽지함</a></li>
           </ul>
         </li>
 

@@ -11,10 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,10 +27,11 @@ public class TaskRestController {
     private final TaskService taskService;
 
     @PostMapping("/task/countall")
-    public ResponseEntity<Long> getTaskCount(String pid){
+    public ResponseEntity<List<Long>> getTaskCount(String pid , String mid, String uid){
+        List<Long> countList = taskService.getTaskCount(Long.parseLong(pid),Long.parseLong(mid),uid);
 
-        Long count = taskService.getTaskCount(Long.parseLong(pid));
-        return new ResponseEntity<>(count, HttpStatus.OK);
+        return new ResponseEntity<>(countList, HttpStatus.OK);
+
     }
 
     @PostMapping ("/task/view")
@@ -157,4 +155,29 @@ public class TaskRestController {
         return new ResponseEntity<>(replyDTOList, HttpStatus.OK);
     }
 
+    @PostMapping("/task/modify")
+    public ResponseEntity<String> modifyTask(TaskDTO taskDTO){
+
+        int result =taskService.modifyTask(taskDTO);
+
+        if(result>0){
+            return new ResponseEntity<>("success",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("fail",HttpStatus.OK);
+        }
+
+    }
+
+    @DeleteMapping("/task/delete")
+    public ResponseEntity<String> deleteTask(String tid){
+
+            int result = taskService.deleteTask(tid);
+
+            if(result>0){
+                return new ResponseEntity<String>("success",HttpStatus.OK);
+            }else {
+                return new ResponseEntity<String>("fail",HttpStatus.OK);
+            }
+
+    }
 }

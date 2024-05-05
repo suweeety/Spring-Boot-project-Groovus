@@ -39,7 +39,6 @@ public class QueryDslTaskRepositoryImpl extends QuerydslRepositorySupport implem
 
         JPQLQuery<Task> query = from(task);
         query.where(task.project.pid.eq(pid));
-        query.where(task.del.isFalse());
 
         if((types != null && types.length>0)&& keyword !=null){
             //검색 조건과 키워드가 있다면
@@ -51,21 +50,25 @@ public class QueryDslTaskRepositoryImpl extends QuerydslRepositorySupport implem
                 switch (type){
 
                     case "t" :
-                        booleanBuilder.or(task.taskTitle.contains(keyword));
+                        booleanBuilder.or(task.taskTitle.contains(keyword).and(task.del.isFalse()));
                         break;
                     case "c":
-                        booleanBuilder.or(task.taskContent.contains(keyword));
+                        booleanBuilder.or(task.taskContent.contains(keyword).and(task.del.isFalse()));
                         break;
                     case "w":
-                        booleanBuilder.or(task.taskWriter.contains(keyword));
+                        booleanBuilder.or(task.taskWriter.contains(keyword).and(task.del.isFalse()));
                         break;
                     case "r":
-                        booleanBuilder.or(task.responsibleMember.eq(Long.parseLong(keyword)));
+                        booleanBuilder.or(task.responsibleMember.eq(Long.parseLong(keyword)).and(task.del.isFalse()));
+                        break;
+                    case "d":
+                        booleanBuilder.or(task.del.isTrue().and(task.taskWriter.eq(keyword)));
                 }
             }//end for
-
             query.where(booleanBuilder);
-        }//end if
+        }else{
+            query.where(task.del.isFalse());
+        }
 
         this.getQuerydsl().applyPagination(pageable,query);
 
