@@ -62,6 +62,7 @@ public class QueryDslMessageRepositoryImpl extends QuerydslRepositorySupport imp
             query.where(booleanBuilder);
         }else{
             query.where(message.del.isFalse());
+            query.where(message.receiver.mid.eq(mid));
         }
         this.getQuerydsl().applyPagination(pageable,query);
         List<Message> messageList = query.fetch();
@@ -74,12 +75,15 @@ public class QueryDslMessageRepositoryImpl extends QuerydslRepositorySupport imp
             Member receiver = receiverResult.get();
             Member sender = senderResult.get();
 
+
+
             MessageDTO dto = MessageDTO.builder()
                     .lid(message1.getLid().toString())
                     .receiver(receiver.getUid())
                     .sender(sender.getUid())
                     .content(message1.getContent())
                     .title(message1.getTitle())
+                    .messageStatus(message1.getMessageStatus())
                     .sendDate(message1.getSendDate())
                     .build();
             return dto;

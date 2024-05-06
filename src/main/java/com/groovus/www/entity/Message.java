@@ -35,6 +35,9 @@ public class Message {
     private LocalDateTime sendDate; //보낸날짜
 
     @Builder.Default
+    private MessageStatus messageStatus = MessageStatus.UNREAD;
+
+    @Builder.Default
     private boolean del = false; //삭제 여부
 
     public void changeDel(boolean del){
@@ -42,4 +45,8 @@ public class Message {
         this.del = del;
     }
 
+    public void changeStatus(MessageStatus messageStatus){
+        //읽음 안읽음 여부 변경
+        this.messageStatus = messageStatus;
+    }
 }

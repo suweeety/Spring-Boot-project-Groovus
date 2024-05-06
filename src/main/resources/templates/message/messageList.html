@@ -74,7 +74,17 @@
                         </tr>
                         </thead>
                         <tbody>
+                            <th:block th:each="message , i : ${responseDTO.dtoList}">
+                              <tr>
+                                <th>[[${i.index + responseDTO.start }]]</th>
+                                <td name="messageTitle" class="messageTitle" th:data-tid="${message.lid}">[[${message.title}]]</td>
+                                <td th:if="${#strings.equals(message.messageStatus, 'UNREAD')}"><span class="badge badge-danger px-2">안읽음</span></td>
+                                <td th:if="${#strings.equals(message.messageStatus, 'READ')}"><span class="badge badge-light px-2">읽음</span></td>
+                                <td> [[${#temporals.format(message.sendDate, 'yyyy/MM/dd')}]]</td>
+                                <td class="color-primary">[[${message.sender}]]</td>
+                              </tr>
 
+                            </th:block>
                         </tbody>
                       </table>
                       <!--페이징-->
@@ -152,45 +162,65 @@
             <textarea name="content" class="textarea_editor form-control bg-light" rows="15" placeholder="Enter text ..."></textarea>
           </div>
         </form>
-        <h5 class="m-b-20"><i class="fa fa-paperclip m-r-5 f-s-18"></i> Attatchment</h5>
-        <form action="#" class="dropzone">
-          <div class="form-group">
-            <div class="fallback">
-              <input class="l-border-1" name="file" type="file" multiple="multiple">
-            </div>
-          </div>
-        </form>
+
       </div>
       <div class="text-left m-t-15">
-        <button class="btn btn-primary m-b-30 m-t-15 f-s-14 p-l-20 p-r-20 m-r-10" type="button" name="sendBtn"><i class="fa fa-paper-plane m-r-5"></i> 보내기 </button>
+        <button class="btn btn-primary m-b-30 m-t-15 f-s-14 p-l-20 p-r-20 m-r-10" type="button" name="sendMessageBtn"><i class="fa fa-paper-plane m-r-5"></i> 보내기 </button>
         <button class="btn btn-dark m-b-30 m-t-15 f-s-14 p-l-20 p-r-20" type="button" name="sendCancleBtn"><i class="ti-close m-r-5 f-s-12"></i> 취소 </button>
       </div>
     </div>
 
   </div>
 
-
-
-    <!-- #/ container -->>
+    <!-- #/ container -->
 
   <script th:inline="javascript">
 
     var mainList = $("div[name='mainList']"); //메인 리스트 저장
 
-
     $(document).ready(function (){
 
+      var pid = [[${pid}]];
+
+      $.ajax({
+        url:'/project/memberList',
+        data:{'pid':pid},
+        method:'post',
+        success:function (result){
+          insertMemberList(result);
+        }
+      });
+
+      //멤버 리스트 출력함수
+      function insertMemberList(result){
+
+        var selectList = $("select[name='memberSelect']");
+        var str ='';
+        for(var member of result){
+
+          str+='<option value="'+member.mid+'">'+member.uid+'</option>';
+
+        }
+        selectList.append(str);
+      }
+
+      $("select[name='memberSelect']").change(function (){
+
+        $("input[name='receiver']").val($("select[name='memberSelect'] :selected").text());
+
+      });
+
+
       $("#sendMessage").on("click",function (e){
+        //쪽지 쓰기 버튼이 눌렸을 때
         e.preventDefault();
 
         var messageForm = $("div[name='writeMessageForm']");
         messageForm.show();
         $("div[name='mainContent']").html(messageForm);
-
       });
 
-
-    });
+    }); //document.ready 끝
 
     $(document).on("click","button[name='sendCancleBtn']",function (e){
       //쪽지 쓰기 취소를 눌렀을 때
@@ -202,9 +232,34 @@
       $("div[name='mainContent']").html(mainList); // 미리 저장해놓았던 리스트를 다시 mainContent 영역에 넣음
 
 
+    });
+
+    $(document).on("click","button[name='sendMessageBtn']",function (e){
+      e.preventDefault();
+
+      var title = $("input[name='title']").val();
+      var content = $("textarea[name='content']").val();
+      var receiver = $("input[name='receiver']").val();
+      var sender = [[${#authentication.principal.uid}]];
+
+      $.ajax({
+        url:'/message/send',
+        type:'post',
+        data:{'title':title,
+        'content':content,
+        'receiver':receiver,
+        'sender':sender ,
+        'pid':[[${pid}]]},
+        success:function (result){
+          if(result=='success'){
+            alert("쪽지를 보냈습니다");
+            location.reload();
+          }
+        }
+      }); //ajax끝
 
 
-    })
+    });
 
 
 

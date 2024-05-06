@@ -1,5 +1,6 @@
 package com.groovus.www.dto;
 
+import com.groovus.www.entity.MessageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,8 @@ public class MessageDTO {
     private  String receiver; //받는이
 
     private  String sender; //보낸이
+    
+    private MessageStatus messageStatus; //읽음 여부
 
     private LocalDateTime sendDate; //보낸날짜
     
