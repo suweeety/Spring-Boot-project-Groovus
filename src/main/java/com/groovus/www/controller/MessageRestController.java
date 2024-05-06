@@ -19,7 +19,6 @@ public class MessageRestController {
 
     private final MessageService messageService;
 
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/send")
     public ResponseEntity<String> sendMessage(MessageDTO messageDTO, String pid){
@@ -29,5 +28,12 @@ public class MessageRestController {
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/read")
+    public ResponseEntity<MessageDTO> readMessage(String lid , String mid){
 
+        MessageDTO messageDTO = messageService.readMessage(Long.parseLong(lid) , Long.parseLong(mid));
+
+        return new ResponseEntity<>(messageDTO,HttpStatus.OK);
+    }
 }

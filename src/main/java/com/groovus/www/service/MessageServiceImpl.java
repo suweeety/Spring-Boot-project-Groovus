@@ -5,6 +5,7 @@ import com.groovus.www.dto.ProjectPageRequestDTO;
 import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Message;
+import com.groovus.www.entity.MessageStatus;
 import com.groovus.www.entity.Project;
 import com.groovus.www.repository.MemberRepository;
 import com.groovus.www.repository.MessageRepository;
@@ -72,5 +73,42 @@ public class MessageServiceImpl implements MessageService {
                 .build();
 
         messageRepository.save(message);
+    }
+
+    @Override
+    public MessageDTO readMessage(Long lid , Long mid) {
+
+        Optional<Message> result = messageRepository.findById(lid);
+
+        if(!result.isEmpty()){
+            Message message = result.get();
+
+            if(message.getMessageStatus() == MessageStatus.UNREAD && ( message.getSender().getMid() == message.getReceiver().getMid() || message.getSender().getMid() != mid )){
+                message.changeStatus(MessageStatus.READ); //읽음 처리
+                messageRepository.save(message);
+            }
+
+            //받는이
+            Optional<Member> receiverResult = memberRepository.findByMid(message.getReceiver().getMid());
+            Member receiver = receiverResult.get();
+            //보내는이
+            Optional<Member> senderResult =memberRepository.findByMid(message.getSender().getMid());
+            Member sender = senderResult.get();
+
+
+            MessageDTO messageDTO = MessageDTO.builder()
+                    .title(message.getTitle())
+                    .lid(message.getLid().toString())
+                    .receiver(receiver.getUid())
+                    .content(message.getContent())
+                    .sender(sender.getUid())
+                    .messageStatus(message.getMessageStatus())
+                    .sendDate(message.getSendDate())
+                    .build();
+
+            return messageDTO;
+        }else{
+            return null;
+        }
     }
 }

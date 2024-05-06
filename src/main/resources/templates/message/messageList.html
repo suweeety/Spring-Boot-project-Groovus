@@ -14,6 +14,12 @@
         background-color: #56c53d;
       }
 
+      .messageTitle:hover{
+        color: #0d4dff;
+        cursor: pointer;
+      }
+
+
     </style>
 
   </th:block>
@@ -39,9 +45,9 @@
 
               <div class="email-left-box"><a href="#" class="btn btn-primary btn-block" style="background-color: #56c53d;" id="sendMessage">쪽지쓰기</a>
                 <div class="mail-list mt-4">
-                  <a href="#" class="list-group-item border-0 text-primary p-r-0"><i class="fa fa-inbox font-18 align-middle mr-2"></i> <b>쪽지함</b> <span class="badge badge-primary badge-sm float-right m-t-5">198</span> </a>
-                  <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-paper-plane font-18 align-middle mr-2"></i>보낸쪽지</a>
-                  <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2"></i>휴지통</a>
+                  <a th:href="@{'/message/list/' + ${pid}+'/'+${#authentication.principal.mid}+'/'+${projectName}}" class="list-group-item border-0 text-primary p-r-0" id="MessageBox"><i class="fa fa-inbox font-18 align-middle mr-2"></i> <b>쪽지함</b> <span class="badge badge-primary badge-sm float-right m-t-5">198</span> </a>
+                  <a th:href="@{'/message/list/' + ${pid}+'/'+${#authentication.principal.mid}+'/'+${projectName}+'?type=s&keyword='+${#authentication.principal.mid}}" class="list-group-item border-0 p-r-0" id="sendMessageBox"><i class="fa fa-paper-plane font-18 align-middle mr-2"></i><b>보낸쪽지</b></a>
+                  <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2" id="trashMessageBox"></i><b>휴지통</b></a>
                 </div>
               </div>
 
@@ -77,7 +83,7 @@
                             <th:block th:each="message , i : ${responseDTO.dtoList}">
                               <tr>
                                 <th>[[${i.index + responseDTO.start }]]</th>
-                                <td name="messageTitle" class="messageTitle" th:data-tid="${message.lid}">[[${message.title}]]</td>
+                                <td name="messageTitle" class="messageTitle" th:data-lid="${message.lid}">[[${message.title}]]</td>
                                 <td th:if="${#strings.equals(message.messageStatus, 'UNREAD')}"><span class="badge badge-danger px-2">안읽음</span></td>
                                 <td th:if="${#strings.equals(message.messageStatus, 'READ')}"><span class="badge badge-light px-2">읽음</span></td>
                                 <td> [[${#temporals.format(message.sendDate, 'yyyy/MM/dd')}]]</td>
@@ -88,7 +94,24 @@
                         </tbody>
                       </table>
                       <!--페이징-->
+                      <div class="bootstrap-pagination">
+                        <nav>
+                          <ul class="pagination justify-content-end">
+                            <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                            </li>
 
+                            <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
+                              <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                              </li>
+                            </th:block>
+
+                            <li class="page-item" th:if="${responseDTO.next}">
+                              <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
                       <!--페이징 끝-->
                     </div>
                   </div>
@@ -107,36 +130,6 @@
   <div name="writeMessageFormArea">
 
     <div class="email-right-box" style="margin-left: 0; display: none;" name="writeMessageForm">
-      <div class="toolbar" role="toolbar">
-        <div class="btn-group m-b-20">
-          <button type="button" class="btn btn-light"><i class="fa fa-archive"></i>
-          </button>
-          <button type="button" class="btn btn-light"><i class="fa fa-exclamation-circle"></i>
-          </button>
-          <button type="button" class="btn btn-light"><i class="fa fa-trash"></i>
-          </button>
-        </div>
-        <div class="btn-group m-b-20">
-          <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown"><i class="fa fa-folder"></i>  <b class="caret m-l-5"></b>
-          </button>
-          <div class="dropdown-menu"><span class="dropdown-header">Move to</span>  <a class="dropdown-item" href="javascript: void(0);">Social</a>  <a class="dropdown-item" href="javascript: void(0);">Promotions</a>  <a class="dropdown-item" href="javascript: void(0);">Updates</a>
-            <a class="dropdown-item" href="javascript: void(0);">Forums</a>
-          </div>
-        </div>
-        <div class="btn-group m-b-20">
-          <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tag"></i>  <b class="caret m-l-5"></b>
-          </button>
-          <div class="dropdown-menu"><span class="dropdown-header">Label as:</span>  <a class="dropdown-item" href="javascript: void(0);">Updates</a>  <a class="dropdown-item" href="javascript: void(0);">Social</a>  <a class="dropdown-item" href="javascript: void(0);">Promotions</a>
-            <a class="dropdown-item" href="javascript: void(0);">Forums</a>
-          </div>
-        </div>
-        <div class="btn-group m-b-20">
-          <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">More <span class="caret m-l-5"></span>
-          </button>
-          <div class="dropdown-menu"><span class="dropdown-header">More Option :</span>  <a class="dropdown-item" href="javascript: void(0);">Mark as Unread</a>  <a class="dropdown-item" href="javascript: void(0);">Add to Tasks</a>  <a class="dropdown-item" href="javascript: void(0);">Add Star</a>  <a class="dropdown-item" href="javascript: void(0);">Mute</a>
-          </div>
-        </div>
-      </div>
       <div class="compose-content mt-5">
         <form action="#">
           <input type="hidden" name="sender" th:value="${#authentication.principal.uid}">
@@ -171,12 +164,49 @@
     </div>
 
   </div>
+  <!--writeMessageFormArea끝-->
 
+  <!--readMessageArea-->
+  <div name="readMessageArea">
+
+    <div class="email-right-box" name="readMessage" style="margin-left: 0; display: none;">
+      <div class="toolbar" role="toolbar">
+
+        <div class="btn-group m-b-20">
+          <button type="button" class="btn btn-light" name="backBtn"><i class="fa-solid fa-list"></i></button>
+          <button type="button" class="btn btn-light" name="deleteBtn"><i class="fa fa-trash"></i></button>
+        </div>
+
+      </div>
+      <div class="read-content">
+        <hr>
+        <div class="media mb-4 mt-1">
+          <div class="media-body">
+            <span class="float-right" name="sendDate" >07:23 AM</span>
+            <h4 class="m-0 text-primary" name="messageTitle">제목</h4>
+            <small class="text-muted" name="sender">FROM: 보내는사람</small> <br/>
+            <small class="text-muted" name="receiver">To: 받는사람</small>
+          </div>
+        </div>
+        <hr>
+        <input name="readMessageLid" type="hidden">
+        <!--여기에 쪽지 내용-->
+        <div name="messageContent">
+
+
+
+        </div>
+        <hr>
+    </div>
+
+    </div>
+  </div><!--readMessageArea 끝-->
     <!-- #/ container -->
 
   <script th:inline="javascript">
 
     var mainList = $("div[name='mainList']"); //메인 리스트 저장
+    var type = [[${pageRequestDTO.type}]];
 
     $(document).ready(function (){
 
@@ -220,6 +250,17 @@
         $("div[name='mainContent']").html(messageForm);
       });
 
+      if(type =='s'){
+
+        $("#sendMessageBox").addClass("text-primary");
+        $("#MessageBox").removeClass("text-primary");
+        $("#trashMessageBox").removeClass("text-primary");
+
+      }
+
+
+
+
     }); //document.ready 끝
 
     $(document).on("click","button[name='sendCancleBtn']",function (e){
@@ -235,6 +276,7 @@
     });
 
     $(document).on("click","button[name='sendMessageBtn']",function (e){
+      //쪽지 전송 버튼이 눌렸을 때
       e.preventDefault();
 
       var title = $("input[name='title']").val();
@@ -258,12 +300,44 @@
         }
       }); //ajax끝
 
+    });
+
+    $(document).on("click","td[name='messageTitle']",function (e){
+      //쪽지 제목이 클릭됐을 때
+      var lid = $(this).data("lid");
+      var mid = [[${#authentication.principal.mid}]]
+
+      $.ajax({
+        url:'/message/read',
+        type:'post',
+        data:{'lid':lid,
+        'mid':mid},
+        success:function (result){
+          if(result != null){
+            readMessageFunc(result);
+          }
+        }
+      });
 
     });
 
+    function readMessageFunc(result){
 
+      $("span[name='sendDate']").text(result.sendDate);
+      $("h4[name='messageTitle']").text(result.title);
+      $("small[name='sender']").text("From:  "+result.sender);
+      $("small[name='receiver']").text("To:  "+result.receiver);
+      $("input[name='readMessageLid']").val(result.lid);
+      $("div[name='messageContent']").html(result.content);
 
+      $("div[name='mainContent']").html($("div[name='readMessage']").html());
+    }
 
+    $(document).on("click","button[name='backBtn']",function (e){
+      //뒤로가기 버튼이 눌렸을 때
+      e.preventDefault();
+      $("div[name='mainContent']").html(mainList);
+    });
 
   </script>
 
