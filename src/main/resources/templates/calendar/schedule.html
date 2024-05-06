@@ -31,26 +31,13 @@
     <script th:src="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/js/fullcalendar.min.js}"></script>
     <!--<script th:src="@{/quixlab-bootstrap-main/theme/js/plugins-init/fullcalendar-init.js}"></script>-->
 
-
-    <th:block layout:fragment="css">
-
-
-
-
-            <style>
-
-                #logoImg {
-                    background-color: red;
-                }
-
-            </style>
-
-        </th:block>
-
     </head>
 
 
+
     <th:block layout:fragment="content">
+
+        <input type="button" id="testtest"/>
 
         <!--**********************************
                     Content body start
@@ -94,7 +81,7 @@
                                         </div>
                                         <div class="external-event bg-business-trip text-white" data-class="bg-business-trip">
                                             <i
-                                                    class="fa fa-move"></i>외근  일정
+                                                    class="fa fa-move"></i>외근 일정
                                         </div>
                                         <div class="external-event bg-dark text-white" data-class="bg-dark"><i
                                                 class="fa fa-move"></i>Create New theme
@@ -239,6 +226,29 @@
 
 
     <script th:inline="javascript">
+
+        window.onload = function (){
+            alert("window.onload 성공");
+            $("#testtest").click();
+        }
+
+        $("#testtest").click(function (){
+            alert("실행 확인???????")
+            $.ajax({
+                url: '/calendar/readTest',
+                type: 'GET',
+                contentType:'application/json; charset=UTF-8',
+                success: function (data) {
+                    alert("일정이 성공적으로 저장되었습니다.");
+                    console.log("일정이 성공적으로 저장되었습니다.");
+                },
+                error: function (xhr, status, error) {
+                    alert("일정 저장에 실패했습니다.");
+                    console.error("일정 저장에 실패했습니다:", error);
+                }
+            })
+        })
+
         const errors = [[${errors}]];
         var uid = [[${#authentication.principal.uid}]];
 
@@ -265,10 +275,9 @@
             $("button[name='saveBtn']").on("click", function (e){
 
                 e.preventDefault();
-                alert("눌립");
+                alert("saveBtn 눌림 성공");
             });
         })
-
 
         !function (e) {
             "use strict";
@@ -290,7 +299,7 @@
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
             }, t.prototype.onEventClick = function (t, n, a) {
                 var o = this,
-                    i = e("<form method='get' action='/calendar/modify'></form>");
+                    i = e("<form id='readFormTag' method='get' action='/calendar/read'></form>");
                 i.append("<label>일정 제목</label>"), i
                     .append("<div class='input-group'>" +
                         "<input class='form-control' type=text value='" +  + "' style='border-radius: 10px; width: '/>" +
@@ -300,7 +309,6 @@
                         "<span class='input-group-btn'>" +
                         "<button type='submit' class='btn btn-success waves-effect waves-light'>" +
                         "<i class='fa fa-check'></i>변경</button></span></div>")
-
                     ,
                     o.$modal2.modal({
                         backdrop: "static"
@@ -314,6 +322,25 @@
                     }), o.$modal2.find("form").on("submit", function () {
                     return t.title = i.find("input[type=text]").val(), o.$calendarObj.fullCalendar("updateEvent", t), o.$modal2.modal("hide"), !1
                 })
+                o.$modal.find(".save-event").unbind("click").on("click", function () {
+
+                }), o.$modal.find("form").on("submit", function () {
+                    var e = i.find("input[name='cal_title']").val(),
+                        a = (i.find("select[name='cal_cate']").val(),
+                            i.find("input[name='cal_content']").val(),
+                            i.find("input[name='cal_startDate']").val(),
+                            i.find("input[name='cal_endDate']").val(),
+                            i.find("input[name='cal_attach']").val(),
+                            i.find("input[name='cal_link']").val(),
+                            i.find("input[name='create_user_id']").val());
+                    return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
+                        title: e,
+                        start: t,
+                        end: n,
+                        allDay: !1,
+                        className: a
+                    }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
+                }), o.$calendarObj.fullCalendar("unselect")
             }
             t.prototype.onSelect = function (t, n, a) {
                 var o = this;
@@ -380,9 +407,7 @@
                     , o.$modal.find(".delete-event").hide().end()
                     .find(".save-event").show().end()
                     .find(".modal-body").empty().prepend(i).end()
-
                     ,
-
                     $(document).ready(function() {
 
                         var memberInputs = '';
@@ -476,10 +501,11 @@
                         cal_link: i.find("input[name='cal_link']").val(),
                         create_user_id: i.find("input[name='create_user_id']").val()
                     }
+                    console.log("잘했어. 다시 읽어라 좀. !!!!");
                     console.log(eventData.cal_cate);
                     $.ajax({
                         url: '/calendar/register',
-                        type: 'POST',
+                        type: 'GET',
                         data: eventData,
                         success: function (response) {
                             alert("일정이 성공적으로 저장되었습니다.");
@@ -521,6 +547,7 @@
                     })
                 })
             }, t.prototype.init = function () {
+                var calendar = [[${calendarDTO}]]
                 this.enableDrag();
                 var t = new Date,
                     n = (t.getDate(), t.getMonth(), t.getFullYear(), new Date(e.now())),
@@ -537,6 +564,10 @@
                         title: "Buy a Theme",
                         start: new Date(e.now() + 338e6),
                         className: "bg-team"
+                    }, {
+                        title: [[${calendar.cal_title}]],
+                        start: new Date(e.now() + 338e6),
+                        className: "팀 회의"
                     }],
                     o = this;
                 o.$calendarObj = o.$calendar.fullCalendar({

@@ -16,6 +16,10 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     Optional<Calendar> findByIdWithImages(Long cal_id);
 
     @EntityGraph(attributePaths = {"imageSet"})
+    @Query("SELECT c FROM Calendar c WHERE c.cal_id = :cal_id")
+    Optional<Calendar> findByCalId(Long cal_id);
+
+    @EntityGraph(attributePaths = {"imageSet"})
     @Query("SELECT m FROM Member m WHERE m.mid =:mid")
     Optional<Member> findByUsername(@Param("mid") Long mid);
 

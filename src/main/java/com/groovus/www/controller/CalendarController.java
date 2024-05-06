@@ -11,18 +11,20 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -76,16 +78,52 @@ public class CalendarController {
 
     }
 
-    @GetMapping({"/read", "/modify"})
-    public void readAndModify(@Valid CalendarDTO calendarDTO, Model model) throws Exception{
+    @GetMapping("/registerTest")
+    public String registerPOSTTest(@Valid CalendarDTO calendarDTO, BindingResult bindingResult, RedirectAttributes rttr) {
 
-        log.info("readAndModify 메서드 확인");
+        log.info("registerPOST 확인");
 
-        calendarService.modify(calendarDTO);
+        log.info("calendarDTO: " + calendarDTO);
 
-        log.info("readAndModify 메서드 calendarDTO 확인: " + calendarDTO);
+        return "redirect:/calendar/schedule";
 
-        model.addAttribute("calendarDTO", calendarDTO);
+    }
+
+
+//    @GetMapping("/readTest")
+//    public String readAndModify(@Valid CalendarDTO calendarDTO, Model model) throws Exception{
+//
+//        log.info("readAndModify 메서드 확인");
+//
+//        //calendarService.modify(calendarDTO);
+//
+//        //log.info("readAndModify 메서드 calendarDTO 확인: " + calendarDTO);
+//
+//        //model.addAttribute("calendarDTO", calendarDTO);
+//
+//        return "redirect:/calendar/schedule";
+//    }
+
+//    @GetMapping("/readTest")
+//    public String test(Long cal_id, Model model) throws Exception {
+//
+//        log.info("test 메서드 확인");
+//
+//        CalendarDTO calendarDTO = calendarService.readOne(cal_id);
+//
+//        log.info("cal_id@@!!!: " + cal_id);
+//        log.info("calendarDTO@@!!!: " + calendarDTO);
+//
+//        model.addAttribute("calendarDTO", calendarDTO);
+//
+//        return "redirect:/calendar/schedule";
+//    }
+
+    @GetMapping(value = "/readTest/{cal_id}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+    public ResponseEntity<CalendarDTO> test(@PathVariable("cal_id") Long cal_id) {
+
+        log.info("test 메서드 확인!!!!");
+        return new ResponseEntity<CalendarDTO>(calendarService.readOne(cal_id), HttpStatus.OK);
     }
 
 }

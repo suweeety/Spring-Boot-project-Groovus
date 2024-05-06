@@ -63,13 +63,10 @@ public class CalendarServiceImpl implements CalendarService{
     @Override
     public CalendarDTO readOne(Long cal_id) {
 
+        log.info("cal_id in CalendarServiceImpl: " + cal_id);
         Optional<Calendar> result = calendarRepository.findById(cal_id);
 
-        Calendar calendar = result.orElseThrow();
-
-        CalendarDTO calendarDTO = modelMapper.map(calendar, CalendarDTO.class);
-
-        return calendarDTO;
+        return result.isPresent()? entityToDto(result.get()):null;
     }
 
     @Override
