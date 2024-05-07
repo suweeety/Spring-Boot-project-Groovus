@@ -23,14 +23,13 @@ public class MemberRepositoryTests {
     public void insertMember(){
 
         Member member = Member.builder()
-                .uid("user")
+                .uid("user4")
                 .upw(passwordEncoder.encode("1111"))
-                .email("user@aaa.com")
-                .uname("김정은")
+                .email("user3@aaa.com")
+                .uname("강유저")
                 .build();
 
         member.addRole(MemberRole.USER);
-
         memberRepository.save(member);
     }
 

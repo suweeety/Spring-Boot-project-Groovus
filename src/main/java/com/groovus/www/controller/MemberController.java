@@ -40,7 +40,11 @@ public class MemberController {
 
     }
 
+    @GetMapping("/join")
+    public String signUp(){
 
+        return "/member/join";
+    }
 
 
 }

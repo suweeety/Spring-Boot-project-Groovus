@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = "tid")
+@ToString(exclude = "task")
 public class TaskReply extends BaseEntity {
 
     @Id
