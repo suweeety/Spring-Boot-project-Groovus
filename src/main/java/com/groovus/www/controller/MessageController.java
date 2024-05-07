@@ -36,7 +36,7 @@ public class MessageController {
         model.addAttribute("pid",pid);
         model.addAttribute("projectName",projectName);
 
-        return "/message/messageList";
+        return "message/messageList";
 
     }
 

@@ -59,7 +59,7 @@ public class ProjectController {
 
         }else {
 
-            return "/main/register";
+            return "main/register";
         }
     }
 
@@ -183,7 +183,7 @@ public class ProjectController {
         log.info(pageRequestDTO);
         log.info("==============================");
 
-        return "/task/taskList";
+        return "task/taskList";
     }
 
 }

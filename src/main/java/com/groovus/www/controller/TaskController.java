@@ -78,7 +78,7 @@ public class TaskController {
         log.info(pid);
         log.info("==============================");
 
-        return "/task/taskList";
+        return "task/taskList";
 
     }
 
