@@ -227,30 +227,14 @@
 
     <script th:inline="javascript">
 
-        window.onload = function (){
-            alert("window.onload 성공");
-            $("#testtest").click();
-        }
-
-        $("#testtest").click(function (){
-            alert("실행 확인???????")
-            $.ajax({
-                url: '/calendar/readTest',
-                type: 'GET',
-                contentType:'application/json; charset=UTF-8',
-                success: function (data) {
-                    alert("일정이 성공적으로 저장되었습니다.");
-                    console.log("일정이 성공적으로 저장되었습니다.");
-                },
-                error: function (xhr, status, error) {
-                    alert("일정 저장에 실패했습니다.");
-                    console.error("일정 저장에 실패했습니다:", error);
-                }
-            })
-        })
-
         const errors = [[${errors}]];
         var uid = [[${#authentication.principal.uid}]];
+        var calendarList = [[${calendarDTO}]];
+        var cal_id;
+        var pid;
+        console.log('calendar:'+calendar);
+        console.log('calendarList:'+calendarList);
+        console.log('cal_id: ' + cal_id);
 
         console.log(errors);
 
@@ -297,51 +281,81 @@
                     o = t.attr("data-class"),
                     i = e.extend({}, a);
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
-            }, t.prototype.onEventClick = function (t, n, a) {
-                var o = this,
-                    i = e("<form id='readFormTag' method='get' action='/calendar/read'></form>");
-                i.append("<label>일정 제목</label>"), i
-                    .append("<div class='input-group'>" +
-                        "<input class='form-control' type=text value='" +  + "' style='border-radius: 10px; width: '/>" +
-                        "</div>")
-                    .append("<label>일정 내용</label><div class='input-group'>" +
-                        "<input class='form-control' type=text value='" + t.cal_content + "' style='border-radius: 10px; width: '/>" +
-                        "<span class='input-group-btn'>" +
-                        "<button type='submit' class='btn btn-success waves-effect waves-light'>" +
-                        "<i class='fa fa-check'></i>변경</button></span></div>")
-                    ,
-                    o.$modal2.modal({
-                        backdrop: "static"
-                    }), o.$modal2.find(".cancel-event").show().end()
-                    .find(".save-event").hide().end()
-                    .find(".modal-body").empty().prepend(i).end()
-                    .find(".cancel-event").unbind("click").on("click", function () {
-                        o.$calendarObj.fullCalendar("removeEvents", function (e) {
-                            return e._id == t._id
-                        }), o.$modal2.modal("hide")
-                    }), o.$modal2.find("form").on("submit", function () {
-                    return t.title = i.find("input[type=text]").val(), o.$calendarObj.fullCalendar("updateEvent", t), o.$modal2.modal("hide"), !1
-                })
-                o.$modal.find(".save-event").unbind("click").on("click", function () {
+            },
+                $(document).ready(function () {
 
-                }), o.$modal.find("form").on("submit", function () {
-                    var e = i.find("input[name='cal_title']").val(),
-                        a = (i.find("select[name='cal_cate']").val(),
-                            i.find("input[name='cal_content']").val(),
-                            i.find("input[name='cal_startDate']").val(),
-                            i.find("input[name='cal_endDate']").val(),
-                            i.find("input[name='cal_attach']").val(),
-                            i.find("input[name='cal_link']").val(),
-                            i.find("input[name='create_user_id']").val());
-                    return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
-                        title: e,
-                        start: t,
-                        end: n,
-                        allDay: !1,
-                        className: a
-                    }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
-                }), o.$calendarObj.fullCalendar("unselect")
-            }
+                t.prototype.onEventClick = function(t, n, a) {
+
+                    $.ajax({
+                        url: '/calendar/read/' + cal_id + '/' + pid,
+                        type: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (response) {
+                            cal_id = response;
+                            alert("일정 보기.");
+                            console.log("일정이 성공적으로 저장되었습니다.");
+                            var o = this,
+                                i = e("<form id='readFormTag' method='get' action='/calendar/read/cal_id=?'></form>");
+                            i.append("<label>일정 제목</label>"), i
+                                .append("<div class='input-group'>" +
+                                    "<input id='titleInput' class='form-control' type=text value='" + calendar.cal_title + "' style='border-radius: 10px; width: '/>" +
+                                    "</div>")
+                            i.append("<label>일정 내용</label><div class='input-group'>" +
+                                "<input id='contentInput' class='form-control' type=text value='" + calendar.cal_content + "' style='border-radius: 10px; width: '/>" +
+                                "<span class='input-group-btn'>" +
+                                "<button type='button' id='updateButton' class='btn btn-success waves-effect waves-light'>" +
+                                "<i class='fa fa-check'></i>변경</button></span></div>")
+                                ,
+                                o.$modal2.modal({
+                                    backdrop: "static"
+                                }), o.$modal2.find(".cancel-event").show().end()
+                                .find(".save-event").hide().end()
+                                .find(".modal-body").empty().prepend(i).end()
+                                .find(".cancel-event").unbind("click").on("click", function () {
+                                    o.$calendarObj.fullCalendar("removeEvents", function (e) {
+                                        return e._id == t._id
+                                    }), o.$modal2.modal("hide")
+                                })
+                            o.$modal2.modal("hide")
+                        },
+                        error: function (xhr, status, error) {
+                            alert("일정 저장에 실패했습니다.");
+                            console.error("일정 저장에 실패했습니다:", error);
+                        }
+                    })
+
+
+
+                        ,
+                        o.$modal2.find("#updateButton").on("click", function () {
+                            var title = $('#titleInput').val();
+                            var content = $('#contentInput').val();
+
+                            // AJAX를 통해 값을 서버로 전송하고 응답을 처리합니다.
+                            $.ajax({
+                                url: '/calendar/update', // AJAX 요청을 보낼 엔드포인트 URL
+                                type: 'POST', // 요청 메서드 (POST, GET 등)
+                                data: {
+                                    id: t.id, // 이벤트 ID 또는 식별자
+                                    title: title,
+                                    content: content
+                                },
+                                success: function (response) {
+                                    // 성공적으로 요청이 완료되었을 때의 처리
+                                    console.log("업데이트 완료:", response);
+                                    // 여기에 필요한 추가적인 처리를 추가할 수 있습니다.
+                                },
+                                error: function (xhr, status, error) {
+                                    // 요청이 실패했을 때의 처리
+                                    console.error("에러 발생:", error);
+                                    // 여기에 필요한 추가적인 처리를 추가할 수 있습니다.
+                                }
+                            })
+                            o.$modal2.modal("hide");
+                        });
+             }
+           })
             t.prototype.onSelect = function (t, n, a) {
                 var o = this;
                 o.$modal.modal({
@@ -431,61 +445,6 @@
                     });
 
 
-                    $('.custom-dropdown').click(function () {
-                        // 현재 클릭된 요소에서 dropdown-menu를 찾아 토글합니다.
-                        $(this).find('.dropdown-menu').toggleClass('show');
-                    });
-
-                $(document).click(function (e) {
-                    if (!$(e.target).closest('.custom-dropdown').length) {
-                        $('.dropdown-menu').removeClass('show');
-                    }
-                });
-
-                /*$('.upload-button').click(function () {
-                        var formData = new FormData();
-
-                        var inputFile = $("input[type='file']");
-
-                        var files = inputFile[0].files;
-
-                        for (var i=0; i<files.length; i++) {
-                            console.log(files[i]);
-                            formData.append("cal_attach", files[i]);
-                        }
-
-                        $.ajax({
-                            url: '/uploadAjax',
-                            processData: false,
-                            contentType: false,
-                            data: formData,
-                            type: 'POST',
-                            dataType: 'json',
-                            success: function (result) {
-                                showUploadedImages(result);
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.log(textStatus);
-                            }
-                        })
-                    });
-
-                    function showUploadedImages(arr) {
-                        console.log(arr);
-
-                        const divArea = $(".uploadResult");
-
-                        var str = "";
-
-                        for (let i=0; i<arr.length; i++) {
-                            str += "<div>";
-                            str += "<img src='/display?fileName=" + arr[i].thumbnailURL + "'>";
-                            str += "<button class='removeBtn' data-name='" + arr[i].imageURL + "'>Remove</button>"
-                            str += "</div>";
-                        }
-                        divArea.append(str);
-                    }*/
-
                 // 이벤트 핸들러 등록
                 o.$modal.find(".save-event").unbind("click").on("click", function () {
 
@@ -505,11 +464,12 @@
                     console.log(eventData.cal_cate);
                     $.ajax({
                         url: '/calendar/register',
-                        type: 'GET',
+                        type: 'POST',
                         data: eventData,
                         success: function (response) {
                             alert("일정이 성공적으로 저장되었습니다.");
                             console.log("일정이 성공적으로 저장되었습니다.");
+                            o.$modal.modal("hide")
                         },
                         error: function (xhr, status, error) {
                             alert("일정 저장에 실패했습니다.");
@@ -547,29 +507,20 @@
                     })
                 })
             }, t.prototype.init = function () {
-                var calendar = [[${calendarDTO}]]
+
                 this.enableDrag();
                 var t = new Date,
                     n = (t.getDate(), t.getMonth(), t.getFullYear(), new Date(e.now())),
-                    a = [{
-                        title: "Hey!",
-                        start: new Date(e.now() + 158e6),
-                        className: "bg-team"
-                    }, {
-                        title: "See John Deo",
-                        start: n,
-                        end: n,
-                        className: "bg-team"
-                    }, {
-                        title: "Buy a Theme",
-                        start: new Date(e.now() + 338e6),
-                        className: "bg-team"
-                    }, {
-                        title: [[${calendar.cal_title}]],
-                        start: new Date(e.now() + 338e6),
-                        className: "팀 회의"
-                    }],
+                    a = [],
                     o = this;
+                for (var i = 0; i < calendarList.length; i++) {
+                    a.push({
+                        title: calendarList[i].cal_title,
+                        start: calendarList[i].cal_startDate,
+                        end: calendarList[i].cal_endDate,
+                        className: calendarList[i].cal_cate
+                    });
+                }
                 o.$calendarObj = o.$calendar.fullCalendar({
                     slotDuration: "00:15:00",
                     minTime: "08:00:00",

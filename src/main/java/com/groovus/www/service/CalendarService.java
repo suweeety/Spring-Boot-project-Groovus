@@ -4,25 +4,30 @@ import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.dto.MemberDTO;
 import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
+import com.groovus.www.entity.Project;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 
 public interface CalendarService {
 
 
 
-    Long register(CalendarDTO calendarDTO);
-//
-//    PageResultDTO<CalendarDTO, Calendar> getList(PageRequestDTO requestDTO);
+    Long register(CalendarDTO calendarDTO); // 일정 등록
 
-    CalendarDTO readOne(Long cal_id);
+    List<CalendarDTO> getList(Long pid); // 특정 프로젝트의 일정
 
-    void modify(CalendarDTO calendarDTO);
+    CalendarDTO readOne(Long cal_id, Long pid);
 
-    void remove(Long cal_id);
+    void modify(CalendarDTO calendarDTO, Member createMember); // 일정 수정
+
+    void remove(Long cal_id); // 일정 삭제
 
 
     default Calendar dtoToEntity(CalendarDTO dto, Member createMember) {
+
+        Project project = Project.builder().pid(dto.getPid()).build();
 
         Calendar calendar = Calendar.builder()
                 .cal_id(dto.getCal_id())
@@ -35,6 +40,7 @@ public interface CalendarService {
                 .cal_link(dto.getCal_link())
                 .cal_member(dto.getCal_member())
                 .create_user_id(createMember)
+                .project(project)
                 .build();
 
         return calendar;

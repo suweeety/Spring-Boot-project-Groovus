@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name="tb_calendar")
-@ToString(exclude = "imageSet")
+@ToString(exclude = {"imageSet" , "" , ""})
 public class Calendar extends BaseEntity{
     /*
     Calendar Entity 여러 개가 하나의 Project Entity를 가짐
@@ -59,6 +59,10 @@ public class Calendar extends BaseEntity{
     @Builder.Default
     private Set<CalendarImage> imageSet = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "pid")
+    private Project project;
+
     @JoinColumn(name = "uid")
     @ManyToOne(fetch = FetchType.LAZY)
     private Member create_user_id;
@@ -82,17 +86,17 @@ public class Calendar extends BaseEntity{
         this.imageSet.clear();
     }
 
-    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate, List<CalendarAttach> cal_attach, String cal_link, List<Member> cal_member) {
-
-        this.cal_title = cal_title;
-        this.cal_content = cal_content;
-        this.cal_cate = cal_cate;
-        this.cal_startDate = cal_startDate;
-        this.cal_endDate = cal_endDate;
-        this.cal_attach = cal_attach;
-        this.cal_link = cal_link;
-        this.cal_member = cal_member;
-    }
+//    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate, List<CalendarAttach> cal_attach, String cal_link, List<Member> cal_member) {
+//
+//        this.cal_title = cal_title;
+//        this.cal_content = cal_content;
+//        this.cal_cate = cal_cate;
+//        this.cal_startDate = cal_startDate;
+//        this.cal_endDate = cal_endDate;
+//        this.cal_attach = cal_attach;
+//        this.cal_link = cal_link;
+//        this.cal_member = cal_member;
+//    }
 
     // 수정일 및 등록일은 BaseEntity 참고
 }

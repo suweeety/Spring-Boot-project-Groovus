@@ -3,10 +3,7 @@ package com.groovus.www.dto;
 import com.groovus.www.entity.CalendarAttach;
 import com.groovus.www.entity.Member;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class CalendarDTO {
 
     //tb_calendar
@@ -39,6 +37,8 @@ public class CalendarDTO {
     private String cal_link;
 
     private List<Member> cal_member;
+
+    private Long pid; // 프로젝트 번호
 
     private String create_user_id;
 
