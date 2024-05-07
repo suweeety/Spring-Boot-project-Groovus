@@ -141,5 +141,29 @@ public class ProjectServiceImpl implements ProjectService{
         return memberList;
     }
 
+    @Override
+    public RegisterProjectDTO getProjectDTO(Long pid) {
+
+        Optional<Project> result = projectRepository.findById(pid);
+        if(!result.isEmpty()){
+            Project project = result.get();
+            RegisterProjectDTO projectDTO = RegisterProjectDTO.builder()
+                    .pid(project.getPid().toString())
+                    .projectName(project.getProjectName())
+                    .regDate(project.getRegDate())
+                    .adminUid(project.getAdminUid())
+                    .projectDescription(project.getProjectDescription())
+                    .projectMember(project.getProjectMember().stream().map(member -> {
+                        return member.getUid();
+                    }).collect(Collectors.toList()))
+                    .memberCount(project.getProjectMember().size())
+                    .build();
+
+            return projectDTO;
+        }else{
+            return null;
+        }
+    }
+
 
 }

@@ -18,25 +18,81 @@
 <th:block layout:fragment="content">
 
   <div class="row">
-
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
+    <div class="col-lg-3 col-sm-6">
+      <div class="card gradient-3">
         <div class="card-body">
-          <h1>안녕하세요 테스트 여기는 [[${projectName}]] 프로젝트</h1>
+          <h3 class="card-title text-white">프로젝트 멤버</h3>
+          <div class="d-inline-block">
+            <h2 class="text-white" name="memberCount">[[${projectDTO.memberCount}]]</h2>
+            <p class="text-white mb-0" name="createProjectDate">생성일 [[${#temporals.format(projectDTO.regDate, 'yyyy/MM/dd')}]]</p>
+          </div>
+          <span class="float-right display-5 opacity-5"><i class="fa fa-users"></i></span>
+        </div>
+      </div>
+    </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="card gradient-1">
+          <div class="card-body">
+            <h3 class="card-title text-white">업무(전체)</h3>
+            <div class="d-inline-block">
+              <h2 class="text-white" name="taskCount">0</h2>
+              <p class="text-white mb-0" name="myTask">0</p>
+            </div>
+            <span class="float-right display-5 opacity-5"><i class="fa-regular fa-clipboard"></i></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="card gradient-2">
+          <div class="card-body">
+            <h3 class="card-title text-white">드라이브</h3>
+            <div class="d-inline-block">
+              <h2 class="text-white">0</h2>
+            </div>
+            <span class="float-right display-5 opacity-5"><i class="fa-solid fa-cloud"></i></span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="card gradient-4">
+          <div class="card-body">
+            <h3 class="card-title text-white">일정</h3>
+            <div class="d-inline-block">
+              <h2 class="text-white">0</h2>
+            </div>
+            <span class="float-right display-5 opacity-5"><i class="fa-regular fa-calendar-days"></i></span>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-body">
-          <h1>안녕하세요 테스트2</h1>
+
+  <script th:inline="javascript">
+
+    var pid = [[${projectDTO.pid}]];
+
+    $(document).ready(function (){
+
+      /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
+      $.ajax({
+        url:'/task/countall',
+        type:'post',
+        data:{'pid':pid ,
+          'mid':[[${#authentication.principal.mid}]],
+          'uid':[[${#authentication.principal.uid}]]
+        },
+        success:function (result){
+
+          $("h2[name='taskCount']").text(result[0] + "개");
+          $("p[name='myTask']").text("담당업무 "+result[1] +"개");
+        }
+      });
 
 
-        </div>
-      </div>
-    </div>
-  </div>
+    });
+
+
+  </script>
 
 </th:block>
 

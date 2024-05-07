@@ -71,6 +71,12 @@ public class ProjectController {
         redirectAttributes.addFlashAttribute("projectName",projectName);
 
         if(type!=null && type.equals("yes")){
+            RegisterProjectDTO projectDTO = projectService.getProjectDTO(Long.parseLong(pid));
+
+            if(projectDTO != null){
+                redirectAttributes.addFlashAttribute("projectDTO",projectDTO);
+            }
+
             return "redirect:/project/home";
 
         }else if(type!=null && type.equals("delete")){
@@ -102,8 +108,15 @@ public class ProjectController {
 
         if(projectService.validProjectPw(pid,projectPw)){
 
+            RegisterProjectDTO projectDTO = projectService.getProjectDTO(Long.parseLong(pid));
+
             redirectAttributes.addFlashAttribute("pid",pid);
             redirectAttributes.addFlashAttribute("projectName",projectName);
+
+            if(projectDTO != null){
+                redirectAttributes.addFlashAttribute("projectDTO",projectDTO);
+            }
+
             return "redirect:/project/home";
 
         }else{

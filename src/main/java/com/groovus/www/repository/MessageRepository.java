@@ -28,4 +28,8 @@ public interface MessageRepository extends JpaRepository<Message,Long> , QueryDs
     @Query("select m from Message m where m.lid=:lid")
     Optional<Message> getMessagesByLid(Long lid);
 
+    //나의 쪽지함 쪽지 개수 구하기
+    @EntityGraph(attributePaths = {"receiver","sender","project"})
+    @Query("select count(m) from Message m where m.project.pid=:pid and m.receiver.mid=:mid and m.del=false")
+    Long countMessageBy(Long pid , Long mid);
 }

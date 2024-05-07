@@ -111,4 +111,24 @@ public class MessageServiceImpl implements MessageService {
             return null;
         }
     }
+
+    @Override
+    public Long countMessage(Long pid, Long mid) {
+
+        return messageRepository.countMessageBy(pid,mid);
+    }
+
+    @Override
+    public int deleteMessage(Long lid) {
+
+        Optional<Message> result = messageRepository.findById(lid);
+        if(!result.isEmpty()){
+            Message message = result.get();
+            message.changeDel(true);
+            messageRepository.save(message);
+            return 1;
+        }else {
+            return 0;
+        }
+    }
 }

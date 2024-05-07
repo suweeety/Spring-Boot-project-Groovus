@@ -19,12 +19,13 @@ public interface ProjectService {
     //프로젝트를 삭제하는 메서드
     public boolean deleteProject(String pid);
 
-
     //프로젝트리스트를 가져오는 메서드 (페이징)
     public ProjectPageResponseDTO<RegisterProjectDTO> getProjectListWithPaging(ProjectPageRequestDTO pageRequestDTO ,Long mid);
 
     //해당 프로젝트에 속한 멤버를 가져오는 메서드
     public List<MemberInfoDTO> getProjectMembers(String pid);
 
+    //프로젝트DTO 반환 메서드
+    RegisterProjectDTO getProjectDTO(Long pid);
 
 }

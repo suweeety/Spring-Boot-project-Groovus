@@ -92,7 +92,7 @@
                                 <div class="btn-group">
                                     <button aria-expanded="false" data-toggle="dropdown" class="btn btn-dark dropdown-toggle" type="button">More <span class="caret m-l-5"></span>
                                     </button>
-                                    <div class="dropdown-menu"><span class="dropdown-header">More Option :</span>  <a href="javascript: void(0);" class="dropdown-item">Mark as Unread</a>  <a href="javascript: void(0);" class="dropdown-item">Add to Tasks</a>  <a href="javascript: void(0);" class="dropdown-item">Add Star</a>  <a href="javascript: void(0);" class="dropdown-item">Mute</a>
+                                    <div class="dropdown-menu"><span class="dropdown-header">More Option :</span> <a href="javascript: void(0);" class="dropdown-item">준비중</a>  <a href="javascript: void(0);" class="dropdown-item">준비중 </a>  <a href="javascript: void(0);" class="dropdown-item">준비중</a>  <a href="javascript: void(0);" class="dropdown-item">준비중</a>
                                     </div>
                                 </div>
                             </div>
@@ -390,7 +390,6 @@
                     $("span[name='delTask']").text(result[2]);
                 }
             });
-
             /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
             $.ajax({
                 url:'/project/memberList',
@@ -940,6 +939,11 @@
         $(document).on("click","button[name='readTaskModify-save']" ,function (e){
            //업무 수정후 저장 버튼이 눌렸을 때
             e.preventDefault();
+
+            if( $("select[name='responsibleMember']").val() == ''){
+                alert("담당자를 지정해주세요");
+                return;
+            }
              var tid = $("input[name='readTaskTid']").val(); // 업무 번호
              var taskTitle =  $("input[name='readTaskTitle']").val();
              var responsibleMember =  $("select[name='responsibleMember']").val();
