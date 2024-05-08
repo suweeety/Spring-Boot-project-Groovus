@@ -30,11 +30,11 @@ public class MemberController {
 
         if(memberService.chagePwForSocialLogin(mid,newPw)){
 
-            return "/member/login";
+            return "member/login";
 
         }else{
 
-            return "/error/error500";
+            return "error/error500";
 
         }
 

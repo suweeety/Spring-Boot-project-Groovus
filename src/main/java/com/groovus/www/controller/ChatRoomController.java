@@ -41,7 +41,7 @@ public class ChatRoomController {
         log.info("CREATE Chat Room [{}]", room);
 
         rttr.addFlashAttribute("roomName", room);
-        return "redirect:/conference/roomlist";
+        return "redirect:conference/roomlist";
     }
 
     // 채팅방 입장 화면
@@ -66,11 +66,11 @@ public class ChatRoomController {
 
 
         if (ChatRoomDto.ChatType.MSG.equals(room.getChatType())) {
-            return "/conference/chatroom";
+            return "conference/chatroom";
         }else{
             model.addAttribute("uuid", UUID.randomUUID().toString());
 
-            return "/conference/rtcroom";
+            return "conference/rtcroom";
         }
     }
 
@@ -91,7 +91,7 @@ public class ChatRoomController {
         // roomId 기준으로 chatRoomMap 에서 삭제, 해당 채팅룸 안에 있는 사진 삭제
         chatServiceMain.delChatRoom(roomId);
 
-        return "redirect:/conference/roomlist";
+        return "redirect:conference/roomlist";
     }
 
     // 유저 카운트

@@ -296,7 +296,7 @@
             <i class="fa-regular fa-comment-dots"></i><span class="nav-text">Notice</span>
           </a>
           <ul aria-expanded="false">
-            <li><a id="notice">공지사항</a></li>
+            <li><a th:href="@{'/notice/noticeList'}" id="notice">공지사항</a></li>
           </ul>
         </li>
 
@@ -853,32 +853,5 @@
 <script th:src="@{/quixlab-bootstrap-main/theme/plugins/summernote/dist/summernote-init.js}"></script>
 
 </body>
-
-<script th:inline="javascript">
-
-  $(document).on("click", "#notice", function (e){
-
-    e.preventDefault();
-
-    var pid = [[${pid}]];
-    var requestDTO = {};
-
-    $.ajax({
-      url: '/' + pid + '/notice',
-      type: 'GET',
-      contentType: 'application/json',
-      data: JSON.stringify(requestDTO),
-      success: function (response) {
-        window.location.href = '/notice/notice.html';
-      },
-      error: function (xhr, status, error) {
-        console.error('전송 실패');
-      }
-    });
-
-  });
-
-
-</script>
 
 </html>

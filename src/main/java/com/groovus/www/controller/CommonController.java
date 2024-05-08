@@ -18,19 +18,19 @@ public class CommonController {
     @GetMapping("/")
     public String helloGroovus(){
 
-        return "/main/main";
+        return "main/main";
     }
 
     @PostMapping ("/")
     public String LoginGroovus(){
 
-        return "/main/main";
+        return "main/main";
     }
 
     @GetMapping("/main/test")
     public String tesPage(){
 
-        return "/main/test";
+        return "main/test";
     }
 
     @GetMapping("/reply/myreply")
@@ -48,7 +48,7 @@ public class CommonController {
     public String goScheduleManagement(){
         //일정관리로 이동
 
-        return "/calendar/schedule";
+        return "calendar/schedule";
     }
 
     @GetMapping("/message/messageList")

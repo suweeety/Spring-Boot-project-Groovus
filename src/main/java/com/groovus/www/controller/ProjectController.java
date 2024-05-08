@@ -55,11 +55,11 @@ public class ProjectController {
 
         if(projectService.registerProject(pDTO)){
 
-            return "redirect:/project/list?mid="+mid;
+            return "redirect:project/list?mid="+mid;
 
         }else {
 
-            return "/main/register";
+            return "main/register";
         }
     }
 
@@ -163,7 +163,7 @@ public class ProjectController {
         log.info(pid);
         log.info("==============================");
 
-        return "/task/taskList";
+        return "redirect:/task/taskList";
     }
 
 

@@ -34,7 +34,7 @@ public class MainController {
 
 //        model.addAttribute("user", "hey");
         log.debug("SHOW ALL ChatList {}", chatServiceMain.findAllRoom());
-        return "/conference/roomlist";
+        return "conference/roomlist";
     }
 
 }

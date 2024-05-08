@@ -66,7 +66,7 @@
           <div class="card-body">
             <div class="email-left-box">
 
-              <button type="button" class="btn btn-primary btn-block" style="background-color: #0435d7;" name="registernoticeBtn">새글등록</button>
+              <button type="button" class="btn btn-primary btn-block" style="background-color: #0435d7;" name="registerNoticeBtn">새글등록</button>
 
               <div class="mail-list mt-4">
                 <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체글</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholenotice">0</span> </a>
@@ -91,6 +91,19 @@
                         <th>작성자</th>
                       </tr>
                       </thead>
+                      <tbody>
+
+                      <th:block th:each="notice, i : ${noticeList}">
+                        <tr>
+                          <th>[[${i.index + responseDTO.start }]]</th>
+                          <td name="readNotice" class="noticeTitle" th:data-tid="${notice.nid}">[[${notice.noticeTitle}]]</td>
+                          <td> [[${#temporals.format(notice.regDate, 'yyyy/MM/dd')}]]</td>
+                          <td class="color-primary">[[${notice.responsibleMember}]]</td>
+                        </tr>
+
+                      </th:block>
+
+                      </tbody>
 
                     </table>
                     <!--페이징-->
@@ -105,7 +118,7 @@
                               <a class="page-link" th:data-num="${i}">[[${i}]]</a>
                             </li>
                           </th:block>
-
+qqe
                           <li class="page-item" th:if="${responseDTO.next}">
                             <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
                           </li>
@@ -119,7 +132,6 @@
               <!--업무리스트 끝-->
 
               <!-- panel -->
-              <!--여기에 페이징 예정-->
               <div class="row">
                 <!-- <div class="col-7">
                      <div class="text-left">1 - 20 of 568</div>
@@ -148,11 +160,11 @@
 
       <form name="noticeForm" method="post" action="/notice/register">
         <span><b>제목</b></span>
-        <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="noticeTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+        <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" id="title" name="noticeTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
         <br/>
         <br/>
         <span><b>작성자</b></span>
-        <input type="text" class="form-control input-default" name="noticeWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+        <input type="text" class="form-control input-default" id="writer" name="noticeWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
         <br/>
         <br/>
         <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
@@ -177,8 +189,7 @@
         <!--에디터 끝-->
 
         <input type="hidden" name="noticeContent" value="">
-        <input type="hidden" name="pid" th:value="${pid}">
-        <input type="hidden" name="projectName" th:value="${projectName}">
+        <!--<input type="hidden" name="projectName" th:value="${projectName}">-->
       </form>
       <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
     </div>
@@ -189,23 +200,23 @@
 
     <!--업무 상세보기-->
     <div name="noticeDetails" style="display: none">
-      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-light" name="readnoticeBack">뒤로</button></span>
-      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-success" name="readnoticeModify">수정</button></span>
-      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-danger" name="readnoticeDelete">삭제</button></span>
+      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-light" name="readNoticeBack">뒤로</button></span>
+      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-success" name="readNoticeModify">수정</button></span>
+      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-danger" name="readNoticeDelete">삭제</button></span>
 
       <!--숨김항목-->
       <input type="hidden" name="readnoticeTid">
 
       <br/> <br/>
       <span><b>제목</b></span>
-      <input type="text" class="form-control input-default" name="readnoticeTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;" readonly>
+      <input type="text" class="form-control input-default" name="readNoticeTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;" readonly>
       <br/> <br/>
       <br/> <br/>
       <span><b>작성자</b></span>
-      <input type="text" class="form-control input-default" name="readnoticeWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+      <input type="text" class="form-control input-default" name="readNoticeWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
       <br/> <br/>
       <span><b>작성일</b></span>
-      <input type="text" class="form-control input-default" name="readnoticeRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+      <input type="text" class="form-control input-default" name="readNoticeRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
       <br/> <br/> <br/>  <br/>
       <div name="readnoticeContent" class="form-control input-default" style="height:auto;"><span><button type="button" class="btn mb-1 btn-info" name="statusChangeBtn" style="display: none">변경</button></span>
       </div>
@@ -224,32 +235,22 @@
   <!--스크립트-->
   <script th:inline="javascript">
 
-    var pid = [[${pid}]];
+    $(document).ready(function () {
 
-    $(document).ready(function (){
+      let mainList = $("div[name='mainList']");
 
-      var mainList = $("div[name='mainList']");
-
-      $(document).keydown(function(event){
-        if(event.keyCode == 116) { // F5 키 눌렸을 때
-          event.preventDefault(); // 기본 동작 방지
-          var newUrl = "/project/notice/"+[[${pid}]]+"/"+[[${projectName}]];
-          location.href = newUrl;
+      /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
+      $.ajax({
+        url:'/notice/noticeList',
+        data:{'nid':nid},
+        method:'post',
+        success:function (result){
+          insertMemberList(result);
         }
       });
 
-      /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
-      $.ajax({
-        url:'/notice/countall',
-        type:'post',
-        data:{'pid':pid},
-        success:function (result){
-          $("span[name='wholenotice']").text(result);
-        }
-      })
-
-      //프로젝트 등록하기 버튼을 눌렀을 때
-      $("button[name='registernoticeBtn']").on("click",function (e){
+      /*새글등록 버튼 클릭 시*/
+      $(document).on("click", "button[name='registerNoticeBtn']", function (e) {
         e.preventDefault();
         $(".modal_").show();
       });
@@ -260,105 +261,57 @@
       });
 
       //업무읽기에서 뒤로가기 버튼이 눌렸을 때
-      $(document).on("click","button[name='readnoticeBack']",function (e){
+      $(document).on("click","button[name='readNoticeBack']",function (e){
         e.preventDefault();
 
+        $("button[name='showHistoryBtn']").show();
+        $("button[name='closeHistoryBtn']").hide();
         $("button[name='statusChangeBtn']").hide();
-        $("div[name='noticeDetailsArea']").html( $("div[name='noticeDetails']")); //업무 상세보기창 이동
+        $("div[name='noticeDetailsArea']").html($("div[name='noticeDetails']")); //업무 상세보기창 이동
 
         $("div[name='noticeDetails']").hide(); //숨김
+        $("div[name='history']").hide(); //숨김
 
         $("div[name='mainContent']").html(mainList); //메인콘텐츠공간에 메인리스트 이동
-      })
+      });
 
-
-      //업무 제목을 눌렀을때 (업무내용 보일예정)
-      $(document).on("click","td[name='readnotice']",function (e){
-
+      $(document).on("click","button[name='registerBtn']",function (e){
+        //업무 등록 버튼 눌렀을때
         e.preventDefault();
-        var tid = $(this).data("tid");
+
+        if($("input[name='noticeTitle']").val() == ""){
+          alert("업무 제목을 입력해주세요");
+          $("input[name='noticeTitle']").focus();
+          return;
+        }
+
+        const htmlStr = $("div.note-editable").html();
+        const title = $('#title').val();
+        const content = htmlStr;
 
         $.ajax({
-          url:'/notice/view',
+          url:'/notice/create',
           type:'post',
-          data:{'tid':tid},
+          data:{
+            'title' : title,
+            'content' : content,
+          },
           success:function (result){
-            console.log(result);
-            readnotice(result);
+            alert("공지를 등록하였습니다.");
+          },
+          fail: function (result) {
+            alert("공지 등록 실패!!!")
           }
         });
 
-      });
 
-      //업무 읽기
-      function readnotice(result){
+      })
 
-        var noticeDetails = $("div[name='noticeDetails']"); //업무 상세보기 창
-
-        var selectStatus = $("select[name='readnoticeStatus']");
-
-        $("input[name='readnoticeTid']").val(result.tid);
-        $("input[name='readnoticeTitle']").val(result.noticeTitle);
-        $("input[name='readnoticeWriter']").val(result.noticeWriter);
-        $("input[name='readResponsibleMember']").val(result.responsibleMember);
-        $("input[name='readnoticeRegDate']").val(result.regDate);
-        selectStatus.val( result.status);
-        $("div[name='readnoticeContent']").html(result.noticeContent);
-        noticeDetails.show();
-
-        $("div[name='mainContent']").html(noticeDetails); //메인 콘텐츠쪽에 넣음
-      }
 
     });
 
-    //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
-    $("select[name='readnoticeStatus']").change(function (){
-
-      //변경 버튼 노출
-      $("button[name='statusChangeBtn']").show();
-    })
-
-    //업무의 상세보기 -> 변경 버튼이 눌렸을 때
-    $("button[name='statusChangeBtn']").on("click",function (e){
-      e.preventDefault();
-
-      var tid = $("input[name='readnoticeTid']").val();
-      alert(tid);
-
-    })
 
 
-
-    $(document).on("click","button[name='registerBtn']",function (e){
-      //업무 등록 버튼 눌렀을때
-      e.preventDefault();
-
-      var noticeForm = $("form[name='noticeForm']");
-      var htmlStr = $("div.note-editable").html();
-
-      $("input[name='noticeContent']").val(htmlStr);
-
-      noticeForm.submit();
-
-    })
-
-    //페이징 버튼을 눌렀을 때
-    $("a.page-link").on("click", function (event) {
-
-      event.preventDefault(); // 링크의 기본 동작을 중단합니다.
-
-      var pageNum = $(this).data("num");
-      var mid = [[${mid}]];
-      var type = [[${pageRequestDTO.type}]];
-      var keyword = [[${pageRequestDTO.keyword}]];
-
-      if(type != null && keyword!=null){
-        var url = '/notice/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
-      }else{
-        var url = '/notice/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum;
-      }
-      window.location.href = url; // 새로운 URL로 이동합니다.
-    });
 
   </script>
 
