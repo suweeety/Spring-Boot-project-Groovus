@@ -93,12 +93,12 @@
                       </thead>
                       <tbody>
 
-                      <th:block th:each="notice, i : ${noticeList}">
+                      <th:block th:each="notice, i : ${noticeList.dtoList}">
                         <tr>
-                          <th>[[${i.index + responseDTO.start }]]</th>
-                          <td name="readNotice" class="noticeTitle" th:data-tid="${notice.nid}">[[${notice.noticeTitle}]]</td>
+                          <!--<th>[[${i.index + responseDTO.start }]]</th>-->
+                          <td name="readNotice" class="noticeTitle" th:data-nid="${notice.nid}">[[${notice.noticeTitle}]]</td>
                           <td> [[${#temporals.format(notice.regDate, 'yyyy/MM/dd')}]]</td>
-                          <td class="color-primary">[[${notice.responsibleMember}]]</td>
+                          <td class="color-primary">[[${notice.uname}]]</td>
                         </tr>
 
                       </th:block>
@@ -108,19 +108,18 @@
                     </table>
                     <!--페이징-->
                     <div class="bootstrap-pagination">
-                      <nav>
                         <ul class="pagination justify-content-end">
-                          <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                          <li class="page-item" th:if="${noticeList.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
                           </li>
 
-                          <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
-                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                          <th:block th:each="i : ${#numbers.sequence(1,noticeList.lastPage)}">
+                            <li th:class="${noticeList.page == i}?'page-item active':'page-item'">
                               <a class="page-link" th:data-num="${i}">[[${i}]]</a>
                             </li>
                           </th:block>
 qqe
-                          <li class="page-item" th:if="${responseDTO.next}">
-                            <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                          <li class="page-item" th:if="${noticeList.next}">
+                            <a class="page-link" th:data-num="${noticeList.lastPage}"><b>>></b></a>
                           </li>
                         </ul>
                       </nav>
@@ -263,16 +262,24 @@ qqe
       //업무읽기에서 뒤로가기 버튼이 눌렸을 때
       $(document).on("click","button[name='readNoticeBack']",function (e){
         e.preventDefault();
+        $("button[name='statusChangeBtn']").hide(); // 상태 변경 버튼 숨김
+        $("button[name='readNoticeModify']").show(); //수정 버튼 보임
+        $("button[name='readNoticeDelete']").show(); //삭제 버튼 보임
+        $("div[name='NoticeDetailsArea']").html( $("div[name='NoticeDetails']")); //업무 상세보기창 이동
 
-        $("button[name='showHistoryBtn']").show();
-        $("button[name='closeHistoryBtn']").hide();
-        $("button[name='statusChangeBtn']").hide();
-        $("div[name='noticeDetailsArea']").html($("div[name='noticeDetails']")); //업무 상세보기창 이동
-
-        $("div[name='noticeDetails']").hide(); //숨김
+        $("div[name='NoticeDetails']").hide(); //숨김
         $("div[name='history']").hide(); //숨김
 
+        $("button[name='readNoticeModify-save']").text("수정");
+        $("button[name='readNoticeModify-save']").attr("name","readNoticeModify"); //input태그 name속성도 변경
+        $("input[name='readNoticeTitle']").attr("readonly",true); //readonly속성 false
+        $("select[name='readNoticeStatus']").removeAttr("disabled");
+        $("div[name='readNoticeContent']").show();
+        $("div[name='readNoticeContent']").html($("div[name='modifyContent'] div.note-editable").html());
+        $("div[name='modifyContent']").hide();
+
         $("div[name='mainContent']").html(mainList); //메인콘텐츠공간에 메인리스트 이동
+
       });
 
       $(document).on("click","button[name='registerBtn']",function (e){

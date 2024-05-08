@@ -1,10 +1,8 @@
 package com.groovus.www.dto.notice;
 
 import com.groovus.www.entity.Notice;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import groovy.util.logging.Log4j2;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +10,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Log4j2
+@Data
+@ToString
 public class NoticeResponseDTO {
+
     private Long nid; //공지사항 id
     private String title; //공지사항 제목
     private String content; //공지사항 내용

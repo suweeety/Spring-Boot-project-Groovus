@@ -1,11 +1,12 @@
 package com.groovus.www.controller;
 
 import com.groovus.www.dto.MemberDTO;
-import com.groovus.www.dto.PagingRequestDTO;
+import com.groovus.www.dto.ProjectPageRequestDTO;
+import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.dto.ResponseDTO;
 import com.groovus.www.dto.notice.NoticeRequestDTO;
 import com.groovus.www.dto.notice.NoticeResponseDTO;
-import com.groovus.www.service.NoticeService;
+import com.groovus.www.service.notice.NoticeServiceImpl;
 import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,14 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @Log4j2
 @RequestMapping("/notice")
 public class NoticeController {
-    private final NoticeService noticeService;
+    private final NoticeServiceImpl noticeService;
 
     //워크스페이스에 따라 구분
     //공지사항 생성
@@ -35,10 +34,11 @@ public class NoticeController {
 
     //공지사항 조회
     @GetMapping("/noticeList")
-    public String noticeList(PagingRequestDTO pagingRequestDTO, Model model) {
+    public String noticeList(ProjectPageRequestDTO pageRequestDTO, Model model) {
 
-        List<NoticeResponseDTO> noticeList = noticeService.noticeList(pagingRequestDTO);
+        ProjectPageResponseDTO<NoticeResponseDTO> noticeList = noticeService.noticeList(pageRequestDTO);
         model.addAttribute("noticeList", noticeList);
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
         return "notice/noticeList";
     }
 

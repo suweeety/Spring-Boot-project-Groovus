@@ -1,12 +1,11 @@
-package com.groovus.www.service;
+package com.groovus.www.service.notice;
 
-import com.groovus.www.dto.MemberDTO;
-import com.groovus.www.dto.PagingRequestDTO;
-import com.groovus.www.dto.ResponseDTO;
+import com.groovus.www.dto.*;
 import com.groovus.www.dto.notice.NoticeRequestDTO;
 import com.groovus.www.dto.notice.NoticeResponseDTO;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Notice;
+import com.groovus.www.entity.Task;
 import com.groovus.www.exception.ErrorCode;
 import com.groovus.www.exception.RequestException;
 import com.groovus.www.repository.MemberRepository;
@@ -14,32 +13,33 @@ import com.groovus.www.repository.NoticeRepository;
 import groovy.util.logging.Slf4j;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
 @Slf4j
-public class NoticeService {
+public class NoticeServiceImpl implements NoticeService{
 
     private final MemberRepository memberRepository;
     private final NoticeRepository noticeRepository;
 
     //공지사항 생성
+    @Override
     @Transactional
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> createNotice(NoticeRequestDTO noticeRequestDTO, MemberDTO memberDTO) {
 
         Member member = memberRepository.findByMid(memberDTO.getMid()).get();
 
-        Notice notice = Notice .builder()
+        Notice notice = Notice.builder()
                 .title(noticeRequestDTO.getTitle())
                 .content(noticeRequestDTO.getContent())
                 .member(member)
@@ -52,40 +52,44 @@ public class NoticeService {
     }
 
     //공지사항 조회
+    @Override
     @Transactional //
-    public List<NoticeResponseDTO> noticeList(PagingRequestDTO requestDTO) {
-    
-        Long cursor; //페이징 커서 변수 선언
+    public ProjectPageResponseDTO<NoticeResponseDTO> noticeList(ProjectPageRequestDTO pageRequestDTO) {
 
-        if (requestDTO == null) { // 생성일자를 기준으로 오름차순으로 첫 번째 공지사항을 가져옴, dto가 없으면 ID가 1인 공지사항 생성
-            Notice notice = noticeRepository.findFirstByOrderByRegDateAsc();
-            cursor = notice.getNid() + 1; //커서를 다음 공지사항의 id로 설정
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        Pageable pageable = pageRequestDTO.getPageable("nid");
 
-        } else cursor = requestDTO.getCursorId(); //요청 DTO에서 커서 가져옴
+        Page<NoticeResponseDTO> result = noticeRepository.searchAll(types, keyword, pageable);
 
-        //공지사항 조회
-        List<Notice> noticeList = noticeRepository.findAllByOrderByRegDateDesc();
+        List<NoticeResponseDTO> noticeDTOList = result.stream().toList();
 
-        List<NoticeResponseDTO> noticeResponseDTO = new ArrayList<>();
-
-        for (Notice notice : noticeList) {
-            noticeResponseDTO.add(NoticeResponseDTO.builder()
-                    .nid(notice.getNid())
-                    .uname(notice.getMember().getUname())
-                    .title(notice.getTitle())
-                    .content(notice.getContent())
-                    .uid(notice.getMember().getUid())
-                    .regDate(notice.getRegDate())
-                    .modDate(notice.getModDate())
-                    .build());
-
-        }
-
-        return noticeResponseDTO;
-
+        return ProjectPageResponseDTO.<NoticeResponseDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(noticeDTOList)
+                .total((int)result.getTotalElements())
+                .build();
     }
 
+    @Override
+    public NoticeResponseDTO readNotice(Long nid) {
+
+        Notice notice = NoticeRepository.findByNid(nid).get();
+
+        NoticeResponseDTO noticeDTO = NoticeResponseDTO.builder()
+                .title(notice.getTitle())
+                .content(notice.getContent())
+                .uname(notice.getMember().getUname())
+                .regDate(notice.getRegDate())
+                .modDate(notice.getModDate())
+                .build();
+
+        return noticeDTO;
+    }
+
+
     //공지사항 수정
+    @Override
     @Transactional
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> updateNotice(NoticeRequestDTO noticeRequestDTO, Long nid) {
         Notice notice = isNoticeExist(nid);
@@ -93,6 +97,7 @@ public class NoticeService {
         return new ResponseEntity<>(ResponseDTO.success(NoticeResponseDTO.of(notice)), HttpStatus.OK);
     }
     //공지사항 삭제
+    @Override
     @Transactional
     public ResponseEntity<ResponseDTO<String>> deleteNotice(Long nid) {
         isNoticeExist(nid);
