@@ -42,6 +42,7 @@
 ***
 ## GroovUs 웹사이트 <a href="http://13.125.247.16:8080" target=_blank >클릭!</a> 시 홈페이지로 이동합니다.
 
+<a href="https://github.com/kimjeong-eun/shopProject/files/14945720/default.pdf" >다운로드</a>
 ### Test 계정 로그인
 ID : user1234  
 PW : 1111qqqq*
