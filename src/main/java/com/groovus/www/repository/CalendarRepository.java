@@ -27,8 +27,8 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     List<Calendar> getCalendarsByProjectOrderByCal_id(@Param("pid") Long pid);
 
     @EntityGraph(attributePaths = {"imageSet"})
-    @Query("SELECT c FROM Calendar c WHERE c.cal_id =:cal_id and c.project.pid=:pid")
-    Optional<Calendar> findByCal_id(@Param("cal_id") Long cal_id, @Param("pid") Long pid);
+    @Query("SELECT c FROM Calendar c WHERE c.cal_id =:cal_id AND c.project.pid =:pid")
+    Optional<Calendar> findCalendarByCal_idAndProject(@Param("pid") Long pid, @Param("cal_id") Long cal_id);
 
     @EntityGraph(attributePaths = {"imageSet"})
     @Query("SELECT m FROM Member m WHERE m.mid =:mid")

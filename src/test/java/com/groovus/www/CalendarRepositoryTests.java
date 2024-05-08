@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest
@@ -28,5 +29,11 @@ public class CalendarRepositoryTests {
             calendar.addImage(UUID.randomUUID().toString(), "file"+i+".jpg");
         }
         calendarRepository.save(calendar);
+    }
+
+    @Test
+    public void testGetCalendarByCal_idAndAndProject() {
+        Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(65L,44L);
+        log.info("++++++++++++++++++++++++++"+result);
     }
 }

@@ -34,17 +34,17 @@ public class CalendarRestController {
 
     // 특정 일정에 속하는 데이터를 반환
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/read/{cal_id}/{pid}", produces = MediaType.APPLICATION_JSON_VALUE) // 해당 프로젝트의 일정 조회
-    public ResponseEntity<CalendarDTO> get(@PathVariable("cal_id") String cal_id, @PathVariable("pid") String pid, Model model, RedirectAttributes rttr) {
+    @GetMapping(value = "/read/{pid}/{cal_id}", produces = MediaType.APPLICATION_JSON_VALUE) // 해당 프로젝트의 일정 조회
+    public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id, Model model, RedirectAttributes rttr) {
 
         log.info("cal_id****: " + cal_id);
         log.info("pid****: " + pid);
         log.info("---------------------------------------------------------------");
-        log.info("calendarService.readOne(cal_id)****: " + calendarService.readOne(Long.parseLong(cal_id), Long.parseLong(pid)));
-        CalendarDTO dto = calendarService.readOne(Long.parseLong(cal_id), Long.parseLong(pid));
+        CalendarDTO dto = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
         log.info(dto);
         log.info("---------------------------------------------------------------");
         model.addAttribute("dto", dto);
+        model.addAttribute("cal_id", cal_id);
         rttr.addFlashAttribute("cal_id", cal_id);
         rttr.addFlashAttribute("pid", pid);
 

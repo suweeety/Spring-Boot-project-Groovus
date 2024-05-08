@@ -2,6 +2,7 @@ package com.groovus.www.controller;
 
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.dto.MemberDTO;
+import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
 import com.groovus.www.repository.CalendarRepository;
@@ -67,15 +68,16 @@ public class CommonController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/calendar/schedule/{pid}")
+    @GetMapping("/calendar/schedule/{pid}")
     public String goScheduleManagement(@PathVariable("pid") String pid, Model model){
         //일정관리로 이동
-        log.info("pid^^: " + pid);
-        log.info("---------------------------------------------------------------");
-        List<CalendarDTO> calendarDTO = calendarService.getList(Long.parseLong(pid));
-        log.info("calendarDTO^^: " + calendarDTO);
-        log.info("---------------------------------------------------------------");
-        model.addAttribute("calendarDTO", calendarDTO);
+        log.info("---------------------------------------");
+        log.info("pid****: " + pid);
+        List<CalendarDTO> calendarList = calendarService.getList(Long.parseLong(pid));
+        log.info(calendarList);
+        log.info("---------------------------------------");
+
+        model.addAttribute("calendarList", calendarList);
 
         return "calendar/schedule";
     }

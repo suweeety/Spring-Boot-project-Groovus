@@ -18,7 +18,7 @@ public interface CalendarService {
 
     List<CalendarDTO> getList(Long pid); // 특정 프로젝트의 일정
 
-    CalendarDTO readOne(Long cal_id, Long pid);
+    CalendarDTO readOne(Long pid, Long cal_id);
 
     void modify(CalendarDTO calendarDTO, Member createMember); // 일정 수정
 
@@ -58,6 +58,7 @@ public interface CalendarService {
                 .cal_link(calendar.getCal_link())
                 .cal_member(calendar.getCal_member())
                 .create_user_id(calendar.getCreate_user_id().toString())
+                .pid(calendar.getProject().getPid())
                 .build();
         return dto;
     }

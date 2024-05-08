@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name="tb_calendar")
-@ToString(exclude = {"imageSet" , "" , ""})
+@ToString(exclude = "imageSet")
 public class Calendar extends BaseEntity{
     /*
     Calendar Entity 여러 개가 하나의 Project Entity를 가짐

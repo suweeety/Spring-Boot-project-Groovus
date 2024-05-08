@@ -62,7 +62,7 @@ public class CalendarServiceTests {
         Long pid =65L;
         Long cal_id = 44L;
 
-       CalendarDTO dto  = calendarService.readOne(cal_id,pid);
+       CalendarDTO dto  = calendarService.readOne(pid, cal_id);
         log.info("================dto=============");
         log.info(dto);
         log.info("=================================");

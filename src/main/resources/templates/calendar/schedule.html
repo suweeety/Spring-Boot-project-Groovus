@@ -229,12 +229,17 @@
 
         const errors = [[${errors}]];
         var uid = [[${#authentication.principal.uid}]];
-        var calendarList = [[${calendarDTO}]];
-        var cal_id;
-        var pid;
+        var calendarList = [[${calendarList}]];
+        var cal_id = [[${calendarList[0].cal_id}]];
+        var pid = [[${pid}]];
         console.log('calendar:'+calendar);
         console.log('calendarList:'+calendarList);
-        console.log('cal_id: ' + cal_id);
+
+        for (var i=0; i<calendarList.length; i++) {
+
+        }
+
+
 
         console.log(errors);
 
@@ -282,21 +287,25 @@
                     i = e.extend({}, a);
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
             },
-                $(document).ready(function () {
-
                 t.prototype.onEventClick = function(t, n, a) {
 
                     $.ajax({
-                        url: '/calendar/read/' + cal_id + '/' + pid,
+                        url: '/calendar/read/' + pid + '/' + cal_id,
                         type: 'GET',
                         dataType: 'json',
                         contentType: 'application/json',
                         success: function (response) {
-                            cal_id = response;
+
                             alert("일정 보기.");
                             console.log("일정이 성공적으로 저장되었습니다.");
                             var o = this,
-                                i = e("<form id='readFormTag' method='get' action='/calendar/read/cal_id=?'></form>");
+                                t = [],
+                                i = e("<form></form>");
+                            for (var s = 0; s < calendarList.length; s++) {
+                                t.push({
+                                    title: calendarList[i].cal_title,
+                                });
+                            }
                             i.append("<label>일정 제목</label>"), i
                                 .append("<div class='input-group'>" +
                                     "<input id='titleInput' class='form-control' type=text value='" + calendar.cal_title + "' style='border-radius: 10px; width: '/>" +
@@ -324,38 +333,8 @@
                             console.error("일정 저장에 실패했습니다:", error);
                         }
                     })
-
-
-
-                        ,
-                        o.$modal2.find("#updateButton").on("click", function () {
-                            var title = $('#titleInput').val();
-                            var content = $('#contentInput').val();
-
-                            // AJAX를 통해 값을 서버로 전송하고 응답을 처리합니다.
-                            $.ajax({
-                                url: '/calendar/update', // AJAX 요청을 보낼 엔드포인트 URL
-                                type: 'POST', // 요청 메서드 (POST, GET 등)
-                                data: {
-                                    id: t.id, // 이벤트 ID 또는 식별자
-                                    title: title,
-                                    content: content
-                                },
-                                success: function (response) {
-                                    // 성공적으로 요청이 완료되었을 때의 처리
-                                    console.log("업데이트 완료:", response);
-                                    // 여기에 필요한 추가적인 처리를 추가할 수 있습니다.
-                                },
-                                error: function (xhr, status, error) {
-                                    // 요청이 실패했을 때의 처리
-                                    console.error("에러 발생:", error);
-                                    // 여기에 필요한 추가적인 처리를 추가할 수 있습니다.
-                                }
-                            })
-                            o.$modal2.modal("hide");
-                        });
              }
-           })
+
             t.prototype.onSelect = function (t, n, a) {
                 var o = this;
                 o.$modal.modal({

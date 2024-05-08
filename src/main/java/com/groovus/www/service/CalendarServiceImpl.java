@@ -32,7 +32,7 @@ public class CalendarServiceImpl implements CalendarService{
     private final MemberRepository memberRepository;
 
     @Override
-    public Long register(CalendarDTO calendarDTO) {
+    public Long register(CalendarDTO calendarDTO) { // 일정 등록
 
         log.info("DTO--------------------------------");
         log.info(calendarDTO);
@@ -51,7 +51,7 @@ public class CalendarServiceImpl implements CalendarService{
     }
 
     @Override
-    public List<CalendarDTO> getList(Long pid) {
+    public List<CalendarDTO> getList(Long pid) { // 전체일정 가져오는 용
 
         List<Calendar> result = calendarRepository.getCalendarsByProjectOrderByCal_id(pid);
         if(!result.isEmpty()){
@@ -62,25 +62,18 @@ public class CalendarServiceImpl implements CalendarService{
     }
 
     @Override
-    public CalendarDTO readOne(Long cal_id, Long pid) {
-        try {
-            if (cal_id == null) {
-                throw new IllegalArgumentException("cal_id cannot be null");
-            }
+    public CalendarDTO readOne(Long pid, Long cal_id) { // 하나의 일정 가져오는 용
 
-            log.info("cal_id in CalendarServiceImpl: " + cal_id);
-            Optional<Calendar> result = calendarRepository.findByCal_id(cal_id, pid);
+        Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(pid, cal_id);
 
-            return result.isPresent() ? entityToDto(result.get()) : null;
-        } catch (NumberFormatException e) {
-            // cal_id가 숫자로 변환할 수 없는 경우 처리
-            log.error("Error parsing cal_id: " + e.getMessage());
-            return null;
-        } catch (IllegalArgumentException e) {
-            // cal_id가 null인 경우 처리
-            log.error("cal_id is null: " + e.getMessage());
-            return null;
-        }
+        log.info("=======================================================");
+        log.info(result);
+        log.info(pid);
+        log.info(cal_id);
+        log.info("=======================================================");
+
+        return result.isPresent() ? entityToDto(result.get()) : null;
+
     }
 
 
