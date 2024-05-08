@@ -1,18 +1,13 @@
 package com.groovus.www.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.groovus.www.dto.DriveDTO;
 import com.groovus.www.dto.PageRequestDTO;
-import com.groovus.www.dto.PageResponseDTO;
 import com.groovus.www.service.DriveService;
 
 @Controller
@@ -21,91 +16,67 @@ import com.groovus.www.service.DriveService;
 @RequiredArgsConstructor
 public class DriveController {
 
-    private final DriveService driveService;
-
-    @GetMapping("/drive")
-    public void list(PageRequestDTO pageRequestDTO, Model model) {
-
-        PageResponseDTO<DriveDTO> responseDTO = driveService.list(pageRequestDTO);
-
-        log.info(responseDTO);
-
-        model.addAttribute("responseDTO", responseDTO);
-
-    } // list
+    private final DriveService driveService ;;
 
     @GetMapping("/register")
-    public void registerGet() {
+    public void register(){
 
     }
 
     @PostMapping("/register")
-    public String registerPost(@Valid DriveDTO driveDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String register(DriveDTO driveDTO, RedirectAttributes redirectAttributes){
 
-        if (bindingResult.hasErrors()) {
-            log.info("has errors...");
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-            return "redirect:/drive/register";
-        }
-
-        log.info(driveDTO);
+        log.info("driveDTO: " + driveDTO);
 
         Long bno = driveService.register(driveDTO);
 
-        redirectAttributes.addFlashAttribute("result", bno);
-
+        redirectAttributes.addFlashAttribute("msg", bno);
         return "redirect:/drive/drive";
+    }
+
+    @GetMapping("/drive")
+    public void list(PageRequestDTO pageRequestDTO, Model model){
+
+        log.info("pageRequestDTO: " + pageRequestDTO);
+
+
+        model.addAttribute("result", driveService.getList(pageRequestDTO));
+
     }
 
     @GetMapping({"/read", "/modify"})
-    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model) {
+    public void read(long bno, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model ){
 
-        DriveDTO driveDTO = driveService.readOne(bno);
+        log.info("bno: " + bno);
 
-        log.info(driveDTO);
+        DriveDTO driveDTO = driveService.getDrive(bno);
 
         model.addAttribute("dto", driveDTO);
 
-    } // read
+    }
 
     @PostMapping("/modify")
-    public String modify( PageRequestDTO pageRequestDTO,
-                          @Valid DriveDTO driveDTO,
-                          BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes){
+    public String modify(DriveDTO dto, @ModelAttribute("requestDTO") PageRequestDTO requestDTO, RedirectAttributes redirectAttributes){
 
-        log.info("drive modify post......." + driveDTO);
+        driveService.modify(dto);
 
-        if(bindingResult.hasErrors()) {
-            log.info("has errors.......");
+        redirectAttributes.addAttribute("page", requestDTO.getPage());
+        redirectAttributes.addAttribute("type", requestDTO.getType());
+        redirectAttributes.addAttribute("keyword", requestDTO.getKeyword());
+        redirectAttributes.addAttribute("bno", dto.getBno());
 
-            String link = pageRequestDTO.getLink();
-
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
-
-            redirectAttributes.addAttribute("bno", driveDTO.getBno());
-
-            return "redirect:/drive/modify?"+link;
-        }
-
-        driveService.modify(driveDTO);
-
-        redirectAttributes.addFlashAttribute("result", "modified");
-
-        redirectAttributes.addAttribute("bno", driveDTO.getBno());
-
-        return "redirect:/drive/drive";
+        return "redirect:/drive/read";
     }
 
+//    @PostMapping("/bin/{bno}")
+//    public String moveToBin(@PathVariable("bno") Long bno) {
+//        driveService.moveToBin(bno);
+//        return "redirect:/drive";
+//    }
 
-    @PostMapping("/remove")
-    public String remove(Long bno, RedirectAttributes redirectAttributes){
-        driveService.remove(bno);
 
-        redirectAttributes.addFlashAttribute("result", "removed");
 
-        return "redirect:/drive/drive";
-    }
+
 
 
 }
