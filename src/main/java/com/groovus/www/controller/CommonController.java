@@ -1,18 +1,50 @@
 package com.groovus.www.controller;
 
+import com.groovus.www.dto.CalendarDTO;
+import com.groovus.www.dto.MemberDTO;
+import com.groovus.www.entity.Calendar;
+import com.groovus.www.entity.Member;
+import com.groovus.www.entity.Project;
+import com.groovus.www.repository.CalendarRepository;
+import com.groovus.www.repository.ProjectRepository;
+import com.groovus.www.service.CalendarService;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
+@Log4j2
 public class CommonController {
 
     //공통 컨트롤러입니다.
     //페이지 분기시에 사용합니다.!
     //메인화면에서 이동할때나....
 
+    @Autowired
+    private CalendarService calendarService;
 
+    @Autowired
+    private ProjectRepository projectRepository;
+
+    @PreAuthorize("permitAll()")
     @GetMapping("/")
     public String helloGroovus(){
+
+        return "/main/main";
+    }
+
+    @PostMapping ("/")
+    public String LoginGroovus(){
 
         return "/main/main";
     }
@@ -22,8 +54,6 @@ public class CommonController {
 
         return "/main/test";
     }
-
-
 
     @GetMapping("/reply/myreply")
     public void goMyReply(){
@@ -37,11 +67,19 @@ public class CommonController {
         //업무리스트로 이동
     }
 
-    @GetMapping("/calendar/schedule")
-    public String goScheduleManagement(){
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/calendar/schedule/{pid}")
+    public String goScheduleManagement(@PathVariable("pid") String pid, Model model){
         //일정관리로 이동
+        log.info("---------------------------------------");
+        log.info("pid****: " + pid);
+        List<CalendarDTO> calendarList = calendarService.getList(Long.parseLong(pid));
+        log.info(calendarList);
+        log.info("---------------------------------------");
 
-        return "/calendar/schedule";
+        model.addAttribute("calendarList", calendarList);
+
+        return "calendar/schedule";
     }
 
     @GetMapping("/message/messageList")
@@ -84,6 +122,19 @@ public class CommonController {
     @GetMapping("/main/register")
     public void  goRegister(){
         //프로젝트 생성 페이지로 이동
+    }
+
+    @GetMapping("/member/login")
+    public void  goLogin(@RequestParam(value = "error" ,required = false) String error , Model model){
+        //로그인 페이지로 이동
+
+        if( error != null &&error.equals("wrongInfo")){
+
+            model.addAttribute("msg","loginerror");
+        }
+        if( error != null &&error.equals("existEmail")){
+            model.addAttribute("socialMsg","loginerror");
+        }
     }
 
 }

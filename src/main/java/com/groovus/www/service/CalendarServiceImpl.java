@@ -1,63 +1,92 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.CalendarCategoryDTO;
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.entity.Calendar;
+import com.groovus.www.entity.Member;
+import com.groovus.www.entity.Project;
 import com.groovus.www.repository.CalendarRepository;
+import com.groovus.www.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 @Transactional
 public class CalendarServiceImpl implements CalendarService{
-    @Autowired
+
     private final ModelMapper modelMapper;
 
     private final CalendarRepository calendarRepository;
+    private final MemberRepository memberRepository;
 
     @Override
-    public Long register(CalendarDTO calendarDTO) {
+    public Long register(CalendarDTO calendarDTO) { // 일정 등록
 
-        Calendar calendar = modelMapper.map(calendarDTO, Calendar.class);
+        log.info("DTO--------------------------------");
+        log.info(calendarDTO);
 
-        Long cal_id = calendarRepository.save(calendar).getCal_id();
+        Optional<Member> result = memberRepository.findByUid(calendarDTO.getCreate_user_id());
 
-        log.info("calendarDTO.getCal_id() 값 확인: " + calendarDTO.getCal_id());
-        log.info("cal_id 값 확인: " + cal_id);
+        Member member = result.get();
 
-        return cal_id;
+       Calendar calendar = dtoToEntity(calendarDTO,member);
+
+       log.info(calendar);
+
+       calendarRepository.save(calendar);
+
+       return calendar.getCal_id();
     }
 
     @Override
-    public CalendarDTO readOne(Long cal_id) {
+    public List<CalendarDTO> getList(Long pid) { // 전체일정 가져오는 용
 
-        Optional<Calendar> result = calendarRepository.findById(cal_id);
-
-        Calendar calendar = result.orElseThrow();
-
-        CalendarDTO calendarDTO = modelMapper.map(calendar, CalendarDTO.class);
-
-        return calendarDTO;
+        List<Calendar> result = calendarRepository.getCalendarsByProjectOrderByCal_id(pid);
+        if(!result.isEmpty()){
+            return result.stream().map(calendar -> entityToDto(calendar)).collect(Collectors.toList());
+        }else{
+            return null;
+        }
     }
 
     @Override
-    public void modify(CalendarDTO calendarDTO) {
+    public CalendarDTO readOne(Long pid, Long cal_id) { // 하나의 일정 가져오는 용
+
+        Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(pid, cal_id);
+
+        log.info("=======================================================");
+        log.info(result);
+        log.info(pid);
+        log.info(cal_id);
+        log.info("=======================================================");
+
+        return result.isPresent() ? entityToDto(result.get()) : null;
+
+    }
+
+
+    @Override
+    public void modify(CalendarDTO calendarDTO, Member createMember) {
 
 //        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
-//
+
 //        Calendar calendar = result.orElseThrow();
-//
-//        calendar.change(calendarDTO.getCal_title(), calendarDTO.getCal_content(), calendarDTO.getCal_Categories(), calendarDTO.getCal_endDate(), calendarDTO.getCal_startDate());
-//
-//        calendarRepository.save(calendar);
+
+        Calendar calendar = dtoToEntity(calendarDTO, createMember);
+
+        calendarRepository.save(calendar);
     }
 
     @Override
@@ -66,5 +95,8 @@ public class CalendarServiceImpl implements CalendarService{
         calendarRepository.deleteById(cal_id);
 
     }
+
+
+
 
 }

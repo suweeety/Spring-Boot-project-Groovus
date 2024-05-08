@@ -1,25 +1,17 @@
 package com.groovus.www.dto;
 
 import com.groovus.www.entity.CalendarAttach;
-import com.groovus.www.entity.CalendarCategory;
-import com.groovus.www.entity.Project;
-import com.groovus.www.entity.User;
+import com.groovus.www.entity.Member;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class CalendarDTO {
 
     //tb_calendar
@@ -31,12 +23,25 @@ public class CalendarDTO {
     @NotEmpty
     private String cal_content;
 
-    private String cal_category;
+    @NotEmpty
+    private String cal_cate;
 
+    @NotEmpty
     private String cal_startDate;
 
+    @NotEmpty
     private String cal_endDate;
 
     private List<CalendarAttach> cal_attach;
+
+    private String cal_link;
+
+    private List<Member> cal_member;
+
+    private Long pid; // 프로젝트 번호
+
+    private String create_user_id;
+
+    private String update_user_id;
 
 }

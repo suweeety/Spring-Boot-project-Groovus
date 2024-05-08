@@ -1,35 +1,34 @@
 package com.groovus.www.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="tb_project")
-@ToString
-public class Project extends BaseEntity{
+@ToString(exclude = "projectMember")
+public class Project extends BaseEntity {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long pId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pid;
 
-    /*
-    private user
-    */
+    private String  adminUid;
 
-    @Column(nullable = false)
-    private String description;
+    private String projectName;
+    private String projectPassword;
+    private String projectDescription;
 
-    @Column(nullable = false)
-    private boolean del;
+    @ManyToMany(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    @Builder.Default
+    private Set<Member> projectMember = new HashSet<>();
 
+    public void addMember(Member member){
+        this.projectMember.add(member);
+    }
 }

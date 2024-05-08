@@ -18,27 +18,30 @@
     <!--<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>-->
     <!-- default header name is X-CSRF-TOKEN -->
     <!--<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>-->
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 
-    <th:block layout:fragment="css">
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/common/common.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/custom.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/settings.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/gleek.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/js/styleSwitcher.js}"></script>
 
-        <style>
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/jqueryui/js/jquery-ui.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/moment/moment.min.js}"></script>
+    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/js/fullcalendar.min.js}"></script>
+    <!--<script th:src="@{/quixlab-bootstrap-main/theme/js/plugins-init/fullcalendar-init.js}"></script>-->
 
-            #logoImg {
-                background-color: red;
-            }
-
-        </style>
-
-    </th:block>
-
-</head>
+    </head>
 
 
-<th:block layout:fragment="content">
 
-    <!--**********************************
-                Content body start
-    ***********************************-->
+    <th:block layout:fragment="content">
+
+        <input type="button" id="testtest"/>
+
+        <!--**********************************
+                    Content body start
+        ***********************************-->
     <div class="content-body">
 
         <div class="row page-titles mx-0" style=" transform: translate(10px, -22px);">
@@ -78,7 +81,7 @@
                                         </div>
                                         <div class="external-event bg-business-trip text-white" data-class="bg-business-trip">
                                             <i
-                                                    class="fa fa-move"></i>외근  일정
+                                                    class="fa fa-move"></i>외근 일정
                                         </div>
                                         <div class="external-event bg-dark text-white" data-class="bg-dark"><i
                                                 class="fa fa-move"></i>Create New theme
@@ -108,25 +111,42 @@
         <!-- #/ container -->
     </div>
     <!-- BEGIN MODAL -->
-    <div class="modal fade none-border" id="event-modal">
-        <div class="modal-dialog" style="max-width: 48rem;">
-            <div class="modal-content" style="height: 41rem">
+        <div class="modal fade none-border" id="event-modal" th:with="user=${#authentication.principal}">
+        <div class="modal-dialog" style="max-width: 48rem; transform: translate(10px, 89px);">
+            <div class="modal-content" style="height: auto">
                 <div class="modal-header">
                     <h4 class="modal-title"><strong>✅ 새 일정</strong></h4>
-                    <div class="modal-Subtitle" name="create_user_id">작성자 아이디(예정)</div>
+                    <div class="modal-Subtitle" name="create_user_id" style="transform: translate(-4px, 5px);">Writer: [[${user.uid}]]</div>
                 </div>
                 <div class="modal-body"></div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="transform: translate(10px, -35px);">
+                    <button type="button" class="btn btn-default waves-effect"
+                            data-dismiss="modal">✖ Close
+                    </button>
+                    <button type="submit" name="saveBtn"
+                            class="btn btn-success save-event waves-effect waves-light" style="background-color: red; border-color: red;">
+                        ➕ 생성
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade none-border" id="event-modal2" th:with="user=${#authentication.principal}">
+        <div class="modal-dialog" style="max-width: 48rem; transform: translate(10px, 89px);">
+            <div class="modal-content" style="height: auto">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><strong>📅 내 일정</strong></h4>
+                        <div class="modal-Subtitle" name="create_user_id" style="transform: translate(-4px, 5px);">Writer: [[${user.uid}]]</div>
+                    </div>
+                <div class="modal-body"> </div>
+                <div class="modal-footer" style="transform: translate(10px, -35px);">
                     <button type="button" class="btn btn-default waves-effect"
                             data-dismiss="modal">✖ Close
                     </button>
                     <button type="submit"
                             class="btn btn-success save-event waves-effect waves-light" style="background-color: red; border-color: red;">
                         ➕ 생성
-                    </button>
-                    <button type="button"
-                            class="btn btn-danger cancel-event waves-effect waves-light"
-                            data-dismiss="modal">삭제
                     </button>
                 </div>
             </div>
@@ -203,40 +223,325 @@
     <!--**********************************
         Scripts
     ***********************************-->
-    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 
-    <script layout:fragment="script" th:inline="javascript">
-        const errors = [[${errors}]]
-        console.log(errors)
 
-        let errorMsg = ''
+    <script th:inline="javascript">
 
-        if(errors) {
-            for(let i=0; i<errors.length; i++) {
-                errorMsg += '${errors[i].field}은(는) ${errors[i].code} \n'
+        const errors = [[${errors}]];
+        var uid = [[${#authentication.principal.uid}]];
+        var calendarList = [[${calendarList}]];
+        var cal_id = [[${calendarList[0].cal_id}]];
+        var pid = [[${pid}]];
+        console.log('calendar:'+calendar);
+        console.log('calendarList:'+calendarList);
 
+        for (var i=0; i<calendarList.length; i++) {
+
+        }
+
+
+
+        console.log(errors);
+
+        let errorMsg = '';
+
+        if (errors) {
+            for (let i = 0; i < errors.length; i++) {
+                errorMsg += errors[i].field + '은(는) ' + errors[i].code + '\n';
             }
-            alert(errorMsg)
+            alert(errorMsg);
         }
 
-        const result = [[${result}]]
+        const result = [[${result}]];
 
-        if(result) {
-            alert(result)
-            console.log(result)
+        if (result) {
+            alert(result);
+            console.log(result);
         }
+
+        $(document).ready(function() {
+
+            $("button[name='saveBtn']").on("click", function (e){
+
+                e.preventDefault();
+                alert("saveBtn 눌림 성공");
+            });
+        })
+
+        !function (e) {
+            "use strict";
+            var t = function () {
+                this.$body = e("body"),
+                    this.$modal = e("#event-modal"),
+                    this.$modal2 = e("#event-modal2"),
+                    this.$event = "#external-events div.external-event",
+                    this.$calendar = e("#calendar"),
+                    this.$saveCategoryBtn = e(".save-category"),
+                    this.$categoryForm = e("#add-category form"),
+                    this.$extEvents = e("#external-events"),
+                    this.$calendarObj = null
+            };
+            t.prototype.onDrop = function (t, n) {
+                var a = t.data("eventObject"),
+                    o = t.attr("data-class"),
+                    i = e.extend({}, a);
+                i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
+            },
+                t.prototype.onEventClick = function(t, n, a) {
+
+                    $.ajax({
+                        url: '/calendar/read/' + pid + '/' + cal_id,
+                        type: 'GET',
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        success: function (response) {
+
+                            alert("일정 보기.");
+                            console.log("일정이 성공적으로 저장되었습니다.");
+                            var o = this,
+                                t = [],
+                                i = e("<form></form>");
+                            for (var s = 0; s < calendarList.length; s++) {
+                                t.push({
+                                    title: calendarList[i].cal_title,
+                                });
+                            }
+                            i.append("<label>일정 제목</label>"), i
+                                .append("<div class='input-group'>" +
+                                    "<input id='titleInput' class='form-control' type=text value='" + calendar.cal_title + "' style='border-radius: 10px; width: '/>" +
+                                    "</div>")
+                            i.append("<label>일정 내용</label><div class='input-group'>" +
+                                "<input id='contentInput' class='form-control' type=text value='" + calendar.cal_content + "' style='border-radius: 10px; width: '/>" +
+                                "<span class='input-group-btn'>" +
+                                "<button type='button' id='updateButton' class='btn btn-success waves-effect waves-light'>" +
+                                "<i class='fa fa-check'></i>변경</button></span></div>")
+                                ,
+                                o.$modal2.modal({
+                                    backdrop: "static"
+                                }), o.$modal2.find(".cancel-event").show().end()
+                                .find(".save-event").hide().end()
+                                .find(".modal-body").empty().prepend(i).end()
+                                .find(".cancel-event").unbind("click").on("click", function () {
+                                    o.$calendarObj.fullCalendar("removeEvents", function (e) {
+                                        return e._id == t._id
+                                    }), o.$modal2.modal("hide")
+                                })
+                            o.$modal2.modal("hide")
+                        },
+                        error: function (xhr, status, error) {
+                            alert("일정 저장에 실패했습니다.");
+                            console.error("일정 저장에 실패했습니다:", error);
+                        }
+                    })
+             }
+
+            t.prototype.onSelect = function (t, n, a) {
+                var o = this;
+                o.$modal.modal({
+                    backdrop: "static"
+                });
+                var i = e("<form name='calendarForm' action='/calendar/register'></form>");
+                i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b'>" +
+                        "<div class='form-group' style='width: 16rem;'>" +
+                        "<label class='control-label'>일정 제목</label>" +
+                        "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
+                        "</div>" +
+                        "</div>")
+                    .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-87px, -1px);'>" +
+                        "<div class='form-group'>" +
+                        "<label class='control-label'>카테고리</label>" +
+                        "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
+                    .append("<option value='bg-team'>팀 회의</option>")
+                    .append("<option value='bg-dept'>부서 회의</option>")
+                    .append("<option value='bg-company-event'>사내 행사</option>")
+                    .append("<option value='bg-personal-event'>개인 일정</option>")
+                    .append("<option value='bg-account-event'>거래처 일정</option>")
+                    .append("<option value='bg-business-trip'>출장</option>")
+                    .append("<option value='bg-etc'>기타</option></div></div>")
+                    .end()
+                    .append("<div class='userId'>" +
+                        "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(460px, -96px); padding: 0;'>" +
+                        "<div class='form-group' style='margin: 0; height: 5rem;'>" +
+                        "<label class='control-label'>참여자</label>" +
+                        "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
+                        "<span>" +
+                        "<button type='button' name='addBtn' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>" +
+                        "➕</button>" +
+                        "</span>" +
+                        "</div>" +
+                        "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+                        "<span class='badge badge-pill badge-success'>"+uid+"<button type='button' name='removeTagBtn' style='border-radius: 10px; border: none;'>" +
+                        "x</button>" +
+                        "</span>" +
+                        "</div>"+
+                        "<div class ='col' style='transform: translate(265px, -78px);'>" +
+                        "<div class='dropdown custom-dropdown'><div data-toggle='dropdown'>" +
+                        "<i class='fa fa-ellipsis-v'></i>" +
+                        "</div>"+
+                        "</div>" +
+                        "</div>" +
+                        "</div>" +
+                        "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
+                        "</div>")
+
+                    .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px);'><div class='form-group' ><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+                        "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
+                    .append("<div class='col-md-6' transform: translate(-2px, -22px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
+                        "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
+                        "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
+                        "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' /></div></div>")
+                    .append("<div class='attach-button' style='transform: translate(-337px, 98px); height: 0rem;'>첨부파일</div><div class='file-upload-form' style='transform: translate(-388px, 137px); height: 2rem;'>" +
+                        "<input type='file' name='cal_attach' multiple class='file-input' style='width: 19rem;'/><button class='upload-button' style='border: none; background: none;'><i class='fa-solid fa-link'></i></button><div class='uploadResult'></div></div></div>")
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(377px, -89px);'><div class='form-group'><label class='control-label'>링크</label>" +
+                        "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
+                    .append("<button type='button' class='btn btn-primary openReply' data-toggle='modal' data-target='.bd-example-modal-sm' style='border-radius: 12px;background-color: red;color: white;right: 10%;transform: translate(384px, -532px);height: 40px;'>💬</button>")
+
+                    , o.$modal.find(".delete-event").hide().end()
+                    .find(".save-event").show().end()
+                    .find(".modal-body").empty().prepend(i).end()
+                    ,
+                    $(document).ready(function() {
+
+                        var memberInputs = '';
+
+                        $("button[name='addBtn']").on("click", function () {
+
+                            var memberInput = $("input[name='inviteMember']").val();
+
+                            if (memberInput === '' || memberInput === null) {
+                                alert("추가할 멤버 ID를 입력해주세요");
+                            } else {
+
+                                memberInputs = "<span class='badge badge-pill badge-primary'>" + memberInput + "</span><button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='" + memberInput + "'><i class=\"fa-solid fa-xmark\"></i></button>" +
+                                    "<input type='hidden' name='projectMember' value='" + memberInput + "'/>";
+
+                                $("div[name='memberTags']").append(memberInputs);
+                                $("input[name='inviteMember']").val('');
+                                memberInputs = '';
+                            }
+                        });
+                    });
+
+
+                // 이벤트 핸들러 등록
+                o.$modal.find(".save-event").unbind("click").on("click", function () {
+
+                    const eventData = {
+                        cal_title: i.find("input[name='cal_title']").val(),
+                        beginning: i.find("input[name='beginning']").val(),
+                        ending: i.find("input[name='ending']").val(),
+                        cal_cate: i.find("select[name='cal_cate'] option:checked").val(),
+                        cal_content: i.find("input[name='cal_content']").val(),
+                        cal_startDate: i.find("input[name='cal_startDate']").val(),
+                        cal_endDate: i.find("input[name='cal_endDate']").val(),
+                        cal_attach: i.find("input[name='cal_attach']").val(),
+                        cal_link: i.find("input[name='cal_link']").val(),
+                        create_user_id: i.find("input[name='create_user_id']").val()
+                    }
+                    console.log("잘했어. 다시 읽어라 좀. !!!!");
+                    console.log(eventData.cal_cate);
+                    $.ajax({
+                        url: '/calendar/register',
+                        type: 'POST',
+                        data: eventData,
+                        success: function (response) {
+                            alert("일정이 성공적으로 저장되었습니다.");
+                            console.log("일정이 성공적으로 저장되었습니다.");
+                            o.$modal.modal("hide")
+                        },
+                        error: function (xhr, status, error) {
+                            alert("일정 저장에 실패했습니다.");
+                            console.error("일정 저장에 실패했습니다:", error);
+                        }
+                    })
+                    i.submit();
+                }), o.$modal.find("form").on("submit", function () {
+                    var e = i.find("input[name='cal_title']").val(),
+                        a = (i.find("select[name='cal_cate']").val(),
+                            i.find("input[name='cal_content']").val(),
+                            i.find("input[name='cal_startDate']").val(),
+                            i.find("input[name='cal_endDate']").val(),
+                            i.find("input[name='cal_attach']").val(),
+                            i.find("input[name='cal_link']").val(),
+                            i.find("input[name='create_user_id']").val());
+                    return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
+                        title: e,
+                        start: t,
+                        end: n,
+                        allDay: !1,
+                        className: a
+                    }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
+                }), o.$calendarObj.fullCalendar("unselect")
+            }
+                , t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능
+                e(this.$event).each(function () {
+                    var t = {
+                        title: e.trim(e(this).text())
+                    };
+                    e(this).data("eventObject", t), e(this).draggable({
+                        zIndex: 999,
+                        revert: !0,
+                        revertDuration: 0
+                    })
+                })
+            }, t.prototype.init = function () {
+
+                this.enableDrag();
+                var t = new Date,
+                    n = (t.getDate(), t.getMonth(), t.getFullYear(), new Date(e.now())),
+                    a = [],
+                    o = this;
+                for (var i = 0; i < calendarList.length; i++) {
+                    a.push({
+                        title: calendarList[i].cal_title,
+                        start: calendarList[i].cal_startDate,
+                        end: calendarList[i].cal_endDate,
+                        className: calendarList[i].cal_cate
+                    });
+                }
+                o.$calendarObj = o.$calendar.fullCalendar({
+                    slotDuration: "00:15:00",
+                    minTime: "08:00:00",
+                    maxTime: "19:00:00",
+                    defaultView: "month",
+                    handleWindowResize: !0,
+                    height: e(window).height() - 200,
+                    header: {
+                        left: "prev today next",
+                        center: "title",
+                        right: "month,agendaWeek,agendaDay"
+                    },
+                    events: a,
+                    editable: !0,
+                    droppable: !0,
+                    eventLimit: !0,
+                    selectable: !0,
+                    drop: function (t) {
+                        o.onDrop(e(this), t)
+                    },
+                    select: function (e, t, n) {
+                        o.onSelect(e, t, n)
+                    },
+                    eventClick: function (e, t, n) {
+                        o.onEventClick(e, t, n)
+                    }
+                }), this.$saveCategoryBtn.on("click", function () {
+                    var e = o.$categoryForm.find("input[name='category-name']").val(),
+                        t = o.$categoryForm.find("select[name='category-color']").val();
+                    null !== e && 0 != e.length && (o.$extEvents.append('<div class="external-event bg-' + t + '" data-class="bg-' + t + '" style="position: relative;"><i class="fa fa-move"></i>' + e + "</div>"), o.enableDrag())
+                })
+            }, e.CalendarApp = new t, e.CalendarApp.Constructor = t
+        }(window.jQuery),
+            function (e) {
+                "use strict";
+                e.CalendarApp.init()
+            }(window.jQuery);
+
     </script>
 
-    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/common/common.min.js}"></script>
-    <script th:src="@{/quixlab-bootstrap-main/theme/js/custom.min.js}"></script>
-    <<script th:src="@{/quixlab-bootstrap-main/theme/js/settings.js}"></script>
-    <script th:src="@{/quixlab-bootstrap-main/theme/js/gleek.js}"></script>
-    <script th:src="@{/quixlab-bootstrap-main/theme/js/styleSwitcher.js}"></script>
 
-    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/jqueryui/js/jquery-ui.min.js}"></script>
-    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/moment/moment.min.js}"></script>
-    <script th:src="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/js/fullcalendar.min.js}"></script>
-    <script th:src="@{/quixlab-bootstrap-main/theme/js/plugins-init/fullcalendar-init.js}"></script>
+
 
 </th:block>
 
