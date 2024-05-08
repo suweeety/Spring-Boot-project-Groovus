@@ -33,9 +33,8 @@ public class Calendar extends BaseEntity{
     @Column(length = 5000, nullable = false)
     private String cal_content; // 일정 내용
 
-    @OneToOne
-    @Column(nullable = true)
-    private CalendarCategory cal_category;
+    @Column(nullable = false)
+    private String cal_cate;
 
     @Column(nullable = false)
     private String cal_startDate;
@@ -48,11 +47,13 @@ public class Calendar extends BaseEntity{
     private List<CalendarAttach> cal_attach;
 
     @Column(nullable = true)
-    private String cal_link;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<CalendarLink> cal_link_list = new ArrayList<>();
 
     @Column(nullable = true)
     @ManyToMany
-    private List<Member> cal_member;
+    private List<Member> cal_members;
 
     @OneToMany(mappedBy = "calendar",
             cascade = {CascadeType.ALL},

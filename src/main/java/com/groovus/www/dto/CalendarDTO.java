@@ -1,6 +1,7 @@
 package com.groovus.www.dto;
 
 import com.groovus.www.entity.CalendarAttach;
+import com.groovus.www.entity.CalendarLink;
 import com.groovus.www.entity.Member;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
@@ -34,9 +35,9 @@ public class CalendarDTO {
 
     private List<CalendarAttach> cal_attach;
 
-    private String cal_link;
+    private List<CalendarLink> cal_link_list;
 
-    private List<Member> cal_member;
+    private List<Member> cal_members;
 
     private Long pid; // 프로젝트 번호
 

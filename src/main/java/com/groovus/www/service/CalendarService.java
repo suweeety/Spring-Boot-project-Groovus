@@ -37,8 +37,8 @@ public interface CalendarService {
                 .cal_startDate(dto.getCal_startDate())
                 .cal_endDate(dto.getCal_endDate())
                 .cal_attach(dto.getCal_attach())
-                .cal_link(dto.getCal_link())
-                .cal_member(dto.getCal_member())
+                .cal_link_list(dto.getCal_link_list())
+                .cal_members(dto.getCal_members())
                 .create_user_id(createMember)
                 .project(project)
                 .build();
@@ -55,8 +55,8 @@ public interface CalendarService {
                 .cal_startDate(calendar.getCal_startDate())
                 .cal_endDate(calendar.getCal_endDate())
                 .cal_attach(calendar.getCal_attach())
-                .cal_link(calendar.getCal_link())
-                .cal_member(calendar.getCal_member())
+                .cal_link_list(calendar.getCal_link_list())
+                .cal_members(calendar.getCal_members())
                 .create_user_id(calendar.getCreate_user_id().toString())
                 .pid(calendar.getProject().getPid())
                 .build();
