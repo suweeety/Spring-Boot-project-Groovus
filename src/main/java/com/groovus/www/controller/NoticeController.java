@@ -9,6 +9,7 @@ import com.groovus.www.dto.notice.NoticeResponseDTO;
 import com.groovus.www.service.notice.NoticeServiceImpl;
 import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -42,15 +43,25 @@ public class NoticeController {
         return "notice/noticeList";
     }
 
+    @PostMapping("/view")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO<NoticeResponseDTO>> readNotice(Long nid) {
+
+        return noticeService.readNotice(nid);
+    }
+
     //공지사항 수정
-    @PutMapping("/update")
-    public ResponseEntity<?> updateNotice(NoticeRequestDTO noticeRequestDTO, @PathVariable Long nid) {
+    @PostMapping("/update")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO<NoticeResponseDTO>> updateNotice(NoticeRequestDTO noticeRequestDTO, Long nid) {
         return noticeService.updateNotice(noticeRequestDTO, nid);
     }
 
+
     //공지사항 삭제
-    @DeleteMapping("/{pid}/notice/{nid}")
-    public ResponseEntity<?> deleteNotice(@PathVariable Long nid) {
+    @DeleteMapping("/delete")
+    @ResponseBody
+    public ResponseEntity<ResponseDTO<String>> deleteNotice(Long nid) {
         return noticeService.deleteNotice(nid);
     }
 

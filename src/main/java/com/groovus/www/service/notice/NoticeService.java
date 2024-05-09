@@ -16,7 +16,7 @@ public interface NoticeService {
     //공지사항 조회
     public ProjectPageResponseDTO<NoticeResponseDTO> noticeList(ProjectPageRequestDTO PageRequestDTO);
 
-    public NoticeResponseDTO readNotice(Long nid);
+    public ResponseEntity<ResponseDTO<NoticeResponseDTO>> readNotice(Long nid);
 
     //공지사항 수정
     ResponseEntity<ResponseDTO<NoticeResponseDTO>> updateNotice(NoticeRequestDTO noticeRequestDTO, Long nid);

@@ -5,7 +5,6 @@ import com.groovus.www.dto.notice.NoticeRequestDTO;
 import com.groovus.www.dto.notice.NoticeResponseDTO;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Notice;
-import com.groovus.www.entity.Task;
 import com.groovus.www.exception.ErrorCode;
 import com.groovus.www.exception.RequestException;
 import com.groovus.www.repository.MemberRepository;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,19 +70,21 @@ public class NoticeServiceImpl implements NoticeService{
     }
 
     @Override
-    public NoticeResponseDTO readNotice(Long nid) {
+    @Transactional
+    public ResponseEntity<ResponseDTO<NoticeResponseDTO>> readNotice(Long nid) {
 
-        Notice notice = NoticeRepository.findByNid(nid).get();
+        Optional<Notice> notice = noticeRepository.findByNid(nid);
 
-        NoticeResponseDTO noticeDTO = NoticeResponseDTO.builder()
-                .title(notice.getTitle())
-                .content(notice.getContent())
-                .uname(notice.getMember().getUname())
-                .regDate(notice.getRegDate())
-                .modDate(notice.getModDate())
+        NoticeResponseDTO noticeResponseDTO = NoticeResponseDTO.builder()
+                .nid(notice.get().getNid())
+                .title(notice.get().getTitle())
+                .content(notice.get().getContent())
+                .uname(notice.get().getMember().getUname())
+                .uid(notice.get().getMember().getUid())
+                .regDate(notice.get().getRegDate())
+                .modDate(notice.get().getModDate())
                 .build();
-
-        return noticeDTO;
+        return new ResponseEntity<>(ResponseDTO.success(noticeResponseDTO), HttpStatus.OK);
     }
 
 
@@ -96,6 +96,10 @@ public class NoticeServiceImpl implements NoticeService{
         notice.updateNotice(noticeRequestDTO);
         return new ResponseEntity<>(ResponseDTO.success(NoticeResponseDTO.of(notice)), HttpStatus.OK);
     }
+
+
+
+
     //공지사항 삭제
     @Override
     @Transactional
