@@ -16,19 +16,6 @@ public class CalendarServiceTests {
     @Autowired
     private CalendarService calendarService;
 
-    @Test
-    public void testRegister() {
-        log.info(calendarService.getClass().getName());
-
-        CalendarDTO calendarDTO = CalendarDTO.builder()
-                .cal_title("Sample title")
-                .cal_content("Sample content")
-                .build();
-        Long cal_id = calendarService.register(calendarDTO);
-
-        log.info("cal_id: "+ cal_id);
-    }
-
 //    @Test
 //    public void testModify() {
 //        CalendarDTO calendarDTO = CalendarDTO.builder()
@@ -62,7 +49,7 @@ public class CalendarServiceTests {
         Long pid =65L;
         Long cal_id = 44L;
 
-       CalendarDTO dto  = calendarService.readOne(pid, cal_id);
+        CalendarDTO dto  = calendarService.readOne(pid, cal_id);
         log.info("================dto=============");
         log.info(dto);
         log.info("=================================");

@@ -75,9 +75,14 @@ public class CommonController {
         log.info("pid****: " + pid);
         List<CalendarDTO> calendarList = calendarService.getList(Long.parseLong(pid));
         log.info(calendarList);
+//        CalendarDTO calendarDTO = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
+//        log.info(calendarDTO);
         log.info("---------------------------------------");
 
         model.addAttribute("calendarList", calendarList);
+        model.addAttribute("pid",pid);
+
+//        model.addAttribute("calendarDTO", calendarDTO);
 
         return "calendar/schedule";
     }

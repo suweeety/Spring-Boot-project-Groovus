@@ -61,7 +61,7 @@ public class Calendar extends BaseEntity{
     @Builder.Default
     private Set<CalendarImage> imageSet = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pid")
     private Project project;
 
@@ -81,6 +81,9 @@ public class Calendar extends BaseEntity{
                 .ord(imageSet.size())
                 .build();
         imageSet.add(calendarImage);
+    }
+    public void setProject(Project project){
+        this.project = project;
     }
 
     public void clearImages() {

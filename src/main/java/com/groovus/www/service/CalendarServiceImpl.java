@@ -1,11 +1,13 @@
 package com.groovus.www.service;
 
 import com.groovus.www.dto.CalendarDTO;
+import com.groovus.www.dto.CalendarRequestDTO;
 import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
 import com.groovus.www.repository.CalendarRepository;
 import com.groovus.www.repository.MemberRepository;
+import com.groovus.www.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,23 +33,38 @@ public class CalendarServiceImpl implements CalendarService{
     private final CalendarRepository calendarRepository;
     private final MemberRepository memberRepository;
 
+    private  final ProjectRepository projectRepository;
+
     @Override
-    public Long register(CalendarDTO calendarDTO) { // 일정 등록
+    public Long register(CalendarRequestDTO calendarRequestDTO , Long pid) { // 일정 등록
 
         log.info("DTO--------------------------------");
-        log.info(calendarDTO);
+        log.info(calendarRequestDTO);
 
-        Optional<Member> result = memberRepository.findByUid(calendarDTO.getCreate_user_id());
+        Optional<Member> result = memberRepository.findByUid(calendarRequestDTO.getCreate_user_id());
 
-        Member member = result.get();
+        Member createMember = result.get();
 
-       Calendar calendar = dtoToEntity(calendarDTO,member);
+            Calendar calendar = Calendar.builder()
+                    .cal_title(calendarRequestDTO.getCal_title())
+                    .cal_content(calendarRequestDTO.getCal_content())
+                    .cal_cate(calendarRequestDTO.getCal_cate())
+                    .cal_startDate(calendarRequestDTO.getCal_startDate())
+                    .cal_endDate(calendarRequestDTO.getCal_endDate())
+                    .create_user_id(createMember)
+                    .build();
 
-       log.info(calendar);
+            Optional<Project> proResult = projectRepository.findByIdWithMember(pid);
+            if (proResult.isPresent()){
 
-       calendarRepository.save(calendar);
+                Project project = proResult.get();
+                calendar.setProject(project);
+            }
+            log.info(calendar);
+            calendarRepository.save(calendar);
 
-       return calendar.getCal_id();
+            return calendar.getCal_id();
+
     }
 
     @Override

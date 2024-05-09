@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 
+    <!--토큰 비활성화-->
     <!--<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>-->
     <!-- default header name is X-CSRF-TOKEN -->
     <!--<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>-->
@@ -42,74 +43,90 @@
         <!--**********************************
                     Content body start
         ***********************************-->
-    <div class="content-body">
+        <div class="content-body">
 
-        <div class="row page-titles mx-0" style=" transform: translate(10px, -22px);">
-            <div class="col p-md-0">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="javascript:void(0)">Project</a></li>
-                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Calendar</a></li>
-                </ol>
+            <div class="row page-titles mx-0" style=" transform: translate(10px, -22px);">
+                <div class="col p-md-0">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="javascript:void(0)">Project</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Calendar</a></li>
+                    </ol>
+                </div>
             </div>
-        </div>
-        <!-- row -->
+            <!-- row -->
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card" style="
-    transform: translate(-230px, -42px);
-    width: 95rem;
-    height: 55rem;
-">
-                        <div class="card-body">
-                            <div class="card-title">
-                                <h3>Calendar</h3>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-4 mt-5" style="max-width: 14rem;transform: translate(40px, 55px);">
-                                    <a href="#" data-toggle="modal" data-target="#add-category"
-                                       class="btn btn-primary btn-block" style="background-color: red; border-color: red;">
-                                        <i class="ti-plus f-s-12 m-r-5"></i> New Category</a>
-                                    <div id="external-events" class="m-t-20">
-                                        <p>달력에 드래그 해보세요</p>
-                                        <div class="external-event bg-team text-white" data-class="bg-team"><i
-                                                class="fa fa-move"></i>팀 회의
-                                        </div>
-                                        <div class="external-event bg-dept text-white" data-class="bg-dept"><i
-                                                class="fa fa-move"></i>부서 회의
-                                        </div>
-                                        <div class="external-event bg-business-trip text-white" data-class="bg-business-trip">
-                                            <i
-                                                    class="fa fa-move"></i>외근 일정
-                                        </div>
-                                        <div class="external-event bg-dark text-white" data-class="bg-dark"><i
-                                                class="fa fa-move"></i>Create New theme
-                                        </div>
-                                    </div>
-                                    <!-- checkbox -->
-                                    <div class="checkbox m-t-40">
-                                        <input id="drop-remove" type="checkbox">
-                                        <label for="drop-remove"> Remove after drop</label>
-                                    </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card" style="
+        transform: translate(-230px, -42px);
+        width: 95rem;
+        height: 55rem;
+    ">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <h3>Calendar</h3>
                                 </div>
-                                <div class="col-md-8" style=" height: 38rem;">
-                                    <div class="card-box m-b-50"
-                                         style="width: 70rem; transform: translate(72px, 10px);">
-                                        <div id="calendar"></div>
+                                <!--Make Category Bar-->
+                                <div class="row">
+                                    <div class="col-lg-4 mt-5" style="max-width: 14rem;transform: translate(40px, 55px);">
+                                        <a href="#" data-toggle="modal" data-target="#add-category"
+                                           class="btn btn-primary btn-block" style="background-color: red; border-color: red;">
+                                            <i class="ti-plus f-s-12 m-r-5"></i> New Category</a>
+                                        <div id="external-events" class="m-t-20">
+                                            <p>달력에 드래그 해보세요</p>
+                                            <div class="external-event bg-team text-white" data-class="bg-team"><i
+                                                    class="fa fa-move"></i>팀 회의
+                                            </div>
+                                            <div class="external-event bg-dept text-white" data-class="bg-dept"><i
+                                                    class="fa fa-move"></i>부서 회의
+                                            </div>
+                                            <div class="external-event bg-business-trip text-white" data-class="bg-business-trip">
+                                                <i
+                                                        class="fa fa-move"></i>외근 일정
+                                            </div>
+                                            <div class="external-event bg-dark text-white" data-class="bg-dark"><i
+                                                    class="fa fa-move"></i>Create New theme
+                                            </div>
+                                        </div>
+                                        <!-- checkbox -->
+                                        <div class="checkbox m-t-40">
+                                            <input id="drop-remove" type="checkbox">
+                                            <label for="drop-remove"> Remove after drop</label>
+                                        </div>
+                                        <br/>
+                                        <br/>
+                                        <!--TodoList-->
+                                        <div class="checkbox m-t-40">
+                                            <h3>To Do</h3>
+                                            <input type="text" name="dailyTodoInput" style="border-bottom-color: #9e1f63;border-top: none;
+                                            border-left: none;border-right: none;">
+                                            <button type="button" name="addTodoBtn" style="background: none; border: none; color: black">➕</button>
+                                            <br/>
+                                            <div>
+                                            <input type="checkbox" name="todoInputList"> 투두리스트 테스트</input>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <!--Calendar-->
+                                    <div class="col-md-8" style=" height: 38rem;">
+                                        <div class="card-box m-b-50"
+                                             style="width: 70rem; transform: translate(72px, 10px);">
+                                            <div id="calendar"></div>
+                                        </div>
+                                    </div>
+                                    <!-- end col -->
                                 </div>
-                                <!-- end col -->
                             </div>
                         </div>
+                        <!-- /# card -->
                     </div>
-                    <!-- /# card -->
+                    <!-- /# column -->
                 </div>
-                <!-- /# column -->
             </div>
+            <!-- #/ container -->
         </div>
-        <!-- #/ container -->
-    </div>
     <!-- BEGIN MODAL -->
         <div class="modal fade none-border" id="event-modal" th:with="user=${#authentication.principal}">
         <div class="modal-dialog" style="max-width: 48rem; transform: translate(10px, 89px);">
@@ -123,7 +140,7 @@
                     <button type="button" class="btn btn-default waves-effect"
                             data-dismiss="modal">✖ Close
                     </button>
-                    <button type="submit" name="saveBtn"
+                    <button type="button" name="saveBtn"
                             class="btn btn-success save-event waves-effect waves-light" style="background-color: red; border-color: red;">
                         ➕ 생성
                     </button>
@@ -144,9 +161,9 @@
                     <button type="button" class="btn btn-default waves-effect"
                             data-dismiss="modal">✖ Close
                     </button>
-                    <button type="submit"
+                    <button type="button"
                             class="btn btn-success save-event2 waves-effect waves-light" style="background-color: red; border-color: red;">
-                        ➕ 생성
+                        ✔ 변경
                     </button>
                 </div>
             </div>
@@ -227,13 +244,14 @@
 
     <script th:inline="javascript">
 
-        const errors = [[${errors}]];
+        /*--------------------------------------------------------*/
+        /*Fields*/
         var uid = [[${#authentication.principal.uid}]];
         var calendarList = [[${calendarList}]];
         var pid = [[${pid}]];
-        var cal_id = [[${calendarList[0].cal_id}]]
         var cal_title;
         var cal_content;
+        var cal_id ;
         var cal_cate;
         var cal_startDate;
         var cal_endDate;
@@ -242,33 +260,63 @@
 
         console.log('calendar:'+calendar);
         console.log('calendarList:'+calendarList);
-        console.log(errors);
 
-        let errorMsg = '';
+        /*--------------------------------------------------------*/
 
-        if (errors) {
-            for (let i = 0; i < errors.length; i++) {
-                errorMsg += errors[i].field + '은(는) ' + errors[i].code + '\n';
-            }
-            alert(errorMsg);
-        }
+        $(document).on("click","a.fc-day-grid-event",function (e){
+            e.preventDefault();
+            cal_id = $(this).data("calid");
+            alert(cal_id);
+        })
 
-        const result = [[${result}]];
 
-        if (result) {
-            alert(result);
-            console.log(result);
-        }
+        /*--------------------------------------------------------*/
+        /*ToDoList*/
+        $(document).ready(function (){
 
+            $("button[name='addTodoBtn']").on("click", function (e) {
+
+                e.preventDefault();
+
+                var todoInputs = '';
+
+                var todoInput = $("input[name='dailyTodoInput']").val();
+
+                if (todoInput === '' || todoInput === null) {
+                        alert("???");
+                    } else {
+
+                        todoInputs = "<span class='badge badge-pill badge-primary'>" + todoInput + "</span><button name='deleteDailyTodoInput' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-todoId='" + todoInput + "'><i class='fa-solid fa-xmark'></i></button>" +
+                        "<input type='hidden' name='cal_todo' value='" + todoInput + "'/>";
+
+                        $("input[name='todoInputList']").append(todoInputs);
+                        $("input[name='dailyTodoInput']").val('');
+                        todoInputs = '';
+                    }
+            })
+        })
+
+        /*--------------------------------------------------------*/
         $(document).ready(function() {
 
             $("button[name='saveBtn']").on("click", function (e){
 
                 e.preventDefault();
                 alert("saveBtn 눌림 성공");
+
+
+
+
+
+
+
+
             });
         })
 
+
+        /*--------------------------------------------------------*/
+        /*modal-body(fullcalendar-init.js)*/
         !function (e) {
             "use strict";
             var t = function () {
@@ -289,12 +337,15 @@
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
             },
                 t.prototype.onEventClick = function(t, n, a) {
+
                     var o = this;
                     o.$modal2.modal({
                         backdrop: "static"
                     });
+
+
                     /*data*/
-                    cal_title = [];
+                    /*cal_title = [];
                     cal_content = [];
                     cal_cate = [];
                     cal_startDate = [];
@@ -309,98 +360,77 @@
                         cal_endDate.push(calendarList[i].cal_endDate);
                         cal_attach.push(calendarList[i].cal_attach);
                         cal_link_list.push(calendarList[i].cal_link_list);
-                    }
-                    var o = this,
-                        i = e("<form></form>");
+                    }*/
 
-                    i.append("<label>일정 제목</label>"), i
-                        .append("<div class='input-group'>" +
-                            "<input id='titleInput' class='form-control' type=text value='" + cal_title + "' style='border-radius: 10px; width: '/>" +
-                            "</div>")
-                    i.append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-87px, -1px);'>" +
-                        "<div class='form-group'>" +
-                        "<label class='control-label'>카테고리</label>" +
-                        "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
-                        .append("<option value='currentCategory' default>"+cal_cate+"</option>")
-                        .append("<option value='bg-team'>팀 회의</option>")
-                        .append("<option value='bg-dept'>부서 회의</option>")
-                        .append("<option value='bg-company-event'>사내 행사</option>")
-                        .append("<option value='bg-personal-event'>개인 일정</option>")
-                        .append("<option value='bg-account-event'>거래처 일정</option>")
-                        .append("<option value='bg-business-trip'>출장</option>")
-                        .append("<option value='bg-etc'>기타</option></div></div>")
-                        .end()
-                    i.append("<label>일정 내용</label><div class='input-group'>" +
-                        "<input id='contentInput' class='form-control' type=text value='" + cal_content + "' style='border-radius: 10px; width: '/></div>")
-                    i.append("<label>기간</label><div class='input-group'><input id='dateInput' class='form-control' type=text value='"+cal_startDate+" ~ "+cal_endDate+"' style='border-radius: 10px;' /></div>")
-                    i.append("<label>첨부파일</label><div class='input-group'>" +
-                        "<input id='contentInput' class='form-control' type=text value='" + cal_attach + "' style='border-radius: 10px; width: '/></div>")
-                    i.append("<label>링크</label><button type='button' name='addLinkBtn'>➕</button><div class='input-group'>" +
-                        "<input id='linkInput' class='form-control' type=text value='" + cal_link_list + "' style='border-radius: 10px;' readonly/>" +
-                        "<input type='text' class='form-control' name='addLink' placeholder='링크 추가...' id='cal_link_input' style='visibility: hidden; width: 18rem; border-radius: 10px; display: inline-block' />" +
-                        "<div name='linkTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-                        "<span class='badge badge-pill badge-success'>"+uid+"</span></div>")
 
-                    $(document).ready(function() {
+                        $.ajax({
+                            url: '/calendar/read/' + pid + '/' + cal_id,
+                            type: 'GET',
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            success:   function (response) {
 
-                        var linkInputs = '';
+                                alert("일정 보기 success.");
+                                console.log("일정 보기 success.");
 
-                        $("button[name='addLinkBtn']").on("click", function () {
+                                var i = e("<form></form>");
+                                i.append("<input type='hidden' name='cal_id' value='cal_id'/>")
+                                i.append("<label>일정 제목</label>"), i
+                                    .append("<div class='input-group'>" +
+                                        "<input id='titleInput' class='form-control' type=text value='" + response.cal_title + "' style='border-radius: 10px; width: '/>" +
+                                        "</div>"),
+                                    i.append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-87px, -1px);'>" +
+                                        "<div class='form-group'>" +
+                                        "<label class='control-label'>카테고리</label>" +
+                                        "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
+                                        .append("<option value='currentCategory' default>" + response.cal_cate + "</option>")
+                                        .append("<option value='bg-team'>팀 회의</option>")
+                                        .append("<option value='bg-dept'>부서 회의</option>")
+                                        .append("<option value='bg-company-event'>사내 행사</option>")
+                                        .append("<option value='bg-personal-event'>개인 일정</option>")
+                                        .append("<option value='bg-account-event'>거래처 일정</option>")
+                                        .append("<option value='bg-business-trip'>출장</option>")
+                                        .append("<option value='bg-etc'>기타</option></div></div>")
+                                        .end(),
+                                    i.append("<label>일정 내용</label><div class='input-group'>" +
+                                        "<input id='contentInput' class='form-control' type=text value='" + response.cal_content + "' style='border-radius: 10px; width: '/></div>"),
+                                    i.append("<label>기간</label><div class='input-group'><input id='dateInput' class='form-control' type=text value='" + response.cal_startDate + " ~ " + response.cal_endDate + "' style='border-radius: 10px;' /></div>"),
+                                    i.append("<label>첨부파일</label><div class='input-group'>" +
+                                        "<input id='contentInput' class='form-control' type=text value='" + response.cal_attach + "' style='border-radius: 10px; width: '/></div>"),
+                                    i.append("<label>링크</label><button type='button' name='addLinkBtn'>➕</button><div class='input-group'>" +
+                                        "<input id='linkInput' class='form-control' type=text value='" + response.cal_link_list + "' style='border-radius: 10px;' readonly/>" +
+                                        "<input type='text' class='form-control' name='addLink' placeholder='링크 추가...' id='cal_link_input' style='visibility: hidden; width: 18rem; border-radius: 10px; display: inline-block' />" +
+                                        "<div name='linkTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+                                        "<span class='badge badge-pill badge-success'>" + uid + "</span></div>")
 
-                            var linkInputField = $("input[name='addLink']");
 
-                            if (linkInputField.css('visibility') === 'hidden') {
-                                linkInputField.css('visibility', 'visible');
-                                linkInputField.focus();
-                            } else {
-                                var linkInput = linkInputField.val();
 
-                                if (linkInput === '' || linkInput === null) {
-                                    alert("추가할 링크를 입력해주세요");
-                                } else {
-                                    linkInputs = "<span class='badge badge-pill badge-primary'>" + linkInput + "</span><button name='deleteLink' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-calLinkId='" + linkInput + "'><i class='fa-solid fa-xmark'></i></button>" +
-                                        "<input type='hidden' name='cal_link_list' value='" + linkInput + "'/>";
+                                o.$modal2.find(".cancel-event").show().end()
+                                    .find(".save-event2").hide().end()
+                                    .find(".modal-body").empty().prepend(i).end()
+                                    .find(".cancel-event").unbind("click").on("click", function () {
+                                    o.$calendarObj.fullCalendar("removeEvents", function (e) {
+                                        return e._id == t._id
+                                    }), o.$modal2.modal("hide")
+                                });
+                                o.$modal2.modal("hide");
 
-                                    $("div[name='linkTags']").append(linkInputs);
-                                    linkInputField.val('');
-                                    linkInputs = '';
-                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert("일정 저장에 실패했습니다.");
+                                console.error("일정 저장에 실패했습니다:", error);
                             }
-                        });
-                    })
+                        })
 
-                        ,o.$modal2.find(".cancel-event").show().end()
-                            .find(".save-event2").hide().end()
-                            .find(".modal-body").empty().prepend(i).end()
-                            .find(".cancel-event").unbind("click").on("click", function () {
-                            o.$calendarObj.fullCalendar("removeEvents", function (e) {
-                                return e._id == t._id
-                            }), o.$modal2.modal("hide")
-                        });
-                    o.$modal2.modal("hide");
-
-                    $.ajax({
-                        url: '/calendar/read/' + pid + '/' + cal_id,
-                        type: 'GET',
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success: function (response) {
-                            alert("일정 보기 success.");
-                            console.log("일정 보기 success.");
-                        },
-                        error: function (xhr, status, error) {
-                            alert("일정 저장에 실패했습니다.");
-                            console.error("일정 저장에 실패했습니다:", error);
-                        }
-                    })
-             }
+             },
 
             t.prototype.onSelect = function (t, n, a) {
                 var o = this;
                 o.$modal.modal({
                     backdrop: "static"
                 });
-                var i = e("<form name='calendarForm' action='/calendar/register'></form>");
+                var i = e("<form name='calendarForm' ></form>");
+                i.append("<input type='hidden' value='cal_id' name='cal_id'/>")
                 i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
                     .append("<div class='col-md-6' style='border-bottom: #0b0b0b'>" +
                         "<div class='form-group' style='width: 16rem;'>" +
@@ -481,9 +511,10 @@
                         });
                     });
 
-
                 // 이벤트 핸들러 등록
-                o.$modal.find(".save-event").unbind("click").on("click", function () {
+                o.$modal.find(".save-event").unbind("click").on("click", function (e) {
+
+                    e.preventDefault();
 
                     const eventData = {
                         cal_title: i.find("input[name='cal_title']").val(),
@@ -498,22 +529,55 @@
                         create_user_id: i.find("input[name='create_user_id']").val()
                     }
                     console.log("잘했어. 다시 읽어라 좀. !!!!");
+                    console.log(eventData);
                     console.log(eventData.cal_cate);
+
+                    var pidStr = pid+'';
+
+                    var cal_title = $("input[name='cal_title']").val();
+                    var  beginning =  $("input[name='beginning']").val();
+                    var  ending = $("input[name='ending']").val();
+                    var   cal_cate = $("select[name='cal_cate'] option:checked").val();
+                    var   cal_content=  $("input[name='cal_content']").val();
+                    var   cal_startDate=  $("input[name='cal_startDate']").val();
+                    var   cal_endDate=  $("input[name='cal_endDate']").val();
+                    var    cal_attach=  $("input[name='cal_attach']").val();
+                    var   cal_link_list=  $("input[name='cal_link_list']").val();
+                    var   create_user_id=  $("input[name='create_user_id']").val();
+
+                    console.log(cal_title);
+                    console.log(cal_cate);
+                    console.log(pidStr);
+                    console.log(cal_link_list);
+
                     $.ajax({
                         url: '/calendar/register',
-                        type: 'POST',
-                        data: eventData,
+                        type: 'post',
+                        data: {
+                            'cal_link_list':cal_link_list,
+                           'create_user_id':create_user_id,
+                            'cal_attach':cal_attach,
+                            'cal_startDate':cal_startDate,
+                            'cal_cate':cal_cate,
+                            'cal_endDate':cal_endDate,
+                            'cal_content':cal_content,
+                            'cal_title':cal_title,
+                            'pid':pidStr
+                        },
                         success: function (response) {
-                            alert("일정이 성공적으로 저장되었습니다.");
-                            console.log("일정이 성공적으로 저장되었습니다.");
-                            o.$modal.modal("hide")
+                            if(response == 'success'){
+                                alert("일정이 성공적으로 저장되었습니다.");
+                                console.log("일정이 성공적으로 저장되었습니다.");
+                                o.$modal.modal("hide")
+                                location.reload();
+                            }
                         },
                         error: function (xhr, status, error) {
                             alert("일정 저장에 실패했습니다.");
                             console.error("일정 저장에 실패했습니다:", error);
                         }
-                    })
-                    i.submit();
+                    });
+
                 }), o.$modal.find("form").on("submit", function () {
                     var e = i.find("input[name='cal_title']").val(),
                         a = (i.find("select[name='cal_cate']").val(),
@@ -550,51 +614,85 @@
                     n = (t.getDate(), t.getMonth(), t.getFullYear(), new Date(e.now())),
                     a = [],
                     o = this;
-                for (var i = 0; i < calendarList.length; i++) {
-                    a.push({
-                        title: calendarList[i].cal_title,
-                        start: calendarList[i].cal_startDate,
-                        end: calendarList[i].cal_endDate,
-                        className: calendarList[i].cal_cate
-                    });
-                }
-                o.$calendarObj = o.$calendar.fullCalendar({
-                    slotDuration: "00:15:00",
-                    minTime: "08:00:00",
-                    maxTime: "19:00:00",
-                    defaultView: "month",
-                    handleWindowResize: !0,
-                    height: e(window).height() - 200,
-                    header: {
-                        left: "prev today next",
-                        center: "title",
-                        right: "month,agendaWeek,agendaDay"
-                    },
-                    events: a,
-                    editable: !0,
-                    droppable: !0,
-                    eventLimit: !0,
-                    selectable: !0,
-                    drop: function (t) {
-                        o.onDrop(e(this), t)
-                    },
-                    select: function (e, t, n) {
-                        o.onSelect(e, t, n)
-                    },
-                    eventClick: function (e, t, n) {
-                        o.onEventClick(e, t, n)
+
+                if(calendarList !== null){
+                    for (var i = 0; i < calendarList.length; i++) {
+
+                        a.push({
+                            title: calendarList[i].cal_title+"/"+calendarList[i].cal_id,
+                            start: calendarList[i].cal_startDate,
+                            end: calendarList[i].cal_endDate,
+                            className: calendarList[i].cal_cate
+                        });
                     }
-                }), this.$saveCategoryBtn.on("click", function () {
-                    var e = o.$categoryForm.find("input[name='category-name']").val(),
-                        t = o.$categoryForm.find("select[name='category-color']").val();
-                    null !== e && 0 != e.length && (o.$extEvents.append('<div class="external-event bg-' + t + '" data-class="bg-' + t + '" style="position: relative;"><i class="fa fa-move"></i>' + e + "</div>"), o.enableDrag())
-                })
+                }
+
+                    o.$calendarObj = o.$calendar.fullCalendar({
+                        slotDuration: "00:15:00",
+                        minTime: "08:00:00",
+                        maxTime: "19:00:00",
+                        defaultView: "month",
+                        handleWindowResize: !0,
+                        height: e(window).height() - 200,
+                        header: {
+                            left: "prev today next",
+                            center: "title",
+                            right: "month,agendaWeek,agendaDay"
+                        },
+                        events: a,
+                        editable: !0,
+                        droppable: !0,
+                        eventLimit: !0,
+                        selectable: !0,
+                        drop: function (t) {
+                            o.onDrop(e(this), t)
+                        },
+                        select: function (e, t, n) {
+                            o.onSelect(e, t, n)
+                        },
+                        eventClick: function (e, t, n) {
+                            o.onEventClick(e, t, n)
+                        }
+                    }), this.$saveCategoryBtn.on("click", function () {
+                        var e = o.$categoryForm.find("input[name='category-name']").val(),
+                            t = o.$categoryForm.find("select[name='category-color']").val();
+                        null !== e && 0 != e.length && (o.$extEvents.append('<div class="external-event bg-' + t + '" data-class="bg-' + t + '" style="position: relative;"><i class="fa fa-move"></i>' + e + "</div>"), o.enableDrag())
+                    })
             }, e.CalendarApp = new t, e.CalendarApp.Constructor = t
         }(window.jQuery),
             function (e) {
                 "use strict";
                 e.CalendarApp.init()
             }(window.jQuery);
+
+        /*function부분*/
+        $(document).ready(function() {
+
+            var linkInputs = '';
+
+            $("button[name='addLinkBtn']").on("click", function () {
+
+                var linkInputField = $("input[name='addLink']");
+
+                if (linkInputField.css('visibility') === 'hidden') {
+                    linkInputField.css('visibility', 'visible');
+                    linkInputField.focus();
+                } else {
+                    var linkInput = linkInputField.val();
+
+                    if (linkInput === '' || linkInput === null) {
+                        alert("추가할 링크를 입력해주세요");
+                    } else {
+                        linkInputs = "<span class='badge badge-pill badge-primary'>" + linkInput + "</span><button name='deleteLink' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-calLinkId='" + linkInput + "'><i class='fa-solid fa-xmark'></i></button>" +
+                            "<input type='hidden' name='cal_link_list' value='" + linkInput + "'/>";
+
+                        $("div[name='linkTags']").append(linkInputs);
+                        linkInputField.val('');
+                        linkInputs = '';
+                    }
+                }
+            });
+        })
 
     </script>
 

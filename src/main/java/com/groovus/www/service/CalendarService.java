@@ -1,6 +1,7 @@
 package com.groovus.www.service;
 
 import com.groovus.www.dto.CalendarDTO;
+import com.groovus.www.dto.CalendarRequestDTO;
 import com.groovus.www.dto.MemberDTO;
 import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
@@ -14,7 +15,7 @@ public interface CalendarService {
 
 
 
-    Long register(CalendarDTO calendarDTO); // 일정 등록
+    Long register(CalendarRequestDTO calendarRequestDTO , Long pid); // 일정 등록
 
     List<CalendarDTO> getList(Long pid); // 특정 프로젝트의 일정
 

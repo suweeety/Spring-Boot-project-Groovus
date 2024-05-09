@@ -13,10 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CalendarDTO {
+public class CalendarRequestDTO {
 
     //tb_calendar
-    private Long cal_id; //
+    private String cal_id; //
 
     private String cal_title; //
 
@@ -28,13 +28,13 @@ public class CalendarDTO {
 
     private String cal_endDate;
 
-    private List<CalendarAttach> cal_attach;
+    private List<String> cal_attach;
 
-    private List<CalendarLink> cal_link_list;
+    private List<String> cal_link_list;
 
-    private List<Member> cal_members;
+    private List<String> cal_members;
 
-    private Long pid; // 프로젝트 번호
+    private String pid; // 프로젝트 번호
 
     private String create_user_id;
 
