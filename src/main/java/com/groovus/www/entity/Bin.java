@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Bin {
 
     @Id
@@ -22,9 +22,9 @@ public class Bin {
 
 //    @Column(columnDefinition = "TIMESTAMP")
 //    private LocalDateTime deletedAt; // 삭제된 시간
-//
-//    public Bin(String title) {
-//        this.title = title;
+
+    public Bin(String title) {
+        this.title = title;
 //        this.deletedAt = LocalDateTime.now();
-//    }
+    }
 }

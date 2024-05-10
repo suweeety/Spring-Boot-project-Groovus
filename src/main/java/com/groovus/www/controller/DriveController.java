@@ -34,8 +34,8 @@ public class DriveController {
         return "redirect:/drive/drive";
     }
 
-    @GetMapping("/drive")
-    public void list(PageRequestDTO pageRequestDTO, Model model){
+    @GetMapping("/drive/{pid}/{projectName}")
+    public void list(PageRequestDTO pageRequestDTO, Model model ,@PathVariable("pid") String pid , @PathVariable("projectName")String projectName){
 
         log.info("pageRequestDTO: " + pageRequestDTO);
 
@@ -69,9 +69,6 @@ public class DriveController {
     }
 
 //    @PostMapping("/bin/{bno}")
-//    public String moveToBin(@PathVariable("bno") Long bno) {
-//        driveService.moveToBin(bno);
-//        return "redirect:/drive";
 //    }
 
 
