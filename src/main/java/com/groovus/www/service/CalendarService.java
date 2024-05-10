@@ -17,11 +17,11 @@ public interface CalendarService {
 
     Long register(CalendarRequestDTO calendarRequestDTO , Long pid); // 일정 등록
 
-    List<CalendarDTO> getList(Long pid); // 특정 프로젝트의 일정
+    List<CalendarDTO> getList(Long pid); // 특정 프로젝트의 일정 목록
 
-    CalendarDTO readOne(Long pid, Long cal_id);
+    CalendarDTO readOne(Long pid, Long cal_id); // 일정 가져오기
 
-    void modify(CalendarDTO calendarDTO, Member createMember); // 일정 수정
+    void modify(CalendarRequestDTO calendarRequestDTO, Member updateMember); // 일정 수정
 
     void remove(Long cal_id); // 일정 삭제
 

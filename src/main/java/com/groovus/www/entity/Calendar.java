@@ -65,11 +65,12 @@ public class Calendar extends BaseEntity{
     @JoinColumn(name = "pid")
     private Project project;
 
-    @JoinColumn(name = "uid")
+    @JoinColumn(name = "uid", insertable=false, updatable=false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member create_user_id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uid")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Member update_user_id;
 
 

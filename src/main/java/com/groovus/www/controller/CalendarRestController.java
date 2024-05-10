@@ -2,6 +2,7 @@ package com.groovus.www.controller;
 
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.dto.CalendarRequestDTO;
+import com.groovus.www.entity.Member;
 import com.groovus.www.repository.CalendarRepository;
 import com.groovus.www.service.CalendarService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ import java.util.List;
 @Log4j2
 @RequestMapping("/calendar")
 @RequiredArgsConstructor
-public class CalendarRestController {
+public class CalendarRestController { // model로 값 보내기 불가능, JSON을 주로 보내는 목적
 
     @Autowired
     private CalendarService calendarService;
@@ -81,21 +82,19 @@ public class CalendarRestController {
         // calendarService의 register메서드 호출하여 Long cal_id에 대입(calendarDTO 값 가지고 있음)
         Long cal_id = calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid()));
 
-
-
-
-
-
         return new ResponseEntity<>("success",HttpStatus.OK);
 
     }
 
-    @PutMapping("/{cal_id}") // 일정 수정
-    public ResponseEntity<String> modify(@RequestBody CalendarDTO calendarDTO) {
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify") // 일정 수정
+    public ResponseEntity<String> modify(CalendarRequestDTO calendarRequestDTO, Member updateMember) {
 
-        log.info(calendarDTO);
+        log.info("==================++++++++++===================");
+        log.info("modify:"+calendarRequestDTO);
+        log.info("==================++++++++++===================");
 
-//        calendarService.modify(calendarDTO);
+        calendarService.modify(calendarRequestDTO, updateMember);
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }

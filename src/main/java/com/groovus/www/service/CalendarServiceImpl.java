@@ -95,13 +95,20 @@ public class CalendarServiceImpl implements CalendarService{
 
 
     @Override
-    public void modify(CalendarDTO calendarDTO, Member createMember) {
+    public void modify(CalendarRequestDTO calendarRequestDTO, Member updateMember) {
 
 //        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
 
 //        Calendar calendar = result.orElseThrow();
 
-        Calendar calendar = dtoToEntity(calendarDTO, createMember);
+        Calendar calendar = Calendar.builder()
+                .cal_title(calendarRequestDTO.getCal_title())
+                .cal_content(calendarRequestDTO.getCal_content())
+                .cal_cate(calendarRequestDTO.getCal_cate())
+                .cal_startDate(calendarRequestDTO.getCal_startDate())
+                .cal_endDate(calendarRequestDTO.getCal_endDate())
+                .update_user_id(updateMember)
+                .build();
 
         calendarRepository.save(calendar);
     }
