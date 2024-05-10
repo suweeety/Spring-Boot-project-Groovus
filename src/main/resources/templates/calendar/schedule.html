@@ -58,11 +58,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="card" style="
-        transform: translate(-230px, -42px);
-        width: 95rem;
-        height: 55rem;
-    ">
+                        <div class="card" style="transform: translate(-230px, -42px); width: 95rem; height: 95rem;">
                             <div class="card-body">
                                 <div class="card-title">
                                     <h3>Calendar</h3>
@@ -252,14 +248,8 @@
         var uid = [[${#authentication.principal.uid}]];
         var calendarList = [[${calendarList}]];
         var pid = [[${pid}]];
-        var cal_title;
-        var cal_content;
         var cal_id ;
-        var cal_cate;
-        var cal_startDate;
-        var cal_endDate;
         var cal_attach;
-        var cal_link_list;
 
         console.log('calendar:'+calendar);
         console.log('calendarList:'+calendarList);
@@ -359,10 +349,10 @@
                                 var i = e("<form></form>");
                                 i.append("<input type='hidden' name='cal_id' value='cal_id'/>")
                                 i.append("<label>일정 제목</label>"), i
-                                    .append("<div class='input-group'>" +
-                                        "<input id='titleInput' name='cal_title' class='form-control' type=text value='" + response.cal_title + "' style='border-radius: 10px; width: '/>" +
+                                    .append("<div class='input-group' style='width: 16rem;'>" +
+                                        "<input id='titleInput' name='cal_title' class='form-control' type=text value='" + response.cal_title + "' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
                                         "</div>"),
-                                    i.append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-87px, -1px);'>" +
+                                    i.append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(303px, -71px);'>" +
                                         "<div class='form-group'>" +
                                         "<label class='control-label'>카테고리</label>" +
                                         "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
@@ -375,16 +365,17 @@
                                         .append("<option value='bg-business-trip'>출장</option>")
                                         .append("<option value='bg-etc'>기타</option></div></div>")
                                         .end(),
-                                    i.append("<label>일정 내용</label><div class='input-group'>" +
-                                        "<input id='contentInput' name='cal_content' class='form-control' type=text value='" + response.cal_content + "' style='border-radius: 10px; width: '/></div>"),
-                                    i.append("<label>기간</label><div class='input-group'><input id='dateInput' name='cal_startDate' class='form-control' type=text value='" + response.cal_startDate+"'/>" + " ~ " +
-                                        "<input id='dateInput' name='cal_endDate' class='form-control' type=text value='" + response.cal_endDate + "' style='border-radius: 10px;' /></div>")
-                                    i.append("<label>첨부파일</label><div class='input-group'>" +
-                                        "<input id='contentInput' name='cal_attach' class='form-control' type=text value='" + response.cal_attach + "' style='border-radius: 10px; width: '/></div>"),
-                                    i.append("<label>링크</label><button type='button' name='addLinkBtn'>➕</button><div class='input-group'>" +
-                                        "<input id='linkInput' name='cal_link_list' class='form-control' type=text value='" + response.cal_link_list + "' style='border-radius: 10px;' readonly/>" +
+                                    i.append("<label style='transform: translate(0px, -54px);'>일정 내용</label><div class='input-group' style='transform: translate(-2px, -27px);'>" +
+                                        "<input id='contentInput' name='cal_content' class='form-control' type='text' value='" + response.cal_content + "' style='max-width: 46rem; height: 9rem; transform: translate(0px, -10px); border-radius: 10px'/></div>"),
+                                    i.append("<label style='transform: translate(0px, -4px);'>기간</label><div class='input-group'>" +
+                                        "<input id='dateInput' name='cal_startDate' class='form-control' type='datetime-local' value='" + response.cal_startDate+"'style='border-radius: 10px;'/>" + " ~ " +
+                                        "<input id='dateInput' name='cal_endDate' class='form-control' type='datetime-local' value='" + response.cal_endDate + "' style='border-radius: 10px;' /></div>")
+                                    i.append("<label style='transform: translate(0px, 26px);'>첨부파일</label>" +
+                                        "<input id='attachInput' name='cal_attach' class='form-control' type='file' style='transform: translate(0px, 26px);' value='" + response.cal_attach + "' style='border-radius: 10px; width: '/>"),
+                                    i.append("<label style='transform: translate(0px, 26px);'>링크</label><button type='button' name='addLinkBtn' style='transform: translate(0px, 26px);'>➕</button><div class='input-group'>" +
+                                        "<input id='linkInput' name='cal_link_list' class='form-control' type='url' style='transform: translate(0px, 26px);' value='" + response.cal_link_list + "' style='border-radius: 10px;' readonly/>" +
                                         "<input type='text' class='form-control' name='addLink' placeholder='링크 추가...' id='cal_link_input' style='visibility: hidden; width: 18rem; border-radius: 10px; display: inline-block' />" +
-                                        "<div name='linkTags' style='display: block; width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+                                        "<div name='linkTags' style='display: block; width: 11rem;height: 3rem; transform: translate(204px, -589px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
                                         "<span class='badge badge-pill badge-success'>" + uid + "</span></div>")
 
                                     ,
@@ -426,10 +417,15 @@
                                     var   cal_link_list=  $("input[name='cal_link_list']").val();
                                     var   update_user_idStr = uid+'';
 
+                                    console.log(cal_title);
                                     console.log(cal_content);
                                     console.log(cal_cate);
                                     console.log(cal_startDate);
                                     console.log(cal_endDate);
+                                    console.log(cal_attach);
+                                    console.log(pidStr);
+                                    console.log(cal_idStr);
+                                    console.log(update_user_idStr);
 
                                     $.ajax({
                                         url: '/calendar/modify',
@@ -443,7 +439,7 @@
                                             'cal_attach': cal_attach,
                                             'pid': pidStr,
                                             'cal_id': cal_idStr,
-                                            'uid': update_user_idStr
+                                            'update_user_id': update_user_idStr
                                         },
                                         success: function (result) {
                                             console.log("RESULT: " + result);
@@ -463,7 +459,6 @@
                                 })
 
                                 o.$modal2.find(".cancel-event").show().end()
-                                    .find(".btn-success").hide().end()
                                     .find(".modal-body").empty().prepend(i).end()
                                     .find(".cancel-event").unbind("click").on("click", function () {
                                     o.$calendarObj.fullCalendar("removeEvents", function (e) {
@@ -489,13 +484,13 @@
                 var i = e("<form name='calendarForm' ></form>");
                 i.append("<input type='hidden' value='cal_id' name='cal_id'/>")
                 i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
-                    .append("<div class='card-header col-md-6' style='border-bottom: #0b0b0b'>" +
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b'>" +
                         "<div class='form-group' style='width: 16rem;'>" +
                         "<h5 class='control-label'>일정 제목</h5>" +
                         "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
                         "</div>" +
                         "</div>")
-                    .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-87px, -1px);'>" +
+                    .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-75px, 2px);'>" +
                         "<div class='form-group'>" +
                         "<label class='control-label'>카테고리</label>" +
                         "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
@@ -508,7 +503,7 @@
                     .append("<option value='bg-etc'>기타</option></div></div>")
                     .end()
                     .append("<div class='userId'>" +
-                        "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(460px, -96px); padding: 0;'>" +
+                        "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(-95px, -9px); padding: 0;'>" +
                         "<div class='form-group' style='margin: 0; height: 5rem;'>" +
                         "<label class='control-label'>참여자</label>" +
                         "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
@@ -530,15 +525,16 @@
                         "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
                         "</div>")
 
-                    .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px);'><div class='form-group' ><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+                    .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px);'>" +
+                        "<div class='form-group' style='margin-top: -1rem;'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
                         "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-                    .append("<div class='col-md-6' transform: translate(-2px, -22px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
+                    .append("<div class='col-md-6' style='transform: translate(0px, 78px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
                         "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
                         "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
                         "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' /></div></div>")
-                    .append("<div class='attach-button' style='transform: translate(-337px, 98px); height: 0rem;'>첨부파일</div><div class='file-upload-form' style='transform: translate(-388px, 137px); height: 2rem;'>" +
+                    .append("<div class='attach-button' style='transform: translate(10px, 178px); height: 0rem;'>첨부파일</div><div class='file-upload-form' style='transform: translate(-46px, 220px); height: 2rem;'>" +
                         "<input type='file' name='cal_attach' multiple class='file-input' style='width: 19rem;'/><button class='upload-button' style='border: none; background: none;'><i class='fa-solid fa-link'></i></button><div class='uploadResult'></div></div></div>")
-                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(377px, -89px);'><div class='form-group'><label class='control-label'>링크</label>" +
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(0px, -10px);'><div class='form-group'><label class='control-label'>링크</label>" +
                         "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link_list' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
                     .append("<button type='button' class='btn btn-primary openReply' data-toggle='modal' data-target='.bd-example-modal-sm' style='border-radius: 12px;background-color: red;color: white;right: 10%;transform: translate(384px, -532px);height: 40px;'>💬</button>")
 

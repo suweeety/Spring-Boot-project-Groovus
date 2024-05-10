@@ -95,22 +95,24 @@ public class CalendarServiceImpl implements CalendarService{
 
 
     @Override
-    public void modify(CalendarRequestDTO calendarRequestDTO, Member updateMember) {
+    public void modify(CalendarRequestDTO calendarRequestDTO, Long pid, Long cal_id) {
+        //CalendarRequestDTO: String 타입으로 이루어짐
 
-//        Optional<Calendar> result = calendarRepository.findById(calendarDTO.getCal_id());
+        Optional<Calendar> calResult = calendarRepository.findById(cal_id);
+        if(calResult.isPresent()){
+            Calendar calendar = calResult.get();
 
-//        Calendar calendar = result.orElseThrow();
+            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(), calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate());
 
-        Calendar calendar = Calendar.builder()
-                .cal_title(calendarRequestDTO.getCal_title())
-                .cal_content(calendarRequestDTO.getCal_content())
-                .cal_cate(calendarRequestDTO.getCal_cate())
-                .cal_startDate(calendarRequestDTO.getCal_startDate())
-                .cal_endDate(calendarRequestDTO.getCal_endDate())
-                .update_user_id(updateMember)
-                .build();
+          Optional<Member> memberResult = memberRepository.findByUid(calendarRequestDTO.getUpdate_user_id());
+          if(memberResult.isPresent()){
+              Member member = memberResult.get();
 
-        calendarRepository.save(calendar);
+              calendar.setUpdate_user_id(member);
+
+              calendarRepository.save(calendar);
+          }
+        }
     }
 
     @Override

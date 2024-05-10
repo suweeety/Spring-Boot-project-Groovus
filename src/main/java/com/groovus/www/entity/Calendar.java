@@ -14,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @Entity
 @Table(name="tb_calendar")
 @ToString(exclude = "imageSet")
@@ -69,9 +70,9 @@ public class Calendar extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     private Member create_user_id;
 
-    @JoinColumn(name = "uid")
+    @JoinColumn(name = "mid")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Member update_user_id;
+    private Member update_user_id; //mid
 
 
     public void addImage(String uuid, String fileName) {
@@ -86,23 +87,24 @@ public class Calendar extends BaseEntity{
     public void setProject(Project project){
         this.project = project;
     }
+    public void setUpdate_user_id(Member update_user_id) {
+        this.update_user_id = update_user_id;
+    }
 
     public void clearImages() {
         imageSet.forEach(calendarImage -> calendarImage.changeCalendar(null));
         this.imageSet.clear();
     }
 
-//    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate, List<CalendarAttach> cal_attach, String cal_link, List<Member> cal_member) {
-//
-//        this.cal_title = cal_title;
-//        this.cal_content = cal_content;
-//        this.cal_cate = cal_cate;
-//        this.cal_startDate = cal_startDate;
-//        this.cal_endDate = cal_endDate;
-//        this.cal_attach = cal_attach;
-//        this.cal_link = cal_link;
-//        this.cal_member = cal_member;
-//    }
+    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate) {
+
+        this.cal_title = cal_title;
+        this.cal_content = cal_content;
+        this.cal_cate = cal_cate;
+        this.cal_startDate = cal_startDate;
+        this.cal_endDate = cal_endDate;
+
+    }
 
     // 수정일 및 등록일은 BaseEntity 참고
 }

@@ -21,7 +21,7 @@ public interface CalendarService {
 
     CalendarDTO readOne(Long pid, Long cal_id); // 일정 가져오기
 
-    void modify(CalendarRequestDTO calendarRequestDTO, Member updateMember); // 일정 수정
+    void modify(CalendarRequestDTO calendarRequestDTO, Long pid, Long cal_id); // 일정 수정
 
     void remove(Long cal_id); // 일정 삭제
 
@@ -48,6 +48,8 @@ public interface CalendarService {
     }
 
     default CalendarDTO entityToDto(Calendar calendar) {
+
+
         CalendarDTO dto = CalendarDTO.builder()
                 .cal_id(calendar.getCal_id())
                 .cal_title(calendar.getCal_title())
@@ -58,7 +60,6 @@ public interface CalendarService {
                 .cal_attach(calendar.getCal_attach())
                 .cal_link_list(calendar.getCal_link_list())
                 .cal_members(calendar.getCal_members())
-                .create_user_id(calendar.getCreate_user_id().toString())
                 .pid(calendar.getProject().getPid())
                 .build();
         return dto;

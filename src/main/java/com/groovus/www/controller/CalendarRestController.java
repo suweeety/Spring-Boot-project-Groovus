@@ -88,13 +88,13 @@ public class CalendarRestController { // model로 값 보내기 불가능, JSON�
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify") // 일정 수정
-    public ResponseEntity<String> modify(CalendarRequestDTO calendarRequestDTO, Member updateMember) {
+    public ResponseEntity<String> modify(String update_user_id, CalendarRequestDTO calendarRequestDTO) {
 
         log.info("==================++++++++++===================");
         log.info("modify:"+calendarRequestDTO);
         log.info("==================++++++++++===================");
 
-        calendarService.modify(calendarRequestDTO, updateMember);
+        calendarService.modify(calendarRequestDTO, Long.parseLong(calendarRequestDTO.getPid()), Long.parseLong(calendarRequestDTO.getCal_id()));
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
