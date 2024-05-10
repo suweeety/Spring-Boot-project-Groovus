@@ -1,7 +1,8 @@
-package com.groovus.www.repository;
+package com.groovus.repository;
 
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.MemberRole;
+import com.groovus.www.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;

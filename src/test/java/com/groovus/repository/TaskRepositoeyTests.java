@@ -1,6 +1,8 @@
-package com.groovus.www.repository;
+package com.groovus.repository;
 
 import com.groovus.www.entity.Task;
+import com.groovus.www.repository.StatusHistoryRepository;
+import com.groovus.www.repository.TaskRepository;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

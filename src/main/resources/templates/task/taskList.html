@@ -405,14 +405,14 @@
                     event.preventDefault(); // 기본 동작 방지
                     var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
                     location.href = newUrl;
+
                 }
             });
 
-
             /*----------------------------------------*/
+            /*멘션기능 (구현중)*/
 
             var popup = $(".popup");
-
             var textarea =  $("textarea[name='replyText']");
             var re_replyText = $("textarea[name='re-replyText']");
 
@@ -439,7 +439,6 @@
                         success:function (result){
                             var str ='<ul>';
                             if(result!=null){
-
                                 for(var member of result){
                                     str+= '<li name="mentionTag" data-mid="'+member.mid+'">'+member.uid+'</li>';
                                 }
@@ -499,10 +498,7 @@
                     $(".popup").hide();
                 }
             });
-
             /*----------------------------------------*/
-
-
             if(type =='r'){
                 //담당업무탭
                 $("#myTask").addClass("text-primary");
@@ -544,7 +540,6 @@
             //업무읽기에서 뒤로가기 버튼이 눌렸을 때
             $(document).on("click","button[name='readTaskBack']",function (e){
                 e.preventDefault();
-
                 $("button[name='showHistoryBtn']").show(); //히스토리보기 버튼 보이게
                 $("button[name='closeHistoryBtn']").hide(); //히스토리닫기 버튼 숨김
                 $("button[name='statusChangeBtn']").hide(); // 상태 변경 버튼 숨김
@@ -592,7 +587,6 @@
                         }
                     });
                 }
-
             });
 
             //업무 읽기 함수
@@ -621,7 +615,6 @@
 
                 $("div[name='mainContent']").html(taskDetails); //메인 콘텐츠쪽에 넣음
             }
-
         });
 
         //댓글 읽어오기
@@ -637,7 +630,6 @@
                         var str ='';
                         if(result != null){
                           for(var i=0;i<result.length;i++){
-
                              var rereplyStr = await readReReply(result[i]);
 
                               str+= '<div class="media-body" name="reply" data-rid="'+result[i].rid+'">'+

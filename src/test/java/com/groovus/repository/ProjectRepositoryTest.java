@@ -1,10 +1,12 @@
-package com.groovus.www.repository;
+package com.groovus.repository;
 
 import com.groovus.www.dto.ProjectPageRequestDTO;
 import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.dto.RegisterProjectDTO;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
+import com.groovus.www.repository.MemberRepository;
+import com.groovus.www.repository.ProjectRepository;
 import com.groovus.www.service.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -27,10 +29,8 @@ public class ProjectRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
-
     @Autowired
     ProjectRepository projectRepository;
-
     @Autowired
     ProjectService projectService;
 
@@ -43,7 +43,6 @@ public class ProjectRepositoryTest {
 
       Member testMember = member.get();
 
-
         IntStream.rangeClosed(1,20).forEach(value -> {
             Project project = Project.builder()
                     .projectName("테스트프로젝트"+value)
@@ -54,11 +53,8 @@ public class ProjectRepositoryTest {
 
             project.addMember(testMember);
             projectRepository.save(project);
-
-                }
+            }
         );
-
-
     }
 
     @Test
@@ -74,7 +70,6 @@ public class ProjectRepositoryTest {
         testProject.addMember(testMember);
 
         projectRepository.save(testProject);
-
     }
 
     @Test
@@ -86,11 +81,7 @@ public class ProjectRepositoryTest {
 
         Pageable pageable =PageRequest.of(0,10);
 
-
         List<RegisterProjectDTO> result = projectRepository.getProjectListWithMid(testMember.getMid());
-
-
-
 
     }
 
