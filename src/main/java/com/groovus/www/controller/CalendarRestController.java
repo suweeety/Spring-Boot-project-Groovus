@@ -26,22 +26,20 @@ import java.util.List;
 @Log4j2
 @RequestMapping("/calendar")
 @RequiredArgsConstructor
-public class CalendarRestController { // model로 값 보내기 불가능, JSON을 주로 보내는 목적
+public class CalendarRestController { // JSON을 주로 보내는 목적으로 사용
 
     @Autowired
     private CalendarService calendarService;
 
-    @Autowired
-    private CalendarRepository calendarRepository;
-
-    // 특정 일정에 속하는 데이터를 반환
+    // 프로젝트와 일정에 해당하는 값 반환
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/read/{pid}/{cal_id}", produces = MediaType.APPLICATION_JSON_VALUE) // 해당 프로젝트의 일정 조회
+    @GetMapping(value = "/read/{pid}/{cal_id}", produces = MediaType.APPLICATION_JSON_VALUE) // {pid},{cal_id}를 json 형태로 보내줌
     public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id) {
 
         log.info("cal_id****: " + cal_id);
         log.info("pid****: " + pid);
         log.info("---------------------------------------------------------------");
+        // pid와 cal_id를 이용하여 값을 조회해 옴
         CalendarDTO dto = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
         log.info(dto);
         log.info("---------------------------------------------------------------");
@@ -52,7 +50,6 @@ public class CalendarRestController { // model로 값 보내기 불가능, JSON�
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/register") // 일정 추가
     public ResponseEntity<String> registerPOST(CalendarRequestDTO calendarRequestDTO) {
-
 
         log.info("==========================================================");
         log.info("registerPOST 확인");
@@ -80,7 +77,7 @@ public class CalendarRestController { // model로 값 보내기 불가능, JSON�
         log.info("calendarRequestDTO: " + calendarRequestDTO);
 
         // calendarService의 register메서드 호출하여 Long cal_id에 대입(calendarDTO 값 가지고 있음)
-        Long cal_id = calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid()));
+        Long cal_id = calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid())); // (pid는 브라우저 쪽에서 받아옴)
 
         return new ResponseEntity<>("success",HttpStatus.OK);
 
