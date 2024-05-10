@@ -73,7 +73,6 @@ public class TaskController {
         model.addAttribute("pid",pid);
         model.addAttribute("projectName",projectName);
 
-
         log.info("==============================");
         log.info(pid);
         log.info("==============================");

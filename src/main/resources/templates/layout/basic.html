@@ -37,6 +37,8 @@
 
   <th:block layout:fragment="css">
 
+
+
   <style>
 
     #logoImg{
@@ -48,6 +50,12 @@
 
 
 </th:block>
+
+  <!--jquery-->
+  <script
+          src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
 
 </head>
 <body>
@@ -186,6 +194,16 @@
   <div class="nk-sidebar">
     <div class="nk-nav-scroll">
       <ul class="metismenu" id="menu">
+        <li class="nav-label">공지사항</li>
+        <li>
+          <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
+            <i class="fa-regular fa-comment-dots"></i><span class="nav-text">Notice</span>
+          </a>
+          <ul aria-expanded="false">
+            <li><a th:href="@{'/notice/noticeList'}" id="notice">공지사항</a></li>
+          </ul>
+        </li>
+
         <li class="nav-label">나의 활동</li>
         <li>
           <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
@@ -257,10 +275,10 @@
         <!--<li class="nav-label">UI Components</li>-->
         <li>
           <a class="has-arrow" href="javascript: void(0)" aria-expanded="false">
-            <i class="fa-solid fa-video"></i><span class="nav-text">Video Conference</span>
+            <i class="fa-solid fa-video"></i><span class="nav-text">Conference</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{/conference/webConference}">화상회의</a></li>
+            <li><a th:href="@{/conference/roomlist}">화상회의/채팅</a></li>
           </ul>
         </li>
 
@@ -738,4 +756,5 @@
 <script th:src="@{/quixlab-bootstrap-main/theme/plugins/summernote/dist/summernote-init.js}"></script>
 
 </body>
+
 </html>

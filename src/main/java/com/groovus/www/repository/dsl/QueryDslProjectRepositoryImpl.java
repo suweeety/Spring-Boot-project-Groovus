@@ -101,7 +101,7 @@ public class QueryDslProjectRepositoryImpl extends QuerydslRepositorySupport imp
         query.where(project.pid.gt(0L));
 
         //페이징
-        this.getQuerydsl().applyPagination(pageable,query);
+        this.getQuerydsl().applyPagination(pageable, query);
 
         List<Project> projectList = query.fetch();
 

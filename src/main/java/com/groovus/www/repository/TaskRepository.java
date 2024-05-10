@@ -2,7 +2,6 @@ package com.groovus.www.repository;
 
 import com.groovus.www.entity.Task;
 import com.groovus.www.repository.dsl.QueryDslTaskRepository;
-import jakarta.persistence.Entity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

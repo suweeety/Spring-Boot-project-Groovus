@@ -17,7 +17,7 @@ public class RegisterProjectDTO {
 
     private String pid;
 
-    private String  adminUid;
+    private String adminUid;
 
     private String projectName;
 
