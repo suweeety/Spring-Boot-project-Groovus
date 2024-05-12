@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,14 +76,10 @@ public class CommonController {
         log.info("pid****: " + pid);
         List<CalendarDTO> calendarList = calendarService.getList(Long.parseLong(pid));
         log.info(calendarList);
-//        CalendarDTO calendarDTO = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
-//        log.info(calendarDTO);
         log.info("---------------------------------------");
 
         model.addAttribute("calendarList", calendarList);
         model.addAttribute("pid",pid);
-
-//        model.addAttribute("calendarDTO", calendarDTO);
 
         return "calendar/schedule";
     }

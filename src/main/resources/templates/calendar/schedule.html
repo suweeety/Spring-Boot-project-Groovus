@@ -63,50 +63,8 @@
                                 <div class="card-title">
                                     <h3>Calendar</h3>
                                 </div>
-                                <!--Make Category Bar-->
-                                <div class="row">
-                                    <div class="col-lg-4 mt-5" style="max-width: 14rem;transform: translate(40px, 55px);">
-                                        <a href="#" data-toggle="modal" data-target="#add-category"
-                                           class="btn btn-primary btn-block" style="background-color: red; border-color: red;">
-                                            <i class="ti-plus f-s-12 m-r-5"></i> New Category</a>
-                                        <div id="external-events" class="m-t-20">
-                                            <p>달력에 드래그 해보세요</p>
-                                            <div class="external-event bg-team text-white" data-class="bg-team"><i
-                                                    class="fa fa-move"></i>팀 회의
-                                            </div>
-                                            <div class="external-event bg-dept text-white" data-class="bg-dept"><i
-                                                    class="fa fa-move"></i>부서 회의
-                                            </div>
-                                            <div class="external-event bg-business-trip text-white" data-class="bg-business-trip">
-                                                <i
-                                                        class="fa fa-move"></i>외근 일정
-                                            </div>
-                                            <div class="external-event bg-dark text-white" data-class="bg-dark"><i
-                                                    class="fa fa-move"></i>Create New theme
-                                            </div>
-                                        </div>
-                                        <!-- checkbox -->
-                                        <div class="checkbox m-t-40">
-                                            <input id="drop-remove" type="checkbox">
-                                            <label for="drop-remove"> Remove after drop</label>
-                                        </div>
-                                        <br/>
-                                        <br/>
-                                        <!--TodoList-->
-                                        <div class="checkbox m-t-40">
-                                            <h3>To Do</h3>
-                                            <input type="text" name="dailyTodoInput" style="border-bottom-color: #9e1f63;border-top: none;
-                                            border-left: none;border-right: none;">
-                                            <button type="button" name="addTodoBtn" style="background: none; border: none; color: black">➕</button>
-                                            <br/>
-                                            <div>
-                                            <input type="checkbox" name="todoInputList"> 투두리스트 테스트</input>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <!--Calendar-->
-                                    <div class="col-md-8" style=" height: 38rem;">
+                                    <div class="col-md-8" style="height: 38rem;">
                                         <div class="card-box m-b-50"
                                              style="width: 70rem; transform: translate(72px, 10px);">
                                             <div id="calendar"></div>
@@ -153,7 +111,9 @@
             <div class="modal-content" style="height: auto">
                     <div class="modal-header">
                         <h4 class="modal-title"><strong>📅 내 일정</strong></h4>
-                        <div class="modal-Subtitle" name="update_user_id" style="transform: translate(-4px, 5px);">마지막 작성자: [[${user.uid}]]</div>
+                        <div class="modal-Subtitle" style="transform: translate(-4px, 5px);">마지막 작성자:
+                            <input type="text" name="update_user_id" th:value="${user.uid}" />
+                            <input type="hidden" name="update_user_id" th:value="${user.uid}" /></div>
                     </div>
                 <div class="modal-body"></div>
                 <div class="modal-footer" style="transform: translate(10px, -35px);">
@@ -164,56 +124,14 @@
                             class="btn btn-success" style="background-color: red; border-color: red; display: block">
                         ✔ 변경
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Add Category -->
-    <div class="modal fade none-border" id="add-category">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><strong>카테고리 생성</strong></h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label class="control-label">카테고리명</label>
-                                <input class="form-control form-white"
-                                       placeholder="Enter name" type="text"
-                                       name="category-name">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="control-label">색상 선택</label>
-                                <select class="form-control form-white"
-                                        data-placeholder="Choose a color..."
-                                        name="category-color">
-                                    <option value="success">Success</option>
-                                    <option value="danger">Danger</option>
-                                    <option value="info">Info</option>
-                                    <option value="pink">Pink</option>
-                                    <option value="primary">Primary</option>
-                                    <option value="warning">Warning</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default waves-effect"
-                            data-dismiss="modal">Close
-                    </button>
-                    <button type="button"
-                            class="btn btn-danger waves-effect waves-light save-category"
-                            data-dismiss="modal">저장
+                    <button type="button" name="deleteBtn"
+                            class="btn btn-primary" style="background-color: blueviolet; border-color: red; display: block">
+                        ➖ 삭제
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- END MODAL -->
 
     <!--**********************************
         Content body end
@@ -265,31 +183,25 @@
         /*--------------------------------------------------------*/
         /*ToDoList*/
         $(document).ready(function (){
-
-            $("button[name='addTodoBtn']").on("click", function (e) {
-
-                e.preventDefault();
-
-                var todoInputs = '';
-
+            $("button[name='addTodoBtn']").on("click", function () {
                 var todoInput = $("input[name='dailyTodoInput']").val();
 
-                if (todoInput === '' || todoInput === null) {
-                        alert("???");
-                    } else {
+                if (todoInput === null || todoInput === '') {
+                    alert("할 일을 작성해 주세요!");
+                } else {
+                    // 새로운 할 일을 기존의 할 일 목록에 추가
+                    var todoItem = "<div><input type='checkbox' name='todoInputList' value='" + todoInput + "'>" + todoInput + "</div>";
+                    $(".todo").append(todoItem);
 
-                        todoInputs = "<span class='badge badge-pill badge-primary'>" + todoInput + "</span><button name='deleteDailyTodoInput' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-todoId='" + todoInput + "'><i class='fa-solid fa-xmark'></i></button>" +
-                        "<input type='hidden' name='cal_todo' value='" + todoInput + "'/>";
+                    // 입력 필드 초기화
+                    $("input[name='dailyTodoInput']").val('');
+                }
+            });
+        });
 
-                        $("input[name='todoInputList']").append(todoInputs);
-                        $("input[name='dailyTodoInput']").val('');
-                        todoInputs = '';
-                    }
-            })
-        })
 
         /*--------------------------------------------------------*/
-
+        /*버튼 눌림 확인*/
         $(document).ready(function() {
 
             $("button[name='saveBtn']").on("click", function (e){
@@ -303,6 +215,13 @@
 
                 e.preventDefault();
                 alert("modifyBtn 눌림 성공");
+
+            });
+
+            $("button[name='deleteBtn']").on("click", function (e){
+
+                e.preventDefault();
+                alert("deleteBtn 눌림 성공");
 
             });
         })
@@ -356,7 +275,7 @@
                                         "<div class='form-group'>" +
                                         "<label class='control-label'>카테고리</label>" +
                                         "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
-                                        .append("<option value='currentCategory' default>" + response.cal_cate + "</option>")
+                                        .append("<option value='"+response.cal_cate+"' default>" + response.cal_cate + "</option>")
                                         .append("<option value='bg-team'>팀 회의</option>")
                                         .append("<option value='bg-dept'>부서 회의</option>")
                                         .append("<option value='bg-company-event'>사내 행사</option>")
@@ -365,11 +284,37 @@
                                         .append("<option value='bg-business-trip'>출장</option>")
                                         .append("<option value='bg-etc'>기타</option></div></div>")
                                         .end(),
-                                    i.append("<label style='transform: translate(0px, -54px);'>일정 내용</label><div class='input-group' style='transform: translate(-2px, -27px);'>" +
-                                        "<input id='contentInput' name='cal_content' class='form-control' type='text' value='" + response.cal_content + "' style='max-width: 46rem; height: 9rem; transform: translate(0px, -10px); border-radius: 10px'/></div>"),
-                                    i.append("<label style='transform: translate(0px, -4px);'>기간</label><div class='input-group'>" +
+                                    i.append("<div class='userId'>" +
+                                            "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(-95px, -9px); padding: 0;'>" +
+                                            "<div class='form-group' style='margin: 0; height: 5rem;'>" +
+                                            "<label class='control-label'>참여자</label>" +
+                                            "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
+                                            "<span>" +
+                                            "<button type='button' name='addBtn' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>" +
+                                            "➕</button>" +
+                                            "</span>" +
+                                            "</div>" +
+                                            "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+                                            "<span class='badge badge-pill badge-success'>"+uid+"</span>" +
+                                            "</div>"+
+                                            "<div class ='col' style='transform: translate(265px, -78px);'>" +
+                                            "<div class='dropdown custom-dropdown'><div data-toggle='dropdown'>" +
+                                            "<i class='fa fa-ellipsis-v'></i>" +
+                                            "</div>"+
+                                            "</div>" +
+                                            "</div>" +
+                                            "</div>" +
+                                            "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
+                                            "</div>")
+                                    i.append("<label style='transform: translate(0px, -54px);'>일정 내용</label>" +
+                                        "<div class='input-group' style='transform: translate(-2px, -27px);'>" +
+                                        "<input id='contentInput' name='cal_content' class='form-control' type='text' value='" + response.cal_content + "' style='max-width: 46rem; height: 9rem; transform: translate(0px, -10px); border-radius: 10px'/>" +
+                                        "</div>"),
+                                    i.append("<label style='transform: translate(0px, -4px);'>기간</label>" +
+                                        "<div class='input-group'>" +
                                         "<input id='dateInput' name='cal_startDate' class='form-control' type='datetime-local' value='" + response.cal_startDate+"'style='border-radius: 10px;'/>" + " ~ " +
-                                        "<input id='dateInput' name='cal_endDate' class='form-control' type='datetime-local' value='" + response.cal_endDate + "' style='border-radius: 10px;' /></div>")
+                                        "<input id='dateInput' name='cal_endDate' class='form-control' type='datetime-local' value='" + response.cal_endDate + "' style='border-radius: 10px;' />" +
+                                        "</div>")
                                     i.append("<label style='transform: translate(0px, 26px);'>첨부파일</label>" +
                                         "<input id='attachInput' name='cal_attach' class='form-control' type='file' style='transform: translate(0px, 26px);' value='" + response.cal_attach + "' style='border-radius: 10px; width: '/>"),
                                     i.append("<label style='transform: translate(0px, 26px);'>링크</label><button type='button' name='addLinkBtn' style='transform: translate(0px, 26px);'>➕</button><div class='input-group'>" +
@@ -385,37 +330,20 @@
 
                                 o.$modal2.find(".btn-success").unbind("click").on("click", function (e) {
 
-                                    e.preventDefault();
-
-                                    const eventData = {
-                                        cal_title: i.find("input[name='cal_title']").val(),
-                                        beginning: i.find("input[name='beginning']").val(),
-                                        ending: i.find("input[name='ending']").val(),
-                                        cal_cate: i.find("select[name='cal_cate'] option:checked").val(),
-                                        cal_content: i.find("input[name='cal_content']").val(),
-                                        cal_startDate: i.find("input[name='cal_startDate']").val(),
-                                        cal_endDate: i.find("input[name='cal_endDate']").val(),
-                                        cal_attach: i.find("input[name='cal_attach']").val(),
-                                        cal_link_list: i.find("input[name='cal_link_list']").val(),
-                                        update_user_id: i.find("input[name='update_user_id']").val()
-                                    }
-
-                                    console.log(eventData);
-                                    console.log(eventData.cal_cate);
-
                                     var pidStr = pid+'';
                                     var cal_idStr = cal_id+'';
 
                                     var cal_title = $("input[name='cal_title']").val();
-                                    var  beginning =  $("input[name='beginning']").val();
-                                    var  ending = $("input[name='ending']").val();
-                                    var   cal_cate = $("select[name='cal_cate'] option:checked").val();
-                                    var   cal_content=  $("input[name='cal_content']").val();
-                                    var   cal_startDate=  $("input[name='cal_startDate']").val();
-                                    var   cal_endDate=  $("input[name='cal_endDate']").val();
-                                    var    cal_attach=  $("input[name='cal_attach']").val();
-                                    var   cal_link_list=  $("input[name='cal_link_list']").val();
-                                    var   update_user_idStr = uid+'';
+                                    var beginning =  $("input[name='beginning']").val();
+                                    var ending = $("input[name='ending']").val();
+                                    var cal_cate = $("select[name='cal_cate'] option:checked").val();
+                                    var cal_content=  $("input[name='cal_content']").val();
+                                    var cal_startDate=  $("input[name='cal_startDate']").val();
+                                    var cal_endDate=  $("input[name='cal_endDate']").val();
+                                    var cal_attach=  $("input[name='cal_attach']").val();
+                                    var cal_link_list=  $("input[name='cal_link_list']").val();
+                                    var update_user_idStr = uid+'';
+                                    var cal_members = $("input[name='cal_members']").val();
 
                                     console.log(cal_title);
                                     console.log(cal_content);
@@ -439,13 +367,36 @@
                                             'cal_attach': cal_attach,
                                             'pid': pidStr,
                                             'cal_id': cal_idStr,
-                                            'update_user_id': update_user_idStr
+                                            'update_user_id': update_user_idStr,
+                                            'cal_members': cal_members
                                         },
                                         success: function (result) {
                                             console.log("RESULT: " + result);
                                             if (result === 'success') {
                                                 alert("일정이 수정되었습니다.");
                                                 console.log("일정이 수정되었습니다.")
+                                                o.$modal.modal("hide")
+                                                location.reload();
+
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            alert("일정 변경에 실패했습니다.");
+                                            console.error("일정 변경에 실패했습니다:", error);
+                                        }
+                                    })
+                                })
+
+                                o.$modal2.find(".btn-primary").unbind("click").on("click", function (e) {
+
+                                    $.ajax({
+                                        url: '/calendar/delete' + cal_id,
+                                        method: 'DELETE',
+                                        success: function (result) {
+                                            console.log("RESULT: " + result);
+                                            if (result === 'success') {
+                                                alert("일정이 삭제되었습니다..");
+                                                console.log("일정이 삭제되었습니다.")
                                                 o.$modal.modal("hide")
                                                 location.reload();
 
@@ -528,20 +479,40 @@
                     .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px);'>" +
                         "<div class='form-group' style='margin-top: -1rem;'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
                         "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-                    .append("<div class='col-md-6' style='transform: translate(0px, 78px);'><div class='form-group'><label class='control-label'>시작 날짜</label>" +
-                        "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' /></div>"+
-                        "<div class='form-group' style='transform: translate(379px, -94px);'><label class='control-label'>종료 날짜</label>" +
-                        "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' /></div></div>")
-                    .append("<div class='attach-button' style='transform: translate(10px, 178px); height: 0rem;'>첨부파일</div><div class='file-upload-form' style='transform: translate(-46px, 220px); height: 2rem;'>" +
-                        "<input type='file' name='cal_attach' multiple class='file-input' style='width: 19rem;'/><button class='upload-button' style='border: none; background: none;'><i class='fa-solid fa-link'></i></button><div class='uploadResult'></div></div></div>")
-                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(0px, -10px);'><div class='form-group'><label class='control-label'>링크</label>" +
-                        "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link_list' style='border-top: none;border-left: none;border-right: none;'/></div></div>")
+                    .append("<div class='col-md-6' style='transform: translate(0px, 78px);'>" +
+                        "<div class='form-group'>" +
+                        "<label class='control-label'>시작 날짜</label>" +
+                        "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' />" +
+                        "</div>"+
+                        "<div class='form-group' style='transform: translate(379px, -94px);'>" +
+                        "<label class='control-label'>종료 날짜</label>" +
+                        "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' />" +
+                        "</div>" +
+                        "</div>")
+                    .append("<div class='attach-button' style='transform: translate(10px, 178px); height: 0rem;'>첨부파일</div>" +
+                        "<div class='file-upload-form' style='transform: translate(-46px, 220px); height: 2rem;'>" +
+                        "<input type='file' class='custom-file-input files' id='fileInput' name='uploadFiles' multiple style='width: 19rem;'/>" +
+                        "<button type='submit' class='uploadBtn' style='border: none; background: none;'>" +
+                        "<i class='fa-solid fa-link'></i>" +
+                        "</button>" +
+                        "<div class='uploadResult'>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>")
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(0px, -10px);'>" +
+                        "<div class='form-group'>" +
+                        "<label class='control-label'>링크</label>" +
+                        "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link_list' style='border-top: none;border-left: none;border-right: none;'/>" +
+                        "</div>" +
+                        "</div>")
                     .append("<button type='button' class='btn btn-primary openReply' data-toggle='modal' data-target='.bd-example-modal-sm' style='border-radius: 12px;background-color: red;color: white;right: 10%;transform: translate(384px, -532px);height: 40px;'>💬</button>")
 
                     , o.$modal.find(".delete-event").hide().end()
                     .find(".save-event").show().end()
                     .find(".modal-body").empty().prepend(i).end()
                     ,
+                    /*-------------------------------------------------------*/
+                    /*초대 멤버 입력*/
                     $(document).ready(function() {
 
                         var memberInputs = '';
@@ -551,11 +522,14 @@
                             var memberInput = $("input[name='inviteMember']").val();
 
                             if (memberInput === '' || memberInput === null) {
+
                                 alert("추가할 멤버 ID를 입력해주세요");
                             } else {
 
-                                memberInputs = "<span class='badge badge-pill badge-primary'>" + memberInput + "</span><button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='" + memberInput + "'><i class=\"fa-solid fa-xmark\"></i></button>" +
-                                    "<input type='hidden' name='projectMember' value='" + memberInput + "'/>";
+                                memberInputs = "<span class='badge badge-pill badge-primary'>" + memberInput + "</span>" +
+                                    "<button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='" + memberInput + "'>" +
+                                    "<i class=\"fa-solid fa-xmark\"></i></button>" +
+                                    "<input type='hidden' name='cal_members' value='" + memberInput + "'/>";
 
                                 $("div[name='memberTags']").append(memberInputs);
                                 $("input[name='inviteMember']").val('');
@@ -563,52 +537,102 @@
                             }
                         });
                     });
+                /*-------------------------------------------------------*/
+                /*첨부파일*/
+                $('.uploadBtn').click(function () {
+
+                    var formData = new FormData();
+
+                    var inputFile = $("input[type='file']");
+
+                    var files = inputFile[0].files;
+
+                    for (var i=0; i<files.length; i++) {
+                        console.log(files[i]);
+                        formData.append("uploadFiles", files[i]);
+                    }
+
+                    $.ajax({
+                        url: '/uploadAjax',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (result) {
+                            console.log(result);
+                            showUploadedImages(result);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
+                        }
+                    });
+
+                    function showUploadedImages(arr) {
+
+                        console.log(arr);
+
+                        var divArea = $(".uploadResult");
+
+                        var str = "";
+
+                        for(var i=0; i<arr.length; i++) {
+                            str += "<div>";
+                            str += "<img src='/display?fileName="+arr[i].thumbnailURL+"'>";
+                            str += "<button class='removeBtn' data-name='"+arr[i].imageURL+"'>REMOVE</button>"
+                            str += "</div>";
+                        }
+                        divArea.append(str);
+                    }
+                });
+
+                $(".uploadResult").on("click", ".removeBtn", function (e) {
+                    var target = $(this);
+                    var fileName = target.data("name");
+                    var targetDiv = $(this).closest("div");
+
+                    console.log(fileName);
+
+                    $.post('/removeFile', {fileName: fileName}, function (result) {
+                        console.log(result);
+                        if(result === true){
+                            targetDiv.remove();
+                        }
+                    })
+                })
 
                 // 이벤트 핸들러 등록
                 o.$modal.find(".save-event").unbind("click").on("click", function (e) {
 
                     e.preventDefault();
 
-                    const eventData = {
-                        cal_title: i.find("input[name='cal_title']").val(),
-                        beginning: i.find("input[name='beginning']").val(),
-                        ending: i.find("input[name='ending']").val(),
-                        cal_cate: i.find("select[name='cal_cate'] option:checked").val(),
-                        cal_content: i.find("input[name='cal_content']").val(),
-                        cal_startDate: i.find("input[name='cal_startDate']").val(),
-                        cal_endDate: i.find("input[name='cal_endDate']").val(),
-                        cal_attach: i.find("input[name='cal_attach']").val(),
-                        cal_link_list: i.find("input[name='cal_link_list']").val(),
-                        create_user_id: i.find("input[name='create_user_id']").val()
-                    }
-                    console.log("잘했어. 다시 읽어라 좀. !!!!");
-                    console.log(eventData);
-                    console.log(eventData.cal_cate);
-
                     var pidStr = pid+'';
 
                     var cal_title = $("input[name='cal_title']").val();
-                    var  beginning =  $("input[name='beginning']").val();
-                    var  ending = $("input[name='ending']").val();
-                    var   cal_cate = $("select[name='cal_cate'] option:checked").val();
-                    var   cal_content=  $("input[name='cal_content']").val();
-                    var   cal_startDate=  $("input[name='cal_startDate']").val();
-                    var   cal_endDate=  $("input[name='cal_endDate']").val();
-                    var    cal_attach=  $("input[name='cal_attach']").val();
-                    var   cal_link_list=  $("input[name='cal_link_list']").val();
-                    var   create_user_id=  $("input[name='create_user_id']").val();
+                    var beginning =  $("input[name='beginning']").val();
+                    var ending = $("input[name='ending']").val();
+                    var cal_cate = $("select[name='cal_cate'] option:checked").val();
+                    var cal_content=  $("input[name='cal_content']").val();
+                    var cal_startDate=  $("input[name='cal_startDate']").val();
+                    var cal_endDate=  $("input[name='cal_endDate']").val();
+                    var cal_attach=  $("input[name='cal_attach']").val();
+                    var cal_link_list=  $("input[name='cal_link_list']").val();
+                    var create_user_id=  $("input[name='create_user_id']").val();
+                    var cal_members = $("input[name='cal_members']").val();
 
-                    console.log(cal_title);
-                    console.log(cal_cate);
-                    console.log(pidStr);
-                    console.log(cal_link_list);
+                    console.log('cal_title: '+cal_title);
+                    console.log('cal_cate: '+cal_cate);
+                    console.log('pidStr: '+pidStr);
+                    console.log('cal_link_list: '+cal_link_list);
+                    console.log('cal_members: '+cal_members)
 
                     $.ajax({
                         url: '/calendar/register',
                         type: 'post',
                         data: {
+                            'cal_members':cal_members,
                             'cal_link_list':cal_link_list,
-                           'create_user_id':create_user_id,
+                            'create_user_id':create_user_id,
                             'cal_attach':cal_attach,
                             'cal_startDate':cal_startDate,
                             'cal_cate':cal_cate,
@@ -670,11 +694,36 @@
 
                 if(calendarList !== null){
                     for (var i = 0; i < calendarList.length; i++) {
+
+                        var categoryColor = '';
+                        // 카테고리 값에 따라 색상 지정
+                        switch (calendarList[i].cal_cate) {
+                            case '팀 회의':
+                                categoryColor = 'blue'; // 파란색
+                                break;
+                            case '부서 회의':
+                                categoryColor = 'pink'; // 분홍색
+                                break;
+                            case '사내 행사':
+                                categoryColor = 'green';
+                                break;
+                            case '개인 일정':
+                                categoryColor = 'red';
+                                break;
+                            case '거래처 일정':
+                                categoryColor = 'purple';
+                                break;
+                            // 다른 카테고리 값에 대한 색상도 추가 가능
+                            default:
+                                categoryColor = 'gray'; // 기본값 (회색)
+                        }
+
                         a.push({
                             title: calendarList[i].cal_title+"/"+calendarList[i].cal_id,
                             start: calendarList[i].cal_startDate,
                             end: calendarList[i].cal_endDate,
-                            className: calendarList[i].cal_cate
+                            className: calendarList[i].cal_cate,
+                            color: categoryColor
                         });
                     }
                 }

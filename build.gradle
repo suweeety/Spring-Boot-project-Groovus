@@ -87,6 +87,10 @@ dependencies {
     //카카오로그인을위핸 oauth2 추가 // 743 추가 외부 인증용 카카오, 구글,  네이버 등....
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    //google 공휴일 API
+    implementation 'com.google.apis:google-api-services-calendar:v3-rev20231123-2.0.0'
+    implementation 'com.google.api-client:google-api-client:1.31.3'
+
 }
 
 tasks.named('bootBuildImage') {
@@ -125,3 +129,4 @@ compileJava.dependsOn('clean') // 톰켓 10용
 //compileQuerydsl {
 //    options.annotationProcessorPath = configurations.querydsl
 //}
+

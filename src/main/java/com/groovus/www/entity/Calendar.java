@@ -2,9 +2,7 @@ package com.groovus.www.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.bind.annotation.Mapping;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,18 +41,17 @@ public class Calendar extends BaseEntity{
     @Column(nullable = false)
     private String cal_endDate; // 일정 종료날짜
 
+    @Column(nullable = true)
+    private String cal_link_list; // 링크
+
     @ManyToMany
     @Column(nullable = true)
     private List<CalendarAttach> cal_attach; // 첨부파일
 
     @Column(nullable = true)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
     @Builder.Default
-    private List<CalendarLink> cal_link_list = new ArrayList<>(); // 링크
-
-    @Column(nullable = true)
-    @ManyToMany
-    private List<Member> cal_members; // 초대 멤버
+    private Set<Member> cal_members = new HashSet<>();; // 초대 멤버
 
     @OneToMany(mappedBy = "calendar",
             cascade = {CascadeType.ALL},
@@ -74,6 +71,11 @@ public class Calendar extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Member update_user_id; // 최근 작성자
 
+    /*----------------------------------------------------------------*/
+
+    public void addMember(Member member) {
+        this.cal_members.add(member);
+    }
 
     public void addImage(String uuid, String fileName) {
         CalendarImage calendarImage = CalendarImage.builder()

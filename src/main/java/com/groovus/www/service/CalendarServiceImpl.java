@@ -28,13 +28,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class CalendarServiceImpl implements CalendarService{
 
-    private final ModelMapper modelMapper;
-
     private final CalendarRepository calendarRepository;
     private final MemberRepository memberRepository;
 
     private  final ProjectRepository projectRepository;
 
+    // 프로젝트, 멤버 정보 필요
     @Override
     public Long register(CalendarRequestDTO calendarRequestDTO , Long pid) { // 일정 등록
 
@@ -54,16 +53,36 @@ public class CalendarServiceImpl implements CalendarService{
                     .create_user_id(createMember)
                     .build();
 
-            Optional<Project> proResult = projectRepository.findByIdWithMember(pid);
-            if (proResult.isPresent()){
+        // 멤버 초대
+        for (String memberUid : calendarRequestDTO.getCal_members()) {
 
-                Project project = proResult.get();
-                calendar.setProject(project);
+            log.info("memberUid: " + memberUid);
+
+            Optional<Member> result2 = memberRepository.findByUid(memberUid);
+
+            log.info("result2: " + result2);
+
+            if(!result2.isEmpty()) {
+
+                Member member = result.get();
+                calendar.addMember(member);
             }
-            log.info(calendar);
-            calendarRepository.save(calendar);
+        }
 
-            return calendar.getCal_id();
+        // 프로젝트에 등록
+        Optional<Project> proResult = projectRepository.findByIdWithMember(pid);
+        if (proResult.isPresent()){
+
+            Project project = proResult.get();
+            calendar.setProject(project);
+        }
+
+        log.info("register method: "+calendar);
+        calendarRepository.save(calendar);
+        log.info("calendarRepository.save(calendar): "+calendarRepository.save(calendar));
+        log.info("calendar.getCal_id(): "+calendar.getCal_id());
+
+        return calendar.getCal_id();
 
     }
 
@@ -73,6 +92,7 @@ public class CalendarServiceImpl implements CalendarService{
         List<Calendar> result = calendarRepository.getCalendarsByProjectOrderByCal_id(pid);
         if(!result.isEmpty()){
             return result.stream().map(calendar -> entityToDto(calendar)).collect(Collectors.toList());
+
         }else{
             return null;
         }
@@ -84,9 +104,9 @@ public class CalendarServiceImpl implements CalendarService{
         Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(pid, cal_id);
 
         log.info("=======================================================");
-        log.info(result);
-        log.info(pid);
-        log.info(cal_id);
+        log.info("readOne method: "+result);
+        log.info("readOne method: "+pid);
+        log.info("readOne method: "+cal_id);
         log.info("=======================================================");
 
         return result.isPresent() ? entityToDto(result.get()) : null;
@@ -116,9 +136,11 @@ public class CalendarServiceImpl implements CalendarService{
     }
 
     @Override
-    public void remove(Long cal_id) {
+    public boolean remove(Long cal_id) {
 
         calendarRepository.deleteById(cal_id);
+
+        return false;
 
     }
 

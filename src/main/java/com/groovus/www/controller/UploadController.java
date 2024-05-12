@@ -37,12 +37,13 @@ public class UploadController {
 
     @PostMapping("/uploadAjax")
     public ResponseEntity<List<CalendarAttachDTO>> uploadFile(MultipartFile[] uploadFiles) {
+        // 배열로 동시에 여러 개의 파일 처리
 
         List<CalendarAttachDTO> resultDTOList = new ArrayList<>();
 
-        for(MultipartFile uploadFile : uploadFiles) {
+        for (MultipartFile uploadFile : uploadFiles) {
             String originalName = uploadFile.getOriginalFilename();
-            String fileName = originalName.substring(originalName.lastIndexOf("\\") + 1);
+            String fileName = originalName.substring(originalName.lastIndexOf("\\")+1);
 
             log.info("fileName: " + fileName);
 
@@ -56,16 +57,15 @@ public class UploadController {
 
             try {
                 uploadFile.transferTo(savePath);
-
-                String thumbnailSaveName = uploadPath + File.separator + folderPath + File.separator + "s_" + uuid + "_" + fileName;
-
+                String thumbnailSaveName = uploadPath + File.separator + folderPath + File.separator + "s_" + uuid + "_" + fileName
+                        ;
                 File thumbnailFile = new File(thumbnailSaveName);
 
-                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100, 100);
+                Thumbnailator.createThumbnail(savePath.toFile(), thumbnailFile, 100,100);
 
                 resultDTOList.add(new CalendarAttachDTO(fileName, uuid, folderPath));
 
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -78,10 +78,11 @@ public class UploadController {
 
         String folderPath = str.replace("/", File.separator);
 
+        // 폴더 만들기
         File uploadPathFolder = new File(uploadPath, folderPath);
 
         if(uploadPathFolder.exists() == false) {
-            uploadPathFolder.mkdir();
+            uploadPathFolder.mkdirs();
         }
         return folderPath;
     }
