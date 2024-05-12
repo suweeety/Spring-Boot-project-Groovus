@@ -34,5 +34,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     int updatePassword(@Param("newPw")String newPw , @Param("mid") Long mid);
 
 
+    @EntityGraph(attributePaths = {"roleSet"})
+    @Query("select m from Member m where m.mid=:mid")
+    Optional<Member> getMemberByMid(Long mid);
 
 }
