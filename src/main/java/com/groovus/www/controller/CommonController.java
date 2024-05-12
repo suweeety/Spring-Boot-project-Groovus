@@ -4,6 +4,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -20,7 +21,7 @@ public class CommonController {
 
         return "main/main";
     }
-
+    @PreAuthorize("permitAll()")
     @PostMapping ("/")
     public String LoginGroovus(){
 
@@ -33,9 +34,12 @@ public class CommonController {
         return "main/test";
     }
 
-    @GetMapping("/reply/myreply")
-    public void goMyReply(){
+    @GetMapping("/reply/myreply/{pid}/{projectName}")
+    public String goMyReply(Model model,@PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
         //내가 쓴 댓글로 이동
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+        return "reply/myreply";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -68,9 +72,12 @@ public class CommonController {
 
     }
     
-    @GetMapping("/setting")
-    public void goSetting(){
+    @GetMapping("/setting/{pid}/{projectName}")
+    public String goSetting(Model model,@PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
         //설정페이지로 이동
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+        return "setting";
     }
     
     @GetMapping("/main/about")

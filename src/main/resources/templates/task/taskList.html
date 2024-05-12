@@ -98,85 +98,85 @@
                             </div>
 
                             <!--업무리스트 시작-->
-                                    <div class="card-body" name="mainContent">
+                            <div class="card-body" name="mainContent">
 
 
-                                        <div name="mainList">
-                                        <div class="card-title">
-                                            <h4>[[${projectName}]]의 업무 목록</h4>
-                                        </div>
-                                        <div class="table-responsive" >
-                                            <table class="table">
-                                                <thead>
+                                <div name="mainList">
+                                    <div class="card-title">
+                                        <h4>[[${projectName}]]의 업무 목록</h4>
+                                    </div>
+                                    <div class="table-responsive" >
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>💼</th>
+                                                <th>업무제목</th>
+                                                <th>상태</th>
+                                                <th>등록일</th>
+                                                <th>담당자</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            <th:block th:each="task ,i : ${responseDTO.dtoList}">
                                                 <tr>
-                                                    <th>💼</th>
-                                                    <th>업무제목</th>
-                                                    <th>상태</th>
-                                                    <th>등록일</th>
-                                                    <th>담당자</th>
+                                                    <th>[[${i.index + responseDTO.start }]]</th>
+                                                    <td name="readTask" class="taskTitle" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
+                                                    <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
+                                                    <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
+                                                    <td class="color-primary">[[${task.responsibleMember}]]</td>
                                                 </tr>
-                                                </thead>
-                                                <tbody>
 
-                                                <th:block th:each="task ,i : ${responseDTO.dtoList}">
-                                                        <tr>
-                                                            <th>[[${i.index + responseDTO.start }]]</th>
-                                                            <td name="readTask" class="taskTitle" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
-                                                            <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
-                                                            <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
-                                                            <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
-                                                            <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
-                                                            <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
-                                                            <td class="color-primary">[[${task.responsibleMember}]]</td>
-                                                        </tr>
+                                            </th:block>
+                                            </tbody>
+                                        </table>
+                                        <!--페이징-->
+                                        <div class="bootstrap-pagination">
+                                            <nav>
+                                                <ul class="pagination justify-content-end">
+                                                    <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                    </li>
 
-                                                </th:block>
-                                                </tbody>
-                                            </table>
-                                            <!--페이징-->
-                                            <div class="bootstrap-pagination">
-                                                <nav>
-                                                    <ul class="pagination justify-content-end">
-                                                        <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                    <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
+                                                        <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                                            <a class="page-link" th:data-num="${i}">[[${i}]]</a>
                                                         </li>
+                                                    </th:block>
 
-                                                        <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
-                                                            <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
-                                                                <a class="page-link" th:data-num="${i}">[[${i}]]</a>
-                                                            </li>
-                                                        </th:block>
-
-                                                        <li class="page-item" th:if="${responseDTO.next}">
-                                                            <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
-                                                        </li>
-                                                    </ul>
-                                                </nav>
-                                            </div>
-                                            <!--페이징 끝-->
+                                                    <li class="page-item" th:if="${responseDTO.next}">
+                                                        <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
                                         </div>
+                                        <!--페이징 끝-->
                                     </div>
-                                    </div>
+                                </div>
+                            </div>
                             <!--업무리스트 끝-->
 
                             <!-- panel -->
                             <div class="row">
-                               <!-- <div class="col-7">
-                                    <div class="text-left">1 - 20 of 568</div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="btn-group float-right">
-                                        <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
-                                        </button>
-                                        <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
-                                        </button>
-                                    </div>-->
-                                </div>
+                                <!-- <div class="col-7">
+                                     <div class="text-left">1 - 20 of 568</div>
+                                 </div>
+                                 <div class="col-5">
+                                     <div class="btn-group float-right">
+                                         <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
+                                         </button>
+                                         <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
+                                         </button>
+                                     </div>-->
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!--모달창-->
@@ -186,31 +186,31 @@
             <br/>
 
             <form name="taskForm" method="post" action="/task/register">
-            <span><b>업무 제목</b></span>
-            <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
-            <br/>
-            <br/>
-            <span><b>작성자</b></span>
-            <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
-            <br/>
-            <br/>
-            <span><b>담당자</b></span>
-            <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
-                <option value="">------</option>
-                <!--여기에 멤버들 보임-->
+                <span><b>업무 제목</b></span>
+                <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+                <br/>
+                <br/>
+                <span><b>작성자</b></span>
+                <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+                <br/>
+                <br/>
+                <span><b>담당자</b></span>
+                <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
+                    <option value="">------</option>
+                    <!--여기에 멤버들 보임-->
 
-            </select>
-    <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
+                </select>
+                <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
 
-<!--                <div class="card-body">
-                    <span><b>첨부</b></span>
-                    <div class="basic-form">
-                            <div class="form-group">
-                                <input type="file" class="form-control-file"  multiple>
-                                <div name="fileList"></div>
-                            </div>
-                    </div>
-                </div>-->
+                <!--                <div class="card-body">
+                                    <span><b>첨부</b></span>
+                                    <div class="basic-form">
+                                            <div class="form-group">
+                                                <input type="file" class="form-control-file"  multiple>
+                                                <div name="fileList"></div>
+                                            </div>
+                                    </div>
+                                </div>-->
 
                 <!--에디터-->
                 <!--'note-editable panel-body' 안에 들어감-->
@@ -220,7 +220,7 @@
                             <h3>업무내용입력</h3>
                         </div>
                     </div>
-                 </div>
+                </div>
                 <!--에디터 끝-->
 
                 <input type="hidden" name="taskContent" value="">
@@ -228,7 +228,7 @@
                 <input type="hidden" name="projectName" th:value="${projectName}">
             </form>
             <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
-         </div>
+        </div>
     </div>
     <!--모달 끝-->
 
@@ -309,7 +309,7 @@
                             </thead>
 
                             <tbody th:name="historyBody">
-                                <!--상태 변경이력-->
+                            <!--상태 변경이력-->
                             </tbody>
 
                         </table>
@@ -355,7 +355,7 @@
                     </form>
                 </div>
             </div>
-        <!--댓글 끝-->
+            <!--댓글 끝-->
         </div>
         <!--업무 상세보기창 끝-->
     </div>
@@ -432,7 +432,7 @@
                     var posX = 0; // 왼쪽에 표시
 
                     /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
-                     $.ajax({
+                    $.ajax({
                         url:'/project/memberList',
                         data:{'pid':pid},
                         method:'post',
@@ -515,7 +515,7 @@
 
             //업무 등록하기 버튼을 눌렀을 때
             $("button[name='registerTaskBtn']").on("click",function (e){
-               e.preventDefault();
+                e.preventDefault();
                 $(".modal_").show();
             });
 
@@ -618,53 +618,53 @@
         });
 
         //댓글 읽어오기
-         function readReply(tid){
+        function readReply(tid){
 
-             //댓글과 대댓글 가져옴
+            //댓글과 대댓글 가져옴
             $.ajax({
                 url:'/task/replyList',
                 type:'post',
                 data:{'tid':tid},
                 success:async function (result){
 
-                        var str ='';
-                        if(result != null){
-                          for(var i=0;i<result.length;i++){
-                             var rereplyStr = await readReReply(result[i]);
+                    var str ='';
+                    if(result != null){
+                        for(var i=0;i<result.length;i++){
+                            var rereplyStr = await readReReply(result[i]);
 
-                              str+= '<div class="media-body" name="reply" data-rid="'+result[i].rid+'">'+
-                                  '<div class="d-sm-flex justify-content-between mb-2">' +
-                                  '<h5 class="mb-sm-0">'+ result[i].uid +'<small class="text-muted ml-3">'+result[i].regDate+'</small></h5>' +
-                                  '<div class="media-reply__link">'+
-                                  '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
-                                  '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
-                                  '<button class="btn btn-transparent p-0 ml-3 font-weight-bold" name="re-reply">🗨️댓글</button>' +
-                                  '</div></div>' +
-                                  '<p>'+result[i].replyContent+'</p>'+
-                                  '<div name="re-reply">';
+                            str+= '<div class="media-body" name="reply" data-rid="'+result[i].rid+'">'+
+                                '<div class="d-sm-flex justify-content-between mb-2">' +
+                                '<h5 class="mb-sm-0">'+ result[i].uid +'<small class="text-muted ml-3">'+result[i].regDate+'</small></h5>' +
+                                '<div class="media-reply__link">'+
+                                '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
+                                '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
+                                '<button class="btn btn-transparent p-0 ml-3 font-weight-bold" name="re-reply">🗨️댓글</button>' +
+                                '</div></div>' +
+                                '<p>'+result[i].replyContent+'</p>'+
+                                '<div name="re-reply">';
 
-                              str+= rereplyStr; //대댓글
+                            str+= rereplyStr; //대댓글
 
-                              str+= '</div></div>'+
-                                  '<div class="card" name="re-replyInput" style="display: none;">'+
-                                  '<div class="card-body" style="background-color: whitesmoke;">' +
-                                  '<form action="#" class="form-profile" name="re-replyForm">'+
-                                  '<div class="form-group" style="position: relative";>'+
-                                  '<div class="popup">This is a popup div.</div>'+
-                                  '<textarea class="form-control" name="re-replyText" id="textarea" cols="30" rows="2" placeholder="댓글을 입력하세요"></textarea>' +
-                                  '</div>' +
-                                  '<div class="d-flex align-items-center">' +
-                                  '<input type="hidden" name="parentReplyRid" value="'+result[i].rid+'">'+
-                                  '<button class="btn btn-primary px-3 ml-4" name="registerRe-ReplyBtn">등록</button>'+
-                                  '</div>'+
-                                  '</form>'+
-                                  '</div>'+
-                                  '</div>'+
-                                  '</div>';
-                          }
-                          $("div[name='replyList']").html(str);
+                            str+= '</div></div>'+
+                                '<div class="card" name="re-replyInput" style="display: none;">'+
+                                '<div class="card-body" style="background-color: whitesmoke;">' +
+                                '<form action="#" class="form-profile" name="re-replyForm">'+
+                                '<div class="form-group" style="position: relative";>'+
+                                '<div class="popup">This is a popup div.</div>'+
+                                '<textarea class="form-control" name="re-replyText" id="textarea" cols="30" rows="2" placeholder="댓글을 입력하세요"></textarea>' +
+                                '</div>' +
+                                '<div class="d-flex align-items-center">' +
+                                '<input type="hidden" name="parentReplyRid" value="'+result[i].rid+'">'+
+                                '<button class="btn btn-primary px-3 ml-4" name="registerRe-ReplyBtn">등록</button>'+
+                                '</div>'+
+                                '</form>'+
+                                '</div>'+
+                                '</div>'+
+                                '</div>';
                         }
+                        $("div[name='replyList']").html(str);
                     }
+                }
             });
         } //댓글 읽어오기 끝
 
@@ -728,18 +728,18 @@
                 var uid = $("input[name='uid']").val();
 
                 $.ajax({
-                   url:'/task/register/reply',
+                    url:'/task/register/reply',
                     type:'post',
                     data:{'readTaskTid':readTaskTid,
-                          'uid':uid,
-                          'replyContent':replyContent
+                        'uid':uid,
+                        'replyContent':replyContent
                     } ,
                     success:function (result){
-                       if(result != null){
-                           alert("댓글이 등록되었습니다.");
-                           $("textarea[name='replyText']").val(''); //댓글 입력창 비워둠
-                           readReply(readTaskTid); //댓글 리스트 불러옴
-                       }
+                        if(result != null){
+                            alert("댓글이 등록되었습니다.");
+                            $("textarea[name='replyText']").val(''); //댓글 입력창 비워둠
+                            readReply(readTaskTid); //댓글 리스트 불러옴
+                        }
                     }
                 }); //ajax끝
             }else{
@@ -753,42 +753,42 @@
             e.preventDefault();
             var readTaskTid = $("input[name='readTaskTid']").val();
 
-           var replyText = $(this).parent().prev().children("textarea[name='re-replyText']").val();
+            var replyText = $(this).parent().prev().children("textarea[name='re-replyText']").val();
 
-           if(replyText.length > 0 && replyText != null){
+            if(replyText.length > 0 && replyText != null){
 
-               var parentRid =$(this).prev("input[name='parentReplyRid']").val();
-               var uid = [[${#authentication.principal.uid}]];
+                var parentRid =$(this).prev("input[name='parentReplyRid']").val();
+                var uid = [[${#authentication.principal.uid}]];
 
-               $.ajax({
-                  url:'/task/register/rereply',
-                   type:'post',
-                   data:{'parentRid': parentRid,
+                $.ajax({
+                    url:'/task/register/rereply',
+                    type:'post',
+                    data:{'parentRid': parentRid,
                         'uid':uid,
-                         'replyText':replyText
-                  },
-                   success:function (result){
-                       if(result){
-                           alert("댓글이 등록되었습니다.");
-                           $("button[name='registerRe-ReplyBtn']").parent().prev().children("textarea[name='re-replyText']").val('');
-                           readReply(readTaskTid);
-                       }
-                  }
-               });
+                        'replyText':replyText
+                    },
+                    success:function (result){
+                        if(result){
+                            alert("댓글이 등록되었습니다.");
+                            $("button[name='registerRe-ReplyBtn']").parent().prev().children("textarea[name='re-replyText']").val('');
+                            readReply(readTaskTid);
+                        }
+                    }
+                });
 
-           }else{
-               alert("댓글을 입력하세요!");
-               $(this).focus();
-           }
+            }else{
+                alert("댓글을 입력하세요!");
+                $(this).focus();
+            }
         });
 
 
         //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
-       $("select[name='readTaskStatus']").change(function (){
+        $("select[name='readTaskStatus']").change(function (){
 
-           //변경 버튼 노출
-           $("button[name='statusChangeBtn']").show();
-       })
+            //변경 버튼 노출
+            $("button[name='statusChangeBtn']").show();
+        })
 
         //업무의 상세보기 -> 상태 변경 버튼이 눌렸을 때
         $("button[name='statusChangeBtn']").on("click",function (e){
@@ -800,49 +800,49 @@
             var prevStatus = PrevStatus;
             //해당 업무의 상태를 변경
             $.ajax({
-               url:'/task/changestatus',
-               data:{'tid':tid,
-                     'status':status,
-                      'uid' : uid,
-                      'prevStatus':prevStatus
-               },
-               type:'post',
-               success:function(result){
+                url:'/task/changestatus',
+                data:{'tid':tid,
+                    'status':status,
+                    'uid' : uid,
+                    'prevStatus':prevStatus
+                },
+                type:'post',
+                success:function(result){
 
-                   location.reload();
-               }
+                    location.reload();
+                }
             });
         });
 
-       //상태 변경이력보기 버튼이 눌렸다면
-       $(document).on("click","button[name='showHistoryBtn']",function (e){
-           e.preventDefault();
-           $(this).hide();
-           $("button[name='closeHistoryBtn']").show();
+        //상태 변경이력보기 버튼이 눌렸다면
+        $(document).on("click","button[name='showHistoryBtn']",function (e){
+            e.preventDefault();
+            $(this).hide();
+            $("button[name='closeHistoryBtn']").show();
 
-           var tid =  $("input[name='readTaskTid']").val();
+            var tid =  $("input[name='readTaskTid']").val();
 
-           $.ajax({
-              url:'/task/history',
-              type:'post',
-              data:{'tid':tid},
-              success:function (result){
-                  console.log(result);
-                  showHistory(result);
-              }
-           });
-       });
+            $.ajax({
+                url:'/task/history',
+                type:'post',
+                data:{'tid':tid},
+                success:function (result){
+                    console.log(result);
+                    showHistory(result);
+                }
+            });
+        });
 
-       $(document).on("click","button[name='closeHistoryBtn']",function (e){
-           //상태 이력 보기 닫기버튼이 눌렸다면
-           e.preventDefault();
-           $(this).hide();
-           $("button[name='showHistoryBtn']").show();
+        $(document).on("click","button[name='closeHistoryBtn']",function (e){
+            //상태 이력 보기 닫기버튼이 눌렸다면
+            e.preventDefault();
+            $(this).hide();
+            $("button[name='showHistoryBtn']").show();
 
-           $("div[name='history']").hide();
-       });
+            $("div[name='history']").hide();
+        });
 
-       function showHistory(result){
+        function showHistory(result){
             var str ='';
 
             if(result==null){
@@ -883,7 +883,7 @@
             }
             $("tbody[name='historyBody']").html(str);
             $("div[name='history']").show();
-       };
+        };
 
         $(document).on("click","button[name='registerBtn']",function (e){
             //업무 등록 버튼 눌렀을때 (업무 등록 모달에서 등록 버튼)
@@ -892,7 +892,7 @@
             if($("select[name='responsibleMember']").val() == null || $("select[name='responsibleMember']").val().length<=0){
                 alert("담당자를 지정해주세요");
                 $("select[name='responsibleMember']").focus();
-                return;S
+                return;
             }
             if($("input[name='taskTitle']").val().length<=0){
                 alert("업무 제목을 입력해주세요");
@@ -929,27 +929,27 @@
         })
 
         $(document).on("click","button[name='readTaskModify-save']" ,function (e){
-           //업무 수정후 저장 버튼이 눌렸을 때
+            //업무 수정후 저장 버튼이 눌렸을 때
             e.preventDefault();
 
             if( $("select[name='responsibleMember']").val() == ''){
                 alert("담당자를 지정해주세요");
                 return;
             }
-             var tid = $("input[name='readTaskTid']").val(); // 업무 번호
-             var taskTitle =  $("input[name='readTaskTitle']").val();
-             var responsibleMember =  $("select[name='responsibleMember']").val();
-             var taskContent =$("div[name='modifyContent'] div.note-editable").html();
+            var tid = $("input[name='readTaskTid']").val(); // 업무 번호
+            var taskTitle =  $("input[name='readTaskTitle']").val();
+            var responsibleMember =  $("select[name='responsibleMember']").val();
+            var taskContent =$("div[name='modifyContent'] div.note-editable").html();
 
-             $.ajax({
+            $.ajax({
                 url:'/task/modify',
-                 data:{'tid':tid,
-                        'taskTitle':taskTitle,
-                     'responsibleMember':responsibleMember,
-                     'taskContent':taskContent
-                 },
-                 type:'post',
-                 success:function (result){
+                data:{'tid':tid,
+                    'taskTitle':taskTitle,
+                    'responsibleMember':responsibleMember,
+                    'taskContent':taskContent
+                },
+                type:'post',
+                success:function (result){
 
                     if(result == 'success'){
 
@@ -970,28 +970,28 @@
                     }else{
                         alert("수정 실패!");
                     }
-                 }
-             });
+                }
+            });
         });
 
         $(document).on("click","button[name='readTaskDelete']",function (e){
-           e.preventDefault();
+            e.preventDefault();
 
-           if(confirm("해당 업무를 삭제하시겠습니까?")){
-               var tid = $("input[name='readTaskTid']").val(); //업무번호
+            if(confirm("해당 업무를 삭제하시겠습니까?")){
+                var tid = $("input[name='readTaskTid']").val(); //업무번호
 
-               $.ajax({
-                   url:'/task/delete',
-                   data:{'tid':tid},
-                   type:'delete',
-                   success:function (result){
-                       if(result == 'success'){
-                           alert("삭제되었습니다.");
-                           location.reload();
-                       }
-                   }
-               });
-           }
+                $.ajax({
+                    url:'/task/delete',
+                    data:{'tid':tid},
+                    type:'delete',
+                    success:function (result){
+                        if(result == 'success'){
+                            alert("삭제되었습니다.");
+                            location.reload();
+                        }
+                    }
+                });
+            }
         });
 
 
@@ -1017,20 +1017,3 @@
 
 </th:block>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

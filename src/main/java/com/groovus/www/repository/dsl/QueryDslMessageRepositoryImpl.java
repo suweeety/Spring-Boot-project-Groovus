@@ -52,10 +52,10 @@ public class QueryDslMessageRepositoryImpl extends QuerydslRepositorySupport imp
                         booleanBuilder.or(message.receiver.mid.eq(Long.parseLong(keyword)).and(message.del.isFalse()));
                         break;
                     case "s": //보낸이
-                        booleanBuilder.or(message.sender.mid.eq(Long.parseLong(keyword)).and(message.del.isFalse()));
+                        booleanBuilder.or(message.sender.mid.eq(Long.parseLong(keyword)));
                         break;
                     case "d": //삭제된
-                        booleanBuilder.or(message.sender.mid.eq(Long.parseLong(keyword)).or(message.receiver.mid.eq(Long.parseLong(keyword))).and(message.del.isTrue()));
+                        booleanBuilder.or(message.receiver.mid.eq(Long.parseLong(keyword)).and(message.del.isTrue()));
                 }
 
             }

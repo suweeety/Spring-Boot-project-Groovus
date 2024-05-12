@@ -3,6 +3,7 @@ package com.groovus.www.controller;
 import com.groovus.www.dto.chat.ChatRoomDto;
 import com.groovus.www.dto.chat.ChatRoomMap;
 import com.groovus.www.service.ChatService.ChatServiceMain;
+import com.mysema.commons.lang.URLEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,8 @@ public class ChatRoomController {
                              @RequestParam("secretChk") String secretChk,
                              @RequestParam(value = "maxUserCnt", defaultValue = "2") String maxUserCnt,
                              @RequestParam("chatType") String chatType,
+                             @RequestParam("pid") String pid,
+                             @RequestParam("projectName") String projectName,
                              RedirectAttributes rttr) {
 
         // log.info("chk {}", secretChk);
@@ -35,20 +38,25 @@ public class ChatRoomController {
         // 매개변수 : 방 이름, 패스워드, 방 잠금 여부, 방 인원수
         ChatRoomDto room;
 
+        log.info("===============여기는 채팅 컨트롤러==============");
         room = chatServiceMain.createChatRoom(name, roomPwd, Boolean.parseBoolean(secretChk), Integer.parseInt(maxUserCnt), chatType);
 
 
         log.info("CREATE Chat Room [{}]", room);
 
-        rttr.addFlashAttribute("roomName", room);
-        return "redirect:conference/roomlist";
+/*        rttr.addFlashAttribute("roomName", room);
+        rttr.addFlashAttribute("pid",pid);
+        rttr.addFlashAttribute("projectName",projectName);*/
+
+        String encodeUrl = URLEncoder.encodeURL("/conference/roomlist/"+pid+"/"+projectName);
+        return "redirect:"+encodeUrl;
     }
 
     // 채팅방 입장 화면
     // 파라미터로 넘어오는 roomId 를 확인후 해당 roomId 를 기준으로
     // 채팅방을 찾아서 클라이언트를 chatroom 으로 보낸다.
-    @GetMapping("/chat/room")
-    public String roomDetail(Model model, String roomId){
+    @GetMapping("/chat/room/{pid}/{projectName}")
+    public String roomDetail(Model model, String roomId,@PathVariable("pid") String pid,@PathVariable("projectName")String projectName){
 
         log.info("roomId {}", roomId);
 
@@ -63,6 +71,8 @@ public class ChatRoomController {
         ChatRoomDto room = ChatRoomMap.getInstance().getChatRooms().get(roomId);
 
         model.addAttribute("room", room);
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
 
 
         if (ChatRoomDto.ChatType.MSG.equals(room.getChatType())) {
@@ -91,7 +101,7 @@ public class ChatRoomController {
         // roomId 기준으로 chatRoomMap 에서 삭제, 해당 채팅룸 안에 있는 사진 삭제
         chatServiceMain.delChatRoom(roomId);
 
-        return "redirect:conference/roomlist";
+        return "redirect:/conference/roomlist";
     }
 
     // 유저 카운트

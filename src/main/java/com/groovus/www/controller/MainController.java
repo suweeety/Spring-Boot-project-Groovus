@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,10 +22,13 @@ public class MainController {
     // 스프링 시큐리티의 로그인 유저 정보는 Security 세션의 PrincipalDetails 안에 담긴다
     // 정확히는 PrincipalDetails 안에 ChatUser 객체가 담기고, 이것을 가져오면 된다.
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/conference/roomlist")
-    public String goChatRoom(Model model){
+    @GetMapping("/conference/roomlist/{pid}/{projectName}")
+    public String goChatRoom(Model model , @PathVariable("pid") String pid , @PathVariable("projectName")String projectName){
 
         model.addAttribute("list", chatServiceMain.findAllRoom());
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+
         // principalDetails 가 null 이 아니라면 로그인 된 상태!!
         /*
         if (principalDetails != null) {
@@ -34,6 +38,7 @@ public class MainController {
 
 //        model.addAttribute("user", "hey");
         log.debug("SHOW ALL ChatList {}", chatServiceMain.findAllRoom());
+
         return "conference/roomlist";
     }
 

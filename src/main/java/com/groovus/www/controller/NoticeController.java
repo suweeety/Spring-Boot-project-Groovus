@@ -29,17 +29,19 @@ public class NoticeController {
     @ResponseBody
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> createNotice(NoticeRequestDTO noticeRequestDTO,
                                                                        @AuthenticationPrincipal MemberDTO memberDTO) {
-
         return noticeService.createNotice(noticeRequestDTO, memberDTO);
     }
 
     //공지사항 조회
-    @GetMapping("/noticeList")
-    public String noticeList(ProjectPageRequestDTO pageRequestDTO, Model model) {
+    @GetMapping("/noticeList/{pid}/{projectName}")
+    public String noticeList(ProjectPageRequestDTO pageRequestDTO, Model model , @PathVariable("pid")String pid , @PathVariable("projectName")String projectName) {
 
         ProjectPageResponseDTO<NoticeResponseDTO> noticeList = noticeService.noticeList(pageRequestDTO);
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("pageRequestDTO", pageRequestDTO);
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+
         return "notice/noticeList";
     }
 

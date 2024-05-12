@@ -48,7 +48,7 @@
 
 <div class="container" th:with="memberDTO=${#authentication.principal}">
     <div class="container">
-        <h2>Conference Room List</h2>
+        <h2>Conference Room List [[${projectName}]]</h2>
         <table class="table table-hover" id="table">
             <tr>
                 <th scope="col">채팅방명</th>
@@ -66,7 +66,7 @@
                     </td>
                     <td th:if="${!room.secretChk}">
                         <!-- thymeleaf 의 변수를 onclick 에 넣는 방법 -->
-                        <a th:href="@{/chat/room(roomId=${room.roomId})}" th:roomId="${room.roomId}" onclick="return chkRoomUserCnt(this.getAttribute('roomId'));">[[${room.roomName}]]</a>
+                        <a th:href="@{'/chat/room/'+${pid}+'/'+${projectName}+'?roomId='+${room.roomId}}" th:roomId="${room.roomId}" onclick="return chkRoomUserCnt(this.getAttribute('roomId'));">[[${room.roomName}]]</a>
                     </td>
                     <td>
                         <span th:if="${room.secretChk}">
@@ -99,9 +99,11 @@
                 <h5 class="modal-title">채팅방 생성</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" action="/chat/createroom" onsubmit="return createRoom()">
+            <form method="post" th:action="@{/chat/createroom}" onsubmit="return createRoom()">
                 <div class="modal-body">
                     <div class="mb-3">
+                        <input type="hidden" th:value="${pid}" name="pid">
+                        <input type="hidden" th:value="${projectName}" name="projectName">
                         <label for="roomName" class="col-form-label">방 이름</label>
                         <input type="text" class="form-control" id="roomName" name="roomName">
                     </div>
@@ -331,6 +333,7 @@
                                 "color" : "#0D6EFD",
                                 "font-weight" : "bold",
                             });
+                            $("#enterRoomBtn").show();
 
                         }else{ // false 일때는
                             // $configRoomBtn 를 비활성화 상태로 만들고 비밀번호가 틀립니다 문구를 출력
@@ -428,7 +431,8 @@
 
                     if(result){
                         if (chkRoomUserCnt(roomId)) {
-                            location.href = "/chat/room?roomId="+roomId;
+                            $("#enterRoomBtn").hide();
+                            location.href = "/chat/room/"+[[${pid}]]+"/"+[[${projectName}]]+"?roomId="+roomId;
                         }
                     }else{
                         alert("비밀번호가 틀립니다. \n 비밀번호를 확인해주세요")

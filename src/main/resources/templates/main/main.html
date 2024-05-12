@@ -193,28 +193,21 @@
 
                 <!-- About Us Thumbnail -->
                 <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="about-us-thumbnail mb-50 wow fadeInUp" data-wow-delay="100ms">
+                    <div class="about-us-thumbnail mb-50" style="width: 33rem;">
                         <span class="line"></span>
-                        <img src="./img/bg-img/16.jpg" alt="">
+                        <img th:src="@{/img/bg-img/groovusHome.gif}" alt="">
                         <span class="line2"></span>
                     </div>
                 </div>
 
-                <!-- About Us Thumbnail -->
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <div class="about-us-thumbnail mb-50 wow fadeInUp" data-wow-delay="400ms">
-                        <span class="line"></span>
-                        <img src="./img/bg-img/17.jpg" alt="">
-                        <span class="line2"></span>
-                    </div>
-                </div>
 
                 <!-- About Us Content -->
-                <div class="col-12 col-lg-4">
-                    <div class="about-us-content mb-50 wow fadeInUp" data-wow-delay="700ms">
+                <div class="col-12 col-lg-4" style="margin-left: 10rem;">
+                    <div class="about-us-content mb-50" style="width: 30rem;">
                         <h2>GroovUs</h2>
-                        <p>추후 소개글 업로드 예정</p>
-                        <p>추후 소개글 업로드 예정2</p>
+                        <p>협업에 필요한 주요기능을 구현한 프로젝트 협업툴 사이트 'GroovUs' 입니다.</p>
+                        <p>프로젝트 생성 후 멤버들과 협업을 진행해 보세요!</p>
+                        <p>프로젝트 생성은 로그인 후 가능합니다.</p>
                     </div>
                 </div>
             </div>
@@ -227,37 +220,38 @@
 
                     <!-- Single Service Area -->
                     <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="single-service-area mb-50 wow fadeInUp" data-wow-delay="100ms">
-                            <i class="icon_film"></i>
-                            <h5>화상 채팅(제목)</h5>
-                            <p>화상 채팅 기능 소개</p>
+                        <div class="single-service-area mb-50">
+                            <i class="fa-regular fa-clipboard"></i>
+                            <h5>손쉬운 업무 등록</h5>
+                            <p>업무를 등록하여 담당자를 지정할 수 있습니다.</p>
+                            <p>업무가 등록되면 업무의 진행 상태를 변경 할 수 있습니다. (할일 / 진행중 / 보류 / 완료)</p>
+                            <p>프로젝트 멤버들은 댓글로 서로 소통할 수 있습니다.</p>
                         </div>
                     </div>
 
                     <!-- Single Service Area -->
                     <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="single-service-area mb-50 wow fadeInUp" data-wow-delay="300ms">
+                        <div class="single-service-area mb-50">
                             <i class="icon_calendar"></i>
-                            <h5>탁월한 일정관리</h5>
+                            <h5>탁월한 일정 관리</h5>
                             <p>팀원들과 함께 일정을 관리함으로 보다 편하고 즐거운 업무 효율을 기대해 보세요.</p>
                         </div>
                     </div>
 
                     <!-- Single Service Area -->
                     <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="single-service-area mb-50 wow fadeInUp" data-wow-delay="500ms">
-                            <i class="icon_camera_alt"></i>
-                            <h5>프로젝트 관리(제목)</h5>
-                            <p>프로젝트 관리(내용)</p>
+                        <div class="single-service-area mb-50">
+                            <i class="fa-solid fa-video"> </i>
+                            <h5>화상채팅(제목)</h5>
+                            <p>화샹채팅(내용)</p>
                         </div>
                     </div>
-
                     <!-- Single Service Area -->
                     <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="single-service-area mb-50 wow fadeInUp" data-wow-delay="700ms">
-                            <i class="icon_house_alt"></i>
-                            <h5>드라이브(제목)</h5>
-                            <p>드라이브(내용)</p>
+                        <div class="single-service-area mb-50">
+                            <i class="fa-solid fa-envelope"></i>
+                            <h5>쪽지 전송</h5>
+                            <p>프로젝트 멤버들끼리 쪽지를 전송할 수 있습니다.</p>
                         </div>
                     </div>
 
@@ -267,155 +261,15 @@
     </section>
     <!-- ***** About Us Area End ***** -->
 
-    <!-- ***** Client Feedback Area Start ***** -->
-    <section class="clients-feedback-area section-padding-80 clearfix">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-10">
-                    <div class="slider slider-for">
-
-                        <!-- Client Feedback Text -->
-                        <div class="client-feedback-text text-center">
-                            <div class="quote-icon">
-                                <i class="icon_quotations" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-description text-center">
-                                <h4>“Success Agency is, hands down, one of the best companies that we have worked with! The company has either met or exceeded all of the goals that we initially set for all of the projects that they implemented for us.”</h4>
-                            </div>
-                            <div class="ratings text-center">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-name text-center">
-                                <h5>Rodney Williams</h5>
-                                <span>Producer</span>
-                            </div>
-                        </div>
-
-                        <!-- Client Feedback Text -->
-                        <div class="client-feedback-text text-center">
-                            <div class="quote-icon">
-                                <i class="icon_quotations" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-description text-center">
-                                <h4>“Success Agency is, hands down, one of the best companies that we have worked with! The company has either met or exceeded all of the goals that we initially set for all of the projects that they implemented for us.”</h4>
-                            </div>
-                            <div class="ratings text-center">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-name text-center">
-                                <h5>Nazrul Islam</h5>
-                                <span>Producer</span>
-                            </div>
-                        </div>
-
-                        <!-- Client Feedback Text -->
-                        <div class="client-feedback-text text-center">
-                            <div class="quote-icon">
-                                <i class="icon_quotations" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-description text-center">
-                                <h4>“Success Agency is, hands down, one of the best companies that we have worked with! The company has either met or exceeded all of the goals that we initially set for all of the projects that they implemented for us.”</h4>
-                            </div>
-                            <div class="ratings text-center">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-name text-center">
-                                <h5>Williams Rodney</h5>
-                                <span>Producer</span>
-                            </div>
-                        </div>
-
-                        <!-- Client Feedback Text -->
-                        <div class="client-feedback-text text-center">
-                            <div class="quote-icon">
-                                <i class="icon_quotations" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-description text-center">
-                                <h4>“Success Agency is, hands down, one of the best companies that we have worked with! The company has either met or exceeded all of the goals that we initially set for all of the projects that they implemented for us.”</h4>
-                            </div>
-                            <div class="ratings text-center">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-name text-center">
-                                <h5>Rodney Williams</h5>
-                                <span>Producer</span>
-                            </div>
-                        </div>
-
-                        <!-- Client Feedback Text -->
-                        <div class="client-feedback-text text-center">
-                            <div class="quote-icon">
-                                <i class="icon_quotations" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-description text-center">
-                                <h4>“Success Agency is, hands down, one of the best companies that we have worked with! The company has either met or exceeded all of the goals that we initially set for all of the projects that they implemented for us.”</h4>
-                            </div>
-                            <div class="ratings text-center">
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                                <i class="fa fa-star" aria-hidden="true"></i>
-                            </div>
-                            <div class="client-name text-center">
-                                <h5>Rodney Williams</h5>
-                                <span>Producer</span>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Client Thumbnail Area -->
-                <div class="col-12 col-md-6 col-lg-5">
-                    <div class="slider slider-nav">
-                        <div class="client-thumbnail">
-                            <img src="./img/bg-img/6.jpg" alt="">
-                        </div>
-                        <div class="client-thumbnail">
-                            <img src="./img/bg-img/7.jpg" alt="">
-                        </div>
-                        <div class="client-thumbnail">
-                            <img src="./img/bg-img/8.jpg" alt="">
-                        </div>
-                        <div class="client-thumbnail">
-                            <img src="./img/bg-img/6.jpg" alt="">
-                        </div>
-                        <div class="client-thumbnail">
-                            <img src="./img/bg-img/7.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- ***** Client Feedback Area End ***** -->
-
     <!-- ***** CTA Area Start ***** -->
     <section class="mona-cta-area section-padding-80">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                     <div class="cta-content">
-                        <h2>Do You Want To Be A Partener?</h2>
-                        <h6>Lorem ipsum dolor sit amet, consetetur sadipscing esed diam nonumy eirmod tempor.</h6>
-                        <a href="#" class="btn mona-btn">파트너사 신청하기</a>
+                        <h2>깃허브 주소가 궁금하신가요?</h2>
+                        <h6></h6>
+                        <a href="https://github.com/kimjeong-eun/Spring-Boot-project-Groovus.git" class="btn mona-btn">깃허브 구경하기</a>
                     </div>
                 </div>
             </div>
