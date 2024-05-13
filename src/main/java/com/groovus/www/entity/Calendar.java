@@ -65,7 +65,7 @@ public class Calendar extends BaseEntity{
     @JoinColumn(name = "pid")
     private Project project; // 프로젝트 아이디
 
-    @JoinColumn(name = "createmid", insertable=false, updatable=false)
+    @JoinColumn(name = "createmid", updatable=false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Member create_user_id; // 작성자
 
@@ -104,13 +104,14 @@ public class Calendar extends BaseEntity{
     }
 
     // modify용 메서드
-    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate) {
+    public void change(String cal_title, String cal_content, String cal_cate, String cal_startDate, String cal_endDate, String cal_link_list) {
 
         this.cal_title = cal_title;
         this.cal_content = cal_content;
         this.cal_cate = cal_cate;
         this.cal_startDate = cal_startDate;
         this.cal_endDate = cal_endDate;
+        this.cal_link_list = cal_link_list;
 
     }
 

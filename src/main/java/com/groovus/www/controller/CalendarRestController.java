@@ -98,8 +98,8 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{cal_id}") // 일정 삭제
-    public ResponseEntity<String> remove(@PathVariable("cal_id") Long cal_id) {
+    @DeleteMapping("/delete/{pid}/{cal_id}") // 일정 삭제
+    public ResponseEntity<String> remove(@PathVariable("pid") Long pid, @PathVariable("cal_id") Long cal_id) {
 
         log.info("cal_id in remove method: " + cal_id);
 

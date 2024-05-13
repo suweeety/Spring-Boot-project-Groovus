@@ -50,6 +50,7 @@ public class CalendarServiceImpl implements CalendarService{
                     .cal_cate(calendarRequestDTO.getCal_cate())
                     .cal_startDate(calendarRequestDTO.getCal_startDate())
                     .cal_endDate(calendarRequestDTO.getCal_endDate())
+                    .cal_link_list(calendarRequestDTO.getCal_link_list())
                     .create_user_id(createMember)
                     .build();
 
@@ -73,7 +74,6 @@ public class CalendarServiceImpl implements CalendarService{
 
         log.info("register method: "+calendar);
         calendarRepository.save(calendar);
-        log.info("calendarRepository.save(calendar): "+calendarRepository.save(calendar));
         log.info("calendar.getCal_id(): "+calendar.getCal_id());
 
         return calendar.getCal_id();
@@ -116,7 +116,7 @@ public class CalendarServiceImpl implements CalendarService{
         if(calResult.isPresent()){
             Calendar calendar = calResult.get();
 
-            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(), calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate());
+            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(), calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate(), calendarRequestDTO.getCal_link_list());
 
           Optional<Member> memberResult = memberRepository.findByUid(calendarRequestDTO.getUpdate_user_id());
           if(memberResult.isPresent()){
@@ -132,7 +132,7 @@ public class CalendarServiceImpl implements CalendarService{
     @Override
     public boolean remove(Long cal_id) {
 
-        calendarRepository.deleteById(cal_id);
+        calendarRepository.deleteByCal_id(cal_id);
 
         return false;
 

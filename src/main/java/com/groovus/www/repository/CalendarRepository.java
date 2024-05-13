@@ -19,9 +19,10 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     Optional<Calendar> findByIdWithImages(Long cal_id);
 
     // Project 삭제 시 일정들 삭제
-//    @Modifying
-//    @Query("DELETE FROM Calendar c WHERE c. =:pid")
-//    void deleteByCal_id(Long cal_id);
+    @Modifying
+    @Query("DELETE FROM Calendar c WHERE c.cal_id =:cal_id")
+    void deleteByCal_id(Long cal_id);
+
     @EntityGraph(attributePaths = {"imageSet"})
     @Query("SELECT c FROM Calendar c WHERE c.project.pid =:pid ORDER BY c.cal_id")
     List<Calendar> getCalendarsByProjectOrderByCal_id(@Param("pid") Long pid);

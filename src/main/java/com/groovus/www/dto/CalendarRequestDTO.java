@@ -27,7 +27,7 @@ public class CalendarRequestDTO {
 
     private List<String> cal_attach; // 첨부파일
 
-    private List<String> cal_link_list; // 투두리스트
+    private String cal_link_list; // 링크
 
     @NotNull
     private List<String> cal_members; // 초대 멤버
