@@ -1,5 +1,6 @@
 package com.groovus.www.dto;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CalendarRequestDTO {
 
     private List<String> cal_link_list; // 투두리스트
 
+    @NotNull
     private List<String> cal_members; // 초대 멤버
 
     private String pid; // 프로젝트 번호

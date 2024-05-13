@@ -34,4 +34,8 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     @Query("SELECT m FROM Member m WHERE m.mid =:mid")
     Optional<Member> findByUsername(@Param("mid") Long mid);
 
+    @EntityGraph(attributePaths = {"imageSet"})
+    @Query("SELECT COUNT(c) FROM Calendar c WHERE c.project.pid=:pid")
+    int countCalendarsByProject(@Param("pid") Long pid);
+
 }

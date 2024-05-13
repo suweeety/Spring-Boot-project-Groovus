@@ -23,6 +23,8 @@ public interface CalendarService {
 
     boolean remove(Long cal_id); // 일정 삭제
 
+    int countSchedule(Long pid); // 일정 수 세기
+
     default CalendarDTO entityToDto(Calendar calendar) {
 
         CalendarDTO dto = CalendarDTO.builder()

@@ -53,28 +53,22 @@ public class CalendarServiceImpl implements CalendarService{
                     .create_user_id(createMember)
                     .build();
 
-        // 멤버 초대
-        for (String memberUid : calendarRequestDTO.getCal_members()) {
-
-            log.info("memberUid: " + memberUid);
-
-            Optional<Member> result2 = memberRepository.findByUid(memberUid);
-
-            log.info("result2: " + result2);
-
-            if(!result2.isEmpty()) {
-
-                Member member = result.get();
-                calendar.addMember(member);
-            }
-        }
-
         // 프로젝트에 등록
         Optional<Project> proResult = projectRepository.findByIdWithMember(pid);
         if (proResult.isPresent()){
 
             Project project = proResult.get();
             calendar.setProject(project);
+        }
+
+        // 멤버 초대
+        for (String memberUid : calendarRequestDTO.getCal_members()) {
+            log.info("memberUid: " + memberUid);
+            Optional<Member> memberResult = memberRepository.findByUid(memberUid);
+            if (memberResult.isPresent()) {
+                Member member = memberResult.get();
+                calendar.addMember(member);
+            }
         }
 
         log.info("register method: "+calendar);
@@ -144,7 +138,11 @@ public class CalendarServiceImpl implements CalendarService{
 
     }
 
+    @Override
+    public int countSchedule(Long pid) {
 
+        return calendarRepository.countCalendarsByProject(pid);
+    }
 
 
 }

@@ -80,7 +80,6 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
 
         // calendarService의 register메서드 호출하여 Long cal_id에 대입(calendarDTO 값 가지고 있음)
         calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid())); // (pid는 브라우저 쪽에서 받아옴)
-        log.info("calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid())): "+calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid())));
 
         return new ResponseEntity<>("success",HttpStatus.OK);
 
