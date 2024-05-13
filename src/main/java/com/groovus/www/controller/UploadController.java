@@ -33,7 +33,7 @@ import java.util.UUID;
 @Log4j2
 public class UploadController {
 
-    @Value("${org.zerock.upload.path}") //import org.springframework.beans.factory.annotation.Value;
+    @Value("${com.groovus.upload.path}") //import org.springframework.beans.factory.annotation.Value;
     private String uploadPath ; // application.properties 추가 필수
 
     @PostMapping("/uploadAjax")

@@ -12,7 +12,7 @@
         <style>
 
             #logoImg{
-                background-color: #8d8d8d;
+                background-color: #2de3f1;
             }
 
         </style>
@@ -74,6 +74,9 @@
 
         $(".removeBtn").click(function(){
 
+            alert("준비중입니다.");
+            return;
+
             actionForm
                 .attr("action", "/drive/remove")
                 .attr("method","post");
@@ -88,8 +91,11 @@
                 return ;
             }
 
+            var pid = [[${pid}]];
+            var projectName = [[${projectName}]];
+
             actionForm
-                .attr("action", "/drive/modify")
+                .attr("action", "/drive/modify/"+pid+"/"+projectName)
                 .attr("method","post")
                 .submit();
         });
@@ -107,9 +113,11 @@
             actionForm.append(type);
             actionForm.append(keyword);
 
+            var pid = [[${pid}]]
+            var projectName = [[${projectName}]]
 
             actionForm
-                .attr("action", "/drive/list")
+                .attr("action", "/drive/drive/"+pid+"/"+projectName)
                 .attr("method","get");
 
             actionForm.submit();

@@ -55,6 +55,8 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info("registerPOST 확인");
         log.info(calendarRequestDTO.getPid());
         log.info(calendarRequestDTO.getCal_cate());
+        log.info(calendarRequestDTO.getCal_members());
+        log.info(calendarRequestDTO.getCreate_user_id());
         log.info("==========================================================");
 
 // 카테고리를 한글화하는 작업
@@ -77,7 +79,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info("calendarRequestDTO: " + calendarRequestDTO);
 
         // calendarService의 register메서드 호출하여 Long cal_id에 대입(calendarDTO 값 가지고 있음)
-        Long cal_id = calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid())); // (pid는 브라우저 쪽에서 받아옴)
+        calendarService.register(calendarRequestDTO , Long.parseLong(calendarRequestDTO.getPid())); // (pid는 브라우저 쪽에서 받아옴)
 
         return new ResponseEntity<>("success",HttpStatus.OK);
 

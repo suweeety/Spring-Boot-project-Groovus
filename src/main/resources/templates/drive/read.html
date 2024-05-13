@@ -119,7 +119,7 @@
 
     <a href="https://github.com/suweeety/Spring-Boot-project-Groovus/files/15243478/default.txt" >다운로드</a>
 
-    <a th:href="@{/drive/modify(bno = ${dto.bno}, page=${requestDTO.page}, type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
+    <a th:href="@{'/drive/modify?bno='+${dto.bno}+'&page='+${requestDTO.page}+'&type='+${requestDTO.type}+'&keyword='+${requestDTO.keyword}+'&pid='+${pid}+'&projectName='+${projectName}}">
         <button type="button" class="btn btn-primary">수정</button>
     </a>
 
@@ -132,6 +132,9 @@
         var actionForm = $("form"); //form 태그 객체
 
         $(".removeBtn").click(function(){
+
+            alert("준비중입니다.");
+            return;
 
             actionForm
                 .attr("action", "/drive/remove")
@@ -159,6 +162,8 @@
             var page = $("input[name='page']");
             var type = $("input[name='type']");
             var keyword = $("input[name='keyword']");
+            var pid = [[${pid}]];
+            var projectName = [[${projectName}]];
 
             actionForm.empty(); //form 태그의 모든 내용을 지우고
 
@@ -168,7 +173,7 @@
 
 
             actionForm
-                .attr("action", "/drive/drive")
+                .attr("action", "/drive/drive/"+pid+"/"+projectName)
                 .attr("method","get");
 
             actionForm.submit();

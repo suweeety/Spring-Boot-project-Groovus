@@ -33,7 +33,7 @@
 <!--        </div>-->
 <!--    </div>-->
 
-    <form th:action="@{/drive/register}" th:method="post"  >
+    <form th:action="@{'/drive/register/'+${pid}+'/'+${projectName}}" th:method="post"  >
         <div class="form-group">
             <label >제목</label>
             <input type="text" class="form-control" name="title">

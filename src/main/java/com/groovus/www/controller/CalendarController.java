@@ -18,5 +18,4 @@ public class CalendarController {
 
     private final CalendarService calendarService;
 
-
 }
