@@ -32,6 +32,19 @@
     <script th:src="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/js/fullcalendar.min.js}"></script>
     <!--<script th:src="@{/quixlab-bootstrap-main/theme/js/plugins-init/fullcalendar-init.js}"></script>-->
 
+
+    <th:block layout:fragment="css">
+
+        <style>
+
+            #logoImg{
+                background-color: #fc0909;
+            }
+
+        </style>
+
+    </th:block>
+
     </head>
 
 
@@ -259,8 +272,9 @@
         $(document).on("click","a.fc-day-grid-event",function (e){
             e.preventDefault();
             cal_id = $(this).data("calid");
-            alert(cal_id);
-        })
+
+
+        });
 
         /*--------------------------------------------------------*/
         /*ToDoList*/
@@ -290,21 +304,54 @@
 
         /*--------------------------------------------------------*/
 
-        $(document).ready(function() {
+        $(document).on("click","button[name='modifyBtn']",function (e){
+            e.preventDefault();
 
-            $("button[name='saveBtn']").on("click", function (e){
+            var pidStr = pid+'';
+            var cal_idStr = cal_id+'';
 
-                e.preventDefault();
-                alert("saveBtn 눌림 성공");
+            var cal_title = $("input[name='cal_title']").val();
+            var  beginning =  $("input[name='beginning']").val();
+            var  ending = $("input[name='ending']").val();
+            var   cal_cate = $("select[name='cal_cate'] option:checked").val();
+            var   cal_content=  $("input[name='cal_content']").val();
+            var   cal_startDate=  $("input[name='cal_startDate']").val();
+            var   cal_endDate=  $("input[name='cal_endDate']").val();
+            var    cal_attach=  $("input[name='cal_attach']").val();
+            var   cal_link_list=  $("input[name='cal_link_list']").val();
+            var   update_user_idStr = uid+'';
 
+            $.ajax({
+                url: '/calendar/modify',
+                method: 'POST',
+                data: {
+                    'cal_title': cal_title,
+                    'cal_content': cal_content,
+                    'cal_cate': cal_cate,
+                    'cal_startDate': cal_startDate,
+                    'cal_endDate': cal_endDate,
+                    'cal_attach': cal_attach,
+                    'pid': pidStr,
+                    'cal_id': cal_idStr,
+                    'update_user_id': update_user_idStr
+                },
+                success: function (result) {
+                    console.log("RESULT: " + result);
+                    if (result === 'success') {
+                        alert("일정이 수정되었습니다.");
+                        console.log("일정이 수정되었습니다.")
+                        $("#event-modal2").hide();
+                        location.reload();
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("일정 변경에 실패했습니다.");
+                    console.error("일정 변경에 실패했습니다:", error);
+                }
             });
 
-            $("button[name='modifyBtn']").on("click", function (e){
 
-                e.preventDefault();
-                alert("modifyBtn 눌림 성공");
-
-            });
         })
 
         /*--------------------------------------------------------*/
@@ -329,7 +376,7 @@
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
             },
                 /*Get & Update Schedule*/
-                t.prototype.onEventClick = function(t, n, a) {
+                t.prototype.onEventClick =  function(t, n, a) {
 
                     var o = this;
                     o.$modal2.modal({
@@ -341,12 +388,10 @@
                             type: 'GET',
                             dataType: 'json',
                             contentType: 'application/json',
-                            success:   function (response) {
-
-                                alert("일정 보기 success.");
-                                console.log("일정 보기 success.");
+                            success:  function (response) {
 
                                 var i = e("<form></form>");
+
                                 i.append("<input type='hidden' name='cal_id' value='cal_id'/>")
                                 i.append("<label>일정 제목</label>"), i
                                     .append("<div class='input-group' style='width: 16rem;'>" +
@@ -376,101 +421,15 @@
                                         "<input id='linkInput' name='cal_link_list' class='form-control' type='url' style='transform: translate(0px, 26px);' value='" + response.cal_link_list + "' style='border-radius: 10px;' readonly/>" +
                                         "<input type='text' class='form-control' name='addLink' placeholder='링크 추가...' id='cal_link_input' style='visibility: hidden; width: 18rem; border-radius: 10px; display: inline-block' />" +
                                         "<div name='linkTags' style='display: block; width: 11rem;height: 3rem; transform: translate(204px, -589px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-                                        "<span class='badge badge-pill badge-success'>" + uid + "</span></div>")
+                                        "<span class='badge badge-pill badge-success'>" + uid + "</span></div>");
 
-                                    ,
                                     o.$modal2.find(".delete-event").hide().end()
                                     .find(".btn-success").show().end()
                                     .find(".modal-body").empty().prepend(i).end()
 
-                                o.$modal2.find(".btn-success").unbind("click").on("click", function (e) {
-
-                                    e.preventDefault();
-
-                                    const eventData = {
-                                        cal_title: i.find("input[name='cal_title']").val(),
-                                        beginning: i.find("input[name='beginning']").val(),
-                                        ending: i.find("input[name='ending']").val(),
-                                        cal_cate: i.find("select[name='cal_cate'] option:checked").val(),
-                                        cal_content: i.find("input[name='cal_content']").val(),
-                                        cal_startDate: i.find("input[name='cal_startDate']").val(),
-                                        cal_endDate: i.find("input[name='cal_endDate']").val(),
-                                        cal_attach: i.find("input[name='cal_attach']").val(),
-                                        cal_link_list: i.find("input[name='cal_link_list']").val(),
-                                        update_user_id: i.find("input[name='update_user_id']").val()
-                                    }
-
-                                    console.log(eventData);
-                                    console.log(eventData.cal_cate);
-
-                                    var pidStr = pid+'';
-                                    var cal_idStr = cal_id+'';
-
-                                    var cal_title = $("input[name='cal_title']").val();
-                                    var  beginning =  $("input[name='beginning']").val();
-                                    var  ending = $("input[name='ending']").val();
-                                    var   cal_cate = $("select[name='cal_cate'] option:checked").val();
-                                    var   cal_content=  $("input[name='cal_content']").val();
-                                    var   cal_startDate=  $("input[name='cal_startDate']").val();
-                                    var   cal_endDate=  $("input[name='cal_endDate']").val();
-                                    var    cal_attach=  $("input[name='cal_attach']").val();
-                                    var   cal_link_list=  $("input[name='cal_link_list']").val();
-                                    var   update_user_idStr = uid+'';
-
-                                    console.log(cal_title);
-                                    console.log(cal_content);
-                                    console.log(cal_cate);
-                                    console.log(cal_startDate);
-                                    console.log(cal_endDate);
-                                    console.log(cal_attach);
-                                    console.log(pidStr);
-                                    console.log(cal_idStr);
-                                    console.log(update_user_idStr);
-
-                                    $.ajax({
-                                        url: '/calendar/modify',
-                                        method: 'POST',
-                                        data: {
-                                            'cal_title': cal_title,
-                                            'cal_content': cal_content,
-                                            'cal_cate': cal_cate,
-                                            'cal_startDate': cal_startDate,
-                                            'cal_endDate': cal_endDate,
-                                            'cal_attach': cal_attach,
-                                            'pid': pidStr,
-                                            'cal_id': cal_idStr,
-                                            'update_user_id': update_user_idStr
-                                        },
-                                        success: function (result) {
-                                            console.log("RESULT: " + result);
-                                            if (result === 'success') {
-                                                alert("일정이 수정되었습니다.");
-                                                console.log("일정이 수정되었습니다.")
-                                                o.$modal.modal("hide")
-                                                location.reload();
-
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            alert("일정 변경에 실패했습니다.");
-                                            console.error("일정 변경에 실패했습니다:", error);
-                                        }
-                                    })
-                                })
-
-                                o.$modal2.find(".cancel-event").show().end()
-                                    .find(".modal-body").empty().prepend(i).end()
-                                    .find(".cancel-event").unbind("click").on("click", function () {
-                                    o.$calendarObj.fullCalendar("removeEvents", function (e) {
-                                        return e._id == t._id
-                                    }), o.$modal2.modal("hide")
-                                });
-                                o.$modal2.modal("hide");
-
                             },
                             error: function (xhr, status, error) {
-                                alert("일정 저장에 실패했습니다.");
-                                console.error("일정 저장에 실패했습니다:", error);
+                                alert("일정 읽기 실패했습니다. 다시 시도해주세요");
                             }
                         })
 
@@ -745,6 +704,8 @@
                 }
             });
         })
+
+
 
     </script>
 

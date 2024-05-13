@@ -74,8 +74,8 @@ public class CommonController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/calendar/schedule/{pid}")
-    public String goScheduleManagement(@PathVariable("pid") String pid, Model model){
+    @GetMapping("/calendar/schedule/{pid}/{projectName}")
+    public String goScheduleManagement(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName ,Model model){
         //일정관리로 이동
         log.info("---------------------------------------");
         log.info("pid****: " + pid);
@@ -87,6 +87,7 @@ public class CommonController {
 
         model.addAttribute("calendarList", calendarList);
         model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
 
 //        model.addAttribute("calendarDTO", calendarDTO);
 
@@ -99,15 +100,21 @@ public class CommonController {
 
     }
 
-    @GetMapping("/drive/drive")
-    public void goDrive(){
+    @GetMapping("/drive/drive/{pid}/{projectName}")
+    public String goDrive( @PathVariable("pid") String pid , @PathVariable("projectName") String projectName , Model model){
         //드라이브 이동
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
 
+        return "drive/drive";
     }
-    @GetMapping("/drive/bin")
-    public void goDriveBin(){
+    @GetMapping("/drive/bin/{pid}/{projectName}")
+    public String goDriveBin(@PathVariable("pid") String pid , @PathVariable("projectName") String projectName , Model model){
         //드라이브 휴지통
 
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+        return "drive/bin";
     }
     
     @GetMapping("/setting/{pid}/{projectName}")

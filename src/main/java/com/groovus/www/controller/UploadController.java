@@ -32,7 +32,7 @@ import java.util.UUID;
 @Log4j2
 public class UploadController {
 
-    @Value("${com.groovus.upload.path}")
+    @Value("${org.zerock.upload.path}")
     private String uploadPath;
 
     @PostMapping("/uploadAjax")
