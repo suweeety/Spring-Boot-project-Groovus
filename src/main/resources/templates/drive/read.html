@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>읽기</title>
+
+    <th:block layout:fragment="css">
+
+        <style>
+
+            #logoImg{
+                background-color: #2de3f1;
+            }
+
+        </style>
+
+    </th:block>
+</head>
+
+<th:block layout:fragment="content">
+
+<!--    <div class="row">-->
+
+<!--        <div class="col-lg-6 col-md-12">-->
+<!--            <div class="card">-->
+<!--                <div class="card-body">-->
+<!--                    <h1>읽기</h1>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+
+
+    <div class="form-group">
+        <label >제목</label>
+        <input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>등록일</label>
+        <input type="text" class="form-control" name="regDate" th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd')}" readonly>
+    </div>
+
+    <div class="form-group">
+        <label>수정일</label>
+        <input type="text" class="form-control" name="modDate" th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd')}" readonly>
+    </div>
+
+
+    <style>
+        .uploadResult {
+            width: 100%;
+            background-color: #BBDEFB;
+            margin-top: 10px;
+        }
+
+        .uploadResult ul {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            vertical-align: top;
+            overflow: auto;
+        }
+
+        .uploadResult ul li {
+            list-style: none;
+            padding: 10px;
+            margin-left: 2em;
+        }
+
+        .uploadResult ul li img {
+            width: 100px;
+        }
+    </style>
+
+
+
+    <div class="uploadResult">
+        <ul >
+            <li th:each="driveImage: ${dto.imageDTOList}" th:data-file="${driveImage.getThumbnailURL()}">
+                <img  th:if="${driveImage.path != null}" th:src="|/display?fileName=${driveImage.getThumbnailURL()}|">
+
+
+
+
+            </li>
+        </ul>
+    </div>
+
+
+
+
+
+    <div class="imageModal modal " tabindex="-2" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Picture</h5>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <a href="https://github.com/suweeety/Spring-Boot-project-Groovus/files/15243478/default.txt" >다운로드</a>
+
+    <a th:href="@{/drive/modify(bno = ${dto.bno}, page=${requestDTO.page}, type=${requestDTO.type}, keyword =${requestDTO.keyword})}">
+        <button type="button" class="btn btn-primary">수정</button>
+    </a>
+
+    <button type="button" class="btn btn-info listBtn">목록</button>
+
+    <button type="button" class="btn btn-danger removeBtn">삭제</button>
+
+    <script th:inline="javascript">
+
+        var actionForm = $("form"); //form 태그 객체
+
+        $(".removeBtn").click(function(){
+
+            actionForm
+                .attr("action", "/drive/remove")
+                .attr("method","post");
+
+            actionForm.submit();
+
+        });
+
+        $(".modifyBtn").click(function() {
+
+            if(!confirm("수정하시겠습니까?")){
+                return ;
+            }
+
+            actionForm
+                .attr("action", "/drive/modify")
+                .attr("method","post")
+                .submit();
+        });
+
+        $(".listBtn").click(function() {
+
+            //var pageInfo = $("input[name='page']");
+            var page = $("input[name='page']");
+            var type = $("input[name='type']");
+            var keyword = $("input[name='keyword']");
+
+            actionForm.empty(); //form 태그의 모든 내용을 지우고
+
+            actionForm.append(page);
+            actionForm.append(type);
+            actionForm.append(keyword);
+
+
+            actionForm
+                .attr("action", "/drive/drive")
+                .attr("method","get");
+
+            actionForm.submit();
+
+        })
+
+    </script>
+
+
+
+</th:block>
+
+</html>
