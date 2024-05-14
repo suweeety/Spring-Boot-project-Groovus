@@ -98,7 +98,7 @@ public class CalendarServiceImpl implements CalendarService{
         Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(pid, cal_id);
 
         log.info("=======================================================");
-        log.info("readOne method: "+result);
+        log.info("readOne method: "+result.get().getCal_members());
         log.info("readOne method: "+pid);
         log.info("readOne method: "+cal_id);
         log.info("=======================================================");
@@ -142,6 +142,12 @@ public class CalendarServiceImpl implements CalendarService{
     public int countSchedule(Long pid) {
 
         return calendarRepository.countCalendarsByProject(pid);
+    }
+
+    @Override
+    public List<CalendarRequestDTO> getInvitedMembers(Long pid) {
+
+        return null;
     }
 
 

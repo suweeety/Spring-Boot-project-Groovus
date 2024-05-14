@@ -41,7 +41,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info("---------------------------------------------------------------");
         // pid와 cal_id를 이용하여 값을 조회해 옴
         CalendarDTO dto = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
-        log.info(dto);
+        log.info(dto.getCal_members());
         log.info("---------------------------------------------------------------");
 
         return new ResponseEntity<>(dto, HttpStatus.OK);

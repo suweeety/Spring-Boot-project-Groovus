@@ -42,5 +42,7 @@ public interface CalendarService {
         return dto;
     }
 
+    List<CalendarRequestDTO> getInvitedMembers(Long pid);
+
 
 }
