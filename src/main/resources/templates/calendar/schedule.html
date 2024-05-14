@@ -5,6 +5,8 @@
       layout:decorate="~{layout/basic.html}">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>일정관리</title>
     <link th:href="@{/quixlab-bootstrap-main/theme/plugins/fullcalendar/css/fullcalendar.min.css}" rel="stylesheet">
     <link th:href="@{/quixlab-bootstrap-main/theme/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
@@ -36,9 +38,22 @@
 
         <style>
 
+            @keyframes vibration {
+                from {
+                    transform: rotate(1deg);
+                }
+                to {
+                    transform: rotate(-1deg);
+                }
+            }
+
             #logoImg{
                 background-color: red;
             }
+            #deleteInviteMember{
+                animation: vibration .1s infinite;
+            }
+
 
         </style>
 
@@ -210,8 +225,9 @@
             });
         });
 
-
+        /*변경 버튼 클릭*/
         $(document).on("click","button[name='modifyBtn']",function (e){
+
             e.preventDefault();
 
             var pidStr = pid+'';
@@ -258,7 +274,6 @@
                     console.error("일정 변경에 실패했습니다:", error);
                 }
             });
-
         })
 
         /*--------------------------------------------------------*/
@@ -300,401 +315,507 @@
                     i = e.extend({}, a);
                 i.start = n, o && (i.className = [o]), this.$calendar.fullCalendar("renderEvent", i, !0), e("#drop-remove").is(":checked") && t.remove()
             },
-                /*Get & Update Schedule*/
-                t.prototype.onEventClick = function(t, n, a) {
+            /*Get & Update Schedule*/
+            t.prototype.onEventClick = function(t, n, a) {
 
-                    var o = this;
-                    o.$modal2.modal({
-                        backdrop: "static"
-                    });
+                var o = this;
+                o.$modal2.modal({
+                    backdrop: "static"
+                });
 
-                    $.ajax({
-                        url: '/calendar/read/' + pid + '/' + cal_id,
-                        type: 'GET',
-                        async: false,
-                        timeout: 10000,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        success:   function (response) {
+                $.ajax({
+                    url: '/calendar/read/' + pid + '/' + cal_id,
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (response) {
 
-                            console.log("일정 보기 success.");
+                        console.log("일정 보기 success.");
 
-                            var i = e("<form></form>");
-                            i.append("<input type='hidden' name='cal_id' value='cal_id'/>")
-                            i.append("<label>일정 제목</label>"), i
-                                .append("<div class='input-group' style='width: 16rem;'>" +
-                                    "<input id='titleInput' name='cal_title' class='form-control' type=text value='" + response.cal_title + "' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
-                                    "</div>"),
-                                i.append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(303px, -71px);'>" +
-                                    "<div class='form-group'>" +
-                                    "<label class='control-label'>카테고리</label>" +
-                                    "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
-                                    .append("<option value='"+response.cal_cate+"' default>" + response.cal_cate + "</option>")
-                                    .append("<option value='bg-team'>팀 회의</option>")
-                                    .append("<option value='bg-dept'>부서 회의</option>")
-                                    .append("<option value='bg-company-event'>사내 행사</option>")
-                                    .append("<option value='bg-personal-event'>개인 일정</option>")
-                                    .append("<option value='bg-account-event'>거래처 일정</option>")
-                                    .append("<option value='bg-business-trip'>출장</option>")
-                                    .append("<option value='bg-etc'>기타</option></div></div>")
-                                    .end(),
-                                i.append("<div class='userId'>" +
-                                    "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(-95px, -9px); padding: 0;'>" +
-                                    "<div class='form-group' style='margin: 0; height: 5rem;'>" +
-                                    "<label class='control-label'>참여자</label>" +
-                                    "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
-                                    "<span>" +
-                                    "<button type='button' name='addBtn' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>" +
-                                    "➕</button>" +
-                                    "</span>" +
-                                    "</div>" +
-                                    "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-                                    "<span class='badge badge-pill badge-success'>"+uid+"</span>" +
-                                    "</div>"+
-                                    "<div class ='col' style='transform: translate(265px, -78px);'>" +
-                                    "<div class='dropdown custom-dropdown'><div data-toggle='dropdown'>" +
-                                    "<i class='fa fa-ellipsis-v'></i>" +
-                                    "</div>"+
-                                    "</div>" +
-                                    "</div>" +
-                                    "</div>" +
-                                    "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
-                                    "</div>")
-                            i.append("<label style='transform: translate(0px, -54px);'>일정 내용</label>" +
-                                "<div class='input-group' style='transform: translate(-2px, -27px);'>" +
-                                "<input id='contentInput' name='cal_content' class='form-control' type='text' value='" + response.cal_content + "' style='max-width: 46rem; height: 9rem; transform: translate(0px, -10px); border-radius: 10px'/>" +
-                                "</div>"),
-                                i.append("<label style='transform: translate(0px, -4px);'>기간</label>" +
-                                    "<div class='input-group'>" +
-                                    "<input id='dateInput' name='cal_startDate' class='form-control' type='datetime-local' value='" + response.cal_startDate+"'style='border-radius: 10px;'/>" + " ~ " +
-                                    "<input id='dateInput' name='cal_endDate' class='form-control' type='datetime-local' value='" + response.cal_endDate + "' style='border-radius: 10px;' />" +
-                                    "</div>")
-                            n = response.cal_link_list
-                            i.append("<label style='transform: translate(0px, 26px);'>첨부파일</label>" +
-                                "<input id='attachInput' name='cal_attach' class='form-control' type='file' style='transform: translate(0px, 26px);' value='" + n !== null? n:'없음' + "' style='border-radius: 10px; width: '/>"),
-                                i.append("<label style='transform: translate(0px, 26px);'>링크</label><button type='button' name='addLinkBtn' style='transform: translate(0px, 26px);'>➕</button><div class='input-group'>" +
-                                    "<input id='linkInput' name='cal_link_list' class='form-control' type='url' style='transform: translate(0px, 26px);' value='" + response.cal_link_list + "' style='border-radius: 10px;'/>" +
-                                    "<input type='text' class='form-control' name='addLink' placeholder='링크 추가...' id='cal_link_input' style='visibility: hidden; width: 18rem; border-radius: 10px; display: inline-block' />" +
-                                    "<div name='linkTags' style='display: block; width: 11rem;height: 3rem; transform: translate(204px, -589px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-                                    "<span class='badge badge-pill badge-success'>" + uid + "</span></div>")
+                        var i = e("<form name='calendarForm' ></form>");
+                        i.append("<input type='hidden' value='cal_id' name='cal_id'/>")
+                        i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
+                            .append("<div class='col-md-6' style='border-bottom: #0b0b0b'>" +
+                                "<div class='form-group' style='width: 16rem;'>" +
+                                "<h5 class='control-label'>일정 제목</h5>" +
+                                "<input class='form-control'type='text' name='cal_title' value='"+response.cal_title+"' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
+                                "</div>" +
+                                "</div>")
+                            .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-90px, 2px);'>" +
+                                "<div class='form-group'>" +
+                                "<label class='control-label'>카테고리</label>" +
+                                "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
+                            .append("<option value='bg-team'>팀 회의</option>")
+                            .append("<option value='bg-dept'>부서 회의</option>")
+                            .append("<option value='bg-company-event'>사내 행사</option>")
+                            .append("<option value='bg-personal-event'>개인 일정</option>")
+                            .append("<option value='bg-account-event'>거래처 일정</option>")
+                            .append("<option value='bg-business-trip'>출장</option>")
+                            .append("<option value='bg-etc'>기타</option></div></div>")
+                            .end()
+                            .append("<div class='userId'>" +
+                                "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(-104px, 2px); padding: 0;'>" +
+                                "<div class='form-group' style='margin: 0; height: 5rem;'>" +
+                                "<label class='control-label'>참여자</label>" +
+                                "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
+                                "<span>" +
+                                "<button type='button' name='addBtn' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>" +
+                                "➕</button>" +
+                                "</span>" +
+                                "</div>" +
+                                "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(6px, -76px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+                                "<span class='badge badge-pill badge-success' style='margin-right: 5px'>"+firstLetter+"</span>" +
+                                "</div>"+
+                                "<div class ='col' style='transform: translate(265px, -78px);'>" +
+                                "<div class='dropdown custom-dropdown'>" +
+                                "<div data-toggle='dropdown'>" +
+                                "<i class='fa fa-ellipsis-v'></i>" +
+                                "</div>"+
+                                "<div class='dropdown-menu dropdown-menu-right' x-placement='bottom-end' style='position: absolute; will-change: transform; top: 15px; transform: translate(0px, -4px); left: 0px; min-width: 7rem; z-index: 20000;' id='dropdownMenu'>" +
+                                "<a class='dropdown-item' href='#'>"+uid+"</a>" +
+                                "</div>"+
+                                "</div>" +
+                                "</div>" +
+                                "</div>" +
+                                "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
+                                "<input type='hidden' name='cal_members' value='"+uid+"'/>"+
+                                "</div>")
 
-                                ,
-                                o.$modal2.find(".delete-event").hide().end()
-                                    .find(".btn-success").show().end()
-                                    .find(".modal-body").empty().prepend(i).end()
+                            .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(0px, 15px);'>" +
+                                "<div class='form-group' style='margin-top: -1rem;'>" +
+                                "<label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+                                "<input class='form-control' type='textarea' name='cal_content' value='"+response.cal_content+"' style='width: 46rem; height: auto; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
+                            .append("<div class='col-md-6' style='transform: translate(0px, 78px);'>" +
+                                "<div class='form-group'>" +
+                                "<label class='control-label'>시작 날짜</label>" +
+                                "<input class='form-control' type='datetime-local' value='"+response.cal_startDate+"'style='border-radius: 10px;' name='cal_startDate' />" +
+                                "</div>"+
+                                "<div class='form-group' style='transform: translate(379px, -94px);'>" +
+                                "<label class='control-label'>종료 날짜</label>" +
+                                "<input class='form-control' type='datetime-local' name='cal_endDate' value='"+response.cal_endDate+"'style='border-radius: 10px;' />" +
+                                "</div>" +
+                                "</div>")
+                            .append("<div class='attach-button' style='transform: translate(10px, 178px); height: 0rem;'>첨부파일</div>" +
+                                "<div class='file-upload-form' style='transform: translate(-46px, 220px); height: 2rem;'>" +
+                                "<input type='file' class='custom-file-input files' id='fileInput' name='uploadFiles' multiple value='"+response.cal_attach+"'style='width: 19rem;'/>" +
+                                "<button type='submit' class='uploadBtn' style='border: none; background: none;'>" +
+                                "<i class='fa-solid fa-link'></i>" +
+                                "</button>" +
+                                "<div class='uploadResult'>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>")
+                            .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(0px, -10px);'>" +
+                                "<div class='form-group'>" +
+                                "<label class='control-label'>링크</label>" +
+                                "<input class='form-control' type='url' name='cal_link_list' value='"+response.cal_link_list+"'style='border-top: none;border-left: none;border-right: none;'/>" +
+                                "</div>" +
+                                "</div>")
 
-                            o.$modal2.find(".btn-success").unbind("click").on("click", function (e) {
-
-                                var pidStr = pid+'';
-                                var cal_idStr = cal_id+'';
-
-                                var cal_title = $("input[name='cal_title']").val();
-                                var beginning =  $("input[name='beginning']").val();
-                                var ending = $("input[name='ending']").val();
-                                var cal_cate = $("select[name='cal_cate'] option:checked").val();
-                                var cal_content=  $("input[name='cal_content']").val();
-                                var cal_startDate=  $("input[name='cal_startDate']").val();
-                                var cal_endDate=  $("input[name='cal_endDate']").val();
-                                var cal_attach=  $("input[name='cal_attach']").val();
-                                var cal_link_list=  $("input[name='cal_link_list']").val();
-                                var update_user_idStr = uid+'';
-                                var cal_members = $("input[name='cal_members']").val();
-
-                            })
-
-                            o.$modal2.find(".btn-primary").unbind("click").on("click", function (e) {
-
-                                $.ajax({
-                                    url: '/calendar/delete/' + pid + '/' + cal_id,
-                                    method: 'DELETE',
-                                    success: function (result) {
-                                        console.log("RESULT: " + result);
-                                        if (result === 'success') {
-                                            alert("일정이 삭제되었습니다..");
-                                            console.log("일정이 삭제되었습니다.")
-                                            o.$modal.modal("hide")
-                                            location.reload();
-
-                                        }
-                                    },
-                                    error: function (xhr, status, error) {
-                                        alert("일정 삭제에 실패했습니다.");
-                                        console.error("일정 삭제에 실패했습니다:", error);
-                                    }
-                                })
-                            })
-
-                            o.$modal2.find(".cancel-event").show().end()
+                            , o.$modal2.find(".delete-event").hide().end()
+                                .find(".btn-success").show().end()
                                 .find(".modal-body").empty().prepend(i).end()
-                                .find(".cancel-event").unbind("click").on("click", function () {
-                                o.$calendarObj.fullCalendar("removeEvents", function (e) {
-                                    return e._id == t._id
-                                }), o.$modal2.modal("hide")
-                            });
-                            o.$modal2.modal("hide");
 
-                        },
-                        error: function (xhr, status, error) {
-                            alert("일정 읽기에 실패했습니다. 다시 시도해주세요");
-
-                        }
-                    })
-
-                },
-                /*Register schedule*/
-                t.prototype.onSelect = function (t, n, a) {
-                    var firstLetter = uid.charAt(0);
-                    var o = this;
-                    o.$modal.modal({
-                        backdrop: "static"
-                    });
-                    var i = e("<form name='calendarForm' ></form>");
-                    i.append("<input type='hidden' value='cal_id' name='cal_id'/>")
-                    i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
-                        .append("<div class='col-md-6' style='border-bottom: #0b0b0b'>" +
-                            "<div class='form-group' style='width: 16rem;'>" +
-                            "<h5 class='control-label'>일정 제목</h5>" +
-                            "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
-                            "</div>" +
-                            "</div>")
-                        .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-75px, 2px);'>" +
-                            "<div class='form-group'>" +
-                            "<label class='control-label'>카테고리</label>" +
-                            "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
-                        .append("<option value='bg-team'>팀 회의</option>")
-                        .append("<option value='bg-dept'>부서 회의</option>")
-                        .append("<option value='bg-company-event'>사내 행사</option>")
-                        .append("<option value='bg-personal-event'>개인 일정</option>")
-                        .append("<option value='bg-account-event'>거래처 일정</option>")
-                        .append("<option value='bg-business-trip'>출장</option>")
-                        .append("<option value='bg-etc'>기타</option></div></div>")
-                        .end()
-                        .append("<div class='userId'>" +
-                            "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(-95px, -9px); padding: 0;'>" +
-                            "<div class='form-group' style='margin: 0; height: 5rem;'>" +
-                            "<label class='control-label'>참여자</label>" +
-                            "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
-                            "<span>" +
-                            "<button type='button' name='addBtn' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>" +
-                            "➕</button>" +
-                            "</span>" +
-                            "</div>" +
-                            "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(-95px, -77px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-                            "<span class='badge badge-pill badge-success'>"+firstLetter+"</span>" +
-                            "</div>"+
-                            "<div class ='col' style='transform: translate(265px, -78px);'>" +
-                            "<div class='dropdown custom-dropdown'><div data-toggle='dropdown'>" +
-                            "<i class='fa fa-ellipsis-v'></i>" +
-                            "</div>"+
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
-                            "<input type='hidden' name='cal_members' value='"+uid+"'/>"+
-                            "</div>")
-
-                        .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(2px, -10px);'>" +
-                            "<div class='form-group' style='margin-top: -1rem;'><label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
-                            "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
-                        .append("<div class='col-md-6' style='transform: translate(0px, 78px);'>" +
-                            "<div class='form-group'>" +
-                            "<label class='control-label'>시작 날짜</label>" +
-                            "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' />" +
-                            "</div>"+
-                            "<div class='form-group' style='transform: translate(379px, -94px);'>" +
-                            "<label class='control-label'>종료 날짜</label>" +
-                            "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' />" +
-                            "</div>" +
-                            "</div>")
-                        .append("<div class='attach-button' style='transform: translate(10px, 178px); height: 0rem;'>첨부파일</div>" +
-                            "<div class='file-upload-form' style='transform: translate(-46px, 220px); height: 2rem;'>" +
-                            "<input type='file' class='custom-file-input files' id='fileInput' name='uploadFiles' multiple style='width: 19rem;'/>" +
-                            "<button type='submit' class='uploadBtn' style='border: none; background: none;'>" +
-                            "<i class='fa-solid fa-link'></i>" +
-                            "</button>" +
-                            "<div class='uploadResult'>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>")
-                        .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(0px, -10px);'>" +
-                            "<div class='form-group'>" +
-                            "<label class='control-label'>링크</label>" +
-                            "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link_list' style='border-top: none;border-left: none;border-right: none;'/>" +
-                            "</div>" +
-                            "</div>")
-
-                        , o.$modal.find(".delete-event").hide().end()
-                        .find(".save-event").show().end()
-                        .find(".modal-body").empty().prepend(i).end()
-                        ,
                         /*-------------------------------------------------------*/
                         /*초대 멤버 입력*/
                         $(document).ready(function() {
-
-                            var memberInputs = '';
-
                             $("button[name='addBtn']").on("click", function () {
-
                                 var memberInput = $("input[name='inviteMember']").val();
-
                                 if (memberInput === '' || memberInput === null) {
-
                                     alert("추가할 멤버 ID를 입력해주세요");
                                 } else {
-
                                     var firstLetter = memberInput.charAt(0); // 입력된 멤버 ID의 첫 글자 추출
 
-                                    memberInputs = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span>" +
-                                        "<button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='" + memberInput + "'>" +
-                                        "<i class=\"fa-solid fa-xmark\"></i></button>" +
-                                        "<input type='hidden' name='cal_members' value='" + memberInput + "'/>";
+                                    // 멤버 추가
+                                    var memberBadge = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span><input type='hidden' name='cal_members' value='" + memberInput + "'/>";
 
-                                    $("div[name='memberTags']").append(memberInputs);
+                                    // 입력된 멤버를 dropdown-menu에 추가
+                                    var dropdownItem = $("<a class='dropdown-item' href='#'></a>").text(memberInput);
+
+                                    // 삭제 버튼 추가
+                                    var deleteButton = $("<button name='deleteInviteMember' class='deleteInviteMember' type='button' style='width: 1rem; background: none; border: none; margin-left: 5px;'>").html("<i class='fa-solid fa-xmark'></i>");
+                                    deleteButton.click(function() {
+
+                                        var memberToRemove = $(this).prev().text();
+
+                                        // 드롭다운 메뉴에서 해당 멤버 제거
+                                        $("#dropdownMenu").find("a.dropdown-item").filter(function() {
+                                            return $(this).text() === memberInput;
+                                        }).remove();
+
+                                        // 멤버 태그에서 해당 멤버 제거
+                                        $("div[name='memberTags']").find("span").filter(function() {
+                                            return $(this).text() === firstLetter;
+                                        }).remove();
+                                    });
+
+                                    // 삭제 버튼을 멤버 옆에 추가
+                                    dropdownItem.append(deleteButton);
+
+                                    // 드롭다운 메뉴에 멤버 추가
+                                    $("#dropdownMenu").append(dropdownItem);
+
+                                    $("div[name='memberTags']").append(memberBadge);
+
+                                    // 입력창 초기화
                                     $("input[name='inviteMember']").val('');
-                                    memberInputs = '';
                                 }
                             });
-                            $("custom-dropdown").on("click", function () {
-                                $(this).toggleClass("show");
+                        });
+
+                        /*입력된 멤버 리스트*/
+                        $(document).ready(function() {
+                            // fa-ellipsis-v 아이콘을 가진 요소 선택
+                            var ellipsisIcon = $(".fa-ellipsis-v");
+
+                            // 아이콘을 클릭했을 때 드롭다운 토글
+                            ellipsisIcon.click(function() {
+                                $(this).parent().next('.dropdown-menu').toggleClass('show');
+                            });
+                        });
+
+                        o.$modal2.find(".btn-success").unbind("click").on("click", function (e) {
+
+                            var pidStr = pid+'';
+                            var cal_idStr = cal_id+'';
+
+                            var cal_title = $("input[name='cal_title']").val();
+                            var beginning =  $("input[name='beginning']").val();
+                            var ending = $("input[name='ending']").val();
+                            var cal_cate = $("select[name='cal_cate'] option:checked").val();
+                            var cal_content=  $("input[name='cal_content']").val();
+                            var cal_startDate=  $("input[name='cal_startDate']").val();
+                            var cal_endDate=  $("input[name='cal_endDate']").val();
+                            var cal_attach=  $("input[name='cal_attach']").val();
+                            var cal_link_list=  $("input[name='cal_link_list']").val();
+                            var update_user_idStr = uid+'';
+                            var cal_members = $("input[name='cal_members']").val();
+
+                        })
+                        /*삭제 버튼 클릭*/
+                        o.$modal2.find(".btn-primary").unbind("click").on("click", function (e) {
+
+                            $.ajax({
+                                url: '/calendar/delete/' + pid + '/' + cal_id,
+                                method: 'DELETE',
+                                success: function (result) {
+                                    console.log("RESULT: " + result);
+                                    if (result === 'success') {
+                                        alert("일정이 삭제되었습니다..");
+                                        console.log("일정이 삭제되었습니다.")
+                                        o.$modal.modal("hide")
+                                        location.reload();
+
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    alert("일정 삭제에 실패했습니다.");
+                                    console.error("일정 삭제에 실패했습니다:", error);
+                                }
+                            })
+                        })
+
+                        o.$modal2.find(".cancel-event").show().end()
+                            .find(".modal-body").empty().prepend(i).end()
+                            .find(".cancel-event").unbind("click").on("click", function () {
+                            o.$calendarObj.fullCalendar("removeEvents", function (e) {
+                                return e._id == t._id
+                            }), o.$modal2.modal("hide")
+                        });
+                        o.$modal2.modal("hide");
+
+                    },
+                    error: function (xhr, status, error) {
+                        alert("일정 읽기에 실패했습니다. 다시 시도해주세요");
+
+                    }
+                })
+            },
+            /*Register schedule*/
+            t.prototype.onSelect = function (t, n, a) {
+                var firstLetter = uid.charAt(0);
+                var o = this;
+                o.$modal.modal({
+                    backdrop: "static"
+                });
+                var i = e("<form name='calendarForm' ></form>");
+                i.append("<input type='hidden' value='cal_id' name='cal_id'/>")
+                i.append("<div class='row' style='height: 33rem;'></div>"), i.find(".row")
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b'>" +
+                        "<div class='form-group' style='width: 16rem;'>" +
+                        "<h5 class='control-label'>일정 제목</h5>" +
+                        "<input class='form-control' placeholder='Untitled' type='text' name='cal_title' style='width: 16rem; border-top: none;border-left: none;border-right: none;'/>" +
+                        "</div>" +
+                        "</div>")
+                    .append("<div class='col-md-6' style='max-width: 11rem; padding: 0; transform: translate(-90px, 2px);'>" +
+                        "<div class='form-group'>" +
+                        "<label class='control-label'>카테고리</label>" +
+                        "<select class='form-control' name='cal_cate' style='width: 9rem; border-radius: 10px;'></select></div></div>").find("select[name='cal_cate']")
+                    .append("<option value='bg-team'>팀 회의</option>")
+                    .append("<option value='bg-dept'>부서 회의</option>")
+                    .append("<option value='bg-company-event'>사내 행사</option>")
+                    .append("<option value='bg-personal-event'>개인 일정</option>")
+                    .append("<option value='bg-account-event'>거래처 일정</option>")
+                    .append("<option value='bg-business-trip'>출장</option>")
+                    .append("<option value='bg-etc'>기타</option></div></div>")
+                    .end()
+                    .append("<div class='userId'>" +
+                        "<div class='col-md-6' style='width: 11rem; height: 5rem; transform: translate(-104px, 2px); padding: 0;'>" +
+                        "<div class='form-group' style='margin: 0; height: 5rem;'>" +
+                        "<label class='control-label'>참여자</label>" +
+                        "<input type='text' class='form-control' name='inviteMember' placeholder='초대 멤버 ID입력' id='cal_member_input' style='width: 18rem; border-radius: 10px; display: inline-block' />" +
+                        "<span>" +
+                        "<button type='button' name='addBtn' style='width: 2rem; height: 36px; transform: translate(251px, -41px); border-radius: 10px; color: gray; background: none; border: none;'>" +
+                        "➕</button>" +
+                        "</span>" +
+                        "</div>" +
+                        "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(6px, -76px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
+                        "<span class='badge badge-pill badge-success' style='margin-right: 5px'>"+firstLetter+"</span>" +
+                        "</div>"+
+                        "<div class ='col' style='transform: translate(265px, -78px);'>" +
+                        "<div class='dropdown custom-dropdown'>" +
+                        "<div data-toggle='dropdown'>" +
+                        "<i class='fa fa-ellipsis-v'></i>" +
+                        "</div>"+
+                        "<div class='dropdown-menu dropdown-menu-right' x-placement='bottom-end' style='position: absolute; will-change: transform; top: 15px; transform: translate(0px, -4px); left: 0px; min-width: 7rem; z-index: 20000;' id='dropdownMenu'>" +
+                        "<a class='dropdown-item' href='#'>"+uid+"</a>" +
+                        "</div>"+
+                        "</div>" +
+                        "</div>" +
+                        "</div>" +
+                        "<input type='hidden' name='create_user_id' value='"+uid+"'>"+
+                        "<input type='hidden' name='cal_members' value='"+uid+"'/>"+
+                        "</div>")
+
+                    .append("<div class='col-md-6' style='max-width: 46rem; height: 9rem; transform: translate(0px, 15px);'>" +
+                        "<div class='form-group' style='margin-top: -1rem;'>" +
+                        "<label class='control-label' style='transform: translate(0px, 11px);'>일정 내용</label>" +
+                        "<input class='form-control' placeholder='Contents...' type='textarea' name='cal_content' style='width: 46rem; height: 10rem; transform: translate(-1px, 10px); border-radius: 10px;'/></div></div>")
+                    .append("<div class='col-md-6' style='transform: translate(0px, 78px);'>" +
+                        "<div class='form-group'>" +
+                        "<label class='control-label'>시작 날짜</label>" +
+                        "<input class='form-control' type='datetime-local' style='border-radius: 10px;' name='cal_startDate' />" +
+                        "</div>"+
+                        "<div class='form-group' style='transform: translate(379px, -94px);'>" +
+                        "<label class='control-label'>종료 날짜</label>" +
+                        "<input class='form-control' type='datetime-local' name='cal_endDate' style='border-radius: 10px;' />" +
+                        "</div>" +
+                        "</div>")
+                    .append("<div class='attach-button' style='transform: translate(10px, 178px); height: 0rem;'>첨부파일</div>" +
+                        "<div class='file-upload-form' style='transform: translate(-46px, 220px); height: 2rem;'>" +
+                        "<input type='file' class='custom-file-input files' id='fileInput' name='uploadFiles' multiple style='width: 19rem;'/>" +
+                        "<button type='submit' class='uploadBtn' style='border: none; background: none;'>" +
+                        "<i class='fa-solid fa-link'></i>" +
+                        "</button>" +
+                        "<div class='uploadResult'>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>")
+                    .append("<div class='col-md-6' style='border-bottom: #0b0b0b; transform: translate(0px, -10px);'>" +
+                        "<div class='form-group'>" +
+                        "<label class='control-label'>링크</label>" +
+                        "<input class='form-control' placeholder='링크 첨부(최대 1개)' type='url' name='cal_link_list' style='border-top: none;border-left: none;border-right: none;'/>" +
+                        "</div>" +
+                        "</div>")
+
+                    , o.$modal.find(".delete-event").hide().end()
+                    .find(".save-event").show().end()
+                    .find(".modal-body").empty().prepend(i).end()
+                    ,
+
+                /*-------------------------------------------------------*/
+                /*초대 멤버 입력*/
+                $(document).ready(function() {
+                    $("button[name='addBtn']").on("click", function () {
+                        var memberInput = $("input[name='inviteMember']").val();
+                        if (memberInput === '' || memberInput === null) {
+                            alert("추가할 멤버 ID를 입력해주세요");
+                        } else {
+                            var firstLetter = memberInput.charAt(0); // 입력된 멤버 ID의 첫 글자 추출
+
+                            // 멤버 추가
+                            var memberBadge = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span><input type='hidden' name='cal_members' value='" + memberInput + "'/>";
+
+                            // 입력된 멤버를 dropdown-menu에 추가
+                            var dropdownItem = $("<a class='dropdown-item' href='#'></a>").text(memberInput);
+
+                            // 삭제 버튼 추가
+                            var deleteButton = $("<button name='deleteInviteMember' class='deleteInviteMember' type='button' style='width: 1rem; background: none; border: none; margin-left: 5px;'>").html("<i class='fa-solid fa-xmark'></i>");
+                            deleteButton.click(function() {
+
+                                var memberToRemove = $(this).prev().text();
+
+                                // 드롭다운 메뉴에서 해당 멤버 제거
+                                $("#dropdownMenu").find("a.dropdown-item").filter(function() {
+                                    return $(this).text() === memberInput;
+                                }).remove();
+
+                                // 멤버 태그에서 해당 멤버 제거
+                                $("div[name='memberTags']").find("span").filter(function() {
+                                    return $(this).text() === firstLetter;
+                                }).remove();
                             });
 
-                        });
-                    /*-------------------------------------------------------*/
-                    /*첨부파일*/
-                    $('.uploadBtn').click(function () {
+                            // 삭제 버튼을 멤버 옆에 추가
+                            dropdownItem.append(deleteButton);
 
-                        var formData = new FormData();
+                            // 드롭다운 메뉴에 멤버 추가
+                            $("#dropdownMenu").append(dropdownItem);
 
-                        var inputFile = $("input[type='file']");
+                            $("div[name='memberTags']").append(memberBadge);
 
-                        var files = inputFile[0].files;
-
-                        for (var i=0; i<files.length; i++) {
-                            console.log(files[i]);
-                            formData.append("uploadFiles", files[i]);
+                            // 입력창 초기화
+                            $("input[name='inviteMember']").val('');
                         }
+                    });
+                });
 
-                        $.ajax({
-                            url: '/uploadAjax',
-                            processData: false,
-                            contentType: false,
-                            data: formData,
-                            type: 'POST',
-                            dataType: 'json',
-                            success: function (result) {
-                                console.log(result);
-                                showUploadedImages(result);
-                            },
-                            error: function (jqXHR, textStatus, errorThrown) {
-                                console.log(textStatus);
-                            }
-                        });
+                /*입력된 멤버 리스트*/
+                $(document).ready(function() {
+                    // fa-ellipsis-v 아이콘을 가진 요소 선택
+                    var ellipsisIcon = $(".fa-ellipsis-v");
 
-                        function showUploadedImages(arr) {
+                    // 아이콘을 클릭했을 때 드롭다운 토글
+                    ellipsisIcon.click(function() {
+                        $(this).parent().next('.dropdown-menu').toggleClass('show');
+                    });
+                });
+                /*-------------------------------------------------------*/
+                /*첨부파일*/
+                $('.uploadBtn').click(function () {
 
-                            console.log(arr);
+                    var formData = new FormData();
 
-                            var divArea = $(".uploadResult");
+                    var inputFile = $("input[type='file']");
 
-                            var str = "";
+                    var files = inputFile[0].files;
 
-                            for(var i=0; i<arr.length; i++) {
-                                str += "<div>";
-                                str += "<img src='/display?fileName="+arr[i].thumbnailURL+"'>";
-                                str += "<button class='removeBtn' data-name='"+arr[i].imageURL+"'>REMOVE</button>"
-                                str += "</div>";
-                            }
-                            divArea.append(str);
+                    for (var i=0; i<files.length; i++) {
+                        console.log(files[i]);
+                        formData.append("uploadFiles", files[i]);
+                    }
+
+                    $.ajax({
+                        url: '/uploadAjax',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (result) {
+                            console.log(result);
+                            showUploadedImages(result);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus);
                         }
                     });
 
-                    $(".uploadResult").on("click", ".removeBtn", function (e) {
-                        var target = $(this);
-                        var fileName = target.data("name");
-                        var targetDiv = $(this).closest("div");
+                    function showUploadedImages(arr) {
 
-                        console.log(fileName);
+                        console.log(arr);
 
-                        $.post('/removeFile', {fileName: fileName}, function (result) {
-                            console.log(result);
-                            if(result === true){
-                                targetDiv.remove();
-                            }
-                        })
+                        var divArea = $(".uploadResult");
+
+                        var str = "";
+
+                        for(var i=0; i<arr.length; i++) {
+                            str += "<div>";
+                            str += "<img src='/display?fileName="+arr[i].thumbnailURL+"'>";
+                            str += "<button class='removeBtn' data-name='"+arr[i].imageURL+"'>REMOVE</button>"
+                            str += "</div>";
+                        }
+                        divArea.append(str);
+                    }
+                });
+
+                $(".uploadResult").on("click", ".removeBtn", function (e) {
+                    var target = $(this);
+                    var fileName = target.data("name");
+                    var targetDiv = $(this).closest("div");
+
+                    console.log(fileName);
+
+                    $.post('/removeFile', {fileName: fileName}, function (result) {
+                        console.log(result);
+                        if(result === true){
+                            targetDiv.remove();
+                        }
                     })
+                })
 
-                    // 이벤트 핸들러 등록
-                    o.$modal.find(".save-event").unbind("click").on("click", function (e) {
+                // 이벤트 핸들러 등록
+                o.$modal.find(".save-event").unbind("click").on("click", function (e) {
 
-                        e.preventDefault();
+                    e.preventDefault();
 
-                        var pidStr = pid+'';
+                    var pidStr = pid+'';
 
-                        var cal_title = $("input[name='cal_title']").val();
-                        var beginning =  $("input[name='beginning']").val();
-                        var ending = $("input[name='ending']").val();
-                        var cal_cate = $("select[name='cal_cate'] option:checked").val();
-                        var cal_content=  $("input[name='cal_content']").val();
-                        var cal_startDate=  $("input[name='cal_startDate']").val();
-                        var cal_endDate=  $("input[name='cal_endDate']").val();
-                        var cal_attach=  $("input[name='cal_attach']").val();
-                        var cal_link_list=  $("input[name='cal_link_list']").val();
-                        var create_user_id=  $("input[name='create_user_id']").val();
-                        var cal_members = $("input[name='cal_members']").val();
+                    var cal_title = $("input[name='cal_title']").val();
+                    var beginning =  $("input[name='beginning']").val();
+                    var ending = $("input[name='ending']").val();
+                    var cal_cate = $("select[name='cal_cate'] option:checked").val();
+                    var cal_content=  $("input[name='cal_content']").val();
+                    var cal_startDate=  $("input[name='cal_startDate']").val();
+                    var cal_endDate=  $("input[name='cal_endDate']").val();
+                    var cal_attach=  $("input[name='cal_attach']").val();
+                    var cal_link_list=  $("input[name='cal_link_list']").val();
+                    var create_user_id=  $("input[name='create_user_id']").val();
+                    var cal_members = $("input[name='cal_members']").val();
 
-                        console.log('cal_title: '+cal_title);
-                        console.log('cal_cate: '+cal_cate);
-                        console.log('pidStr: '+pidStr);
-                        console.log('cal_link_list: '+cal_link_list);
-                        console.log('cal_members: '+cal_members)
+                    console.log('cal_title: '+cal_title);
+                    console.log('cal_cate: '+cal_cate);
+                    console.log('pidStr: '+pidStr);
+                    console.log('cal_link_list: '+cal_link_list);
+                    console.log('cal_members: '+cal_members)
 
-                        $.ajax({
-                            url: '/calendar/register',
-                            type: 'post',
-                            data: {
-                                'cal_members':cal_members,
-                                'cal_link_list':cal_link_list,
-                                'create_user_id':create_user_id,
-                                'cal_attach':cal_attach,
-                                'cal_startDate':cal_startDate,
-                                'cal_cate':cal_cate,
-                                'cal_endDate':cal_endDate,
-                                'cal_content':cal_content,
-                                'cal_title':cal_title,
-                                'pid':pidStr
-                            },
-                            success: function (response) {
-                                if(response == 'success'){
-                                    alert("일정이 성공적으로 저장되었습니다.");
-                                    console.log("일정이 성공적으로 저장되었습니다.");
-                                    o.$modal.modal("hide")
-                                    location.reload();
-                                }
-                            },
-                            error: function (xhr, status, error) {
-                                alert("일정 저장에 실패했습니다. 다시 시도해주세요.");
+                    $.ajax({
+                        url: '/calendar/register',
+                        type: 'post',
+                        data: {
+                            'cal_members':cal_members,
+                            'cal_link_list':cal_link_list,
+                            'create_user_id':create_user_id,
+                            'cal_attach':cal_attach,
+                            'cal_startDate':cal_startDate,
+                            'cal_cate':cal_cate,
+                            'cal_endDate':cal_endDate,
+                            'cal_content':cal_content,
+                            'cal_title':cal_title,
+                            'pid':pidStr
+                        },
+                        success: function (response) {
+                            if(response == 'success'){
+                                alert("일정이 성공적으로 저장되었습니다.");
+                                console.log("일정이 성공적으로 저장되었습니다.");
+                                o.$modal.modal("hide")
+                                location.reload();
                             }
-                        });
+                        },
+                        error: function (xhr, status, error) {
+                            alert("일정 저장에 실패했습니다. 다시 시도해주세요.");
+                        }
+                    });
 
-                    }), o.$modal.find("form").on("submit", function () {
-                        var e = i.find("input[name='cal_title']").val(),
-                            a = (i.find("select[name='cal_cate']").val(),
-                                i.find("input[name='cal_content']").val(),
-                                i.find("input[name='cal_startDate']").val(),
-                                i.find("input[name='cal_endDate']").val(),
-                                i.find("input[name='cal_attach']").val(),
-                                i.find("input[name='cal_link_list']").val(),
-                                i.find("input[name='create_user_id']").val());
-                        return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
-                            title: e,
-                            start: t,
-                            end: n,
-                            allDay: !1,
-                            className: a
-                        }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
-                    }), o.$calendarObj.fullCalendar("unselect")
-                }
-                , t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능
+                }), o.$modal.find("form").on("submit", function () {
+                    var e = i.find("input[name='cal_title']").val(),
+                        a = (i.find("select[name='cal_cate']").val(),
+                            i.find("input[name='cal_content']").val(),
+                            i.find("input[name='cal_startDate']").val(),
+                            i.find("input[name='cal_endDate']").val(),
+                            i.find("input[name='cal_attach']").val(),
+                            i.find("input[name='cal_link_list']").val(),
+                            i.find("input[name='create_user_id']").val());
+                    return null !== e && 0 != e.length ? (o.$calendarObj.fullCalendar("renderEvent", {
+                        title: e,
+                        start: t,
+                        end: n,
+                        allDay: !1,
+                        className: a
+                    }, !0), o.$modal.modal("hide")) : alert("제목을 입력하세요."), !1
+                }), o.$calendarObj.fullCalendar("unselect")
+            }
+            , t.prototype.enableDrag = function () { //enableDrag: DOM 요소들을 선택해서 드래그하는 기능
                 e(this.$event).each(function () {
                     var t = {
                         title: e.trim(e(this).text())
