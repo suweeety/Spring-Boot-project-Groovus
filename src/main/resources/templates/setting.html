@@ -22,17 +22,222 @@
 
 <th:block layout:fragment="content">
 
-    <div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title"><i class="fa-solid fa-gears"></i>[[${projectName}]] 설정</h4>
+                <span><p>(프로젝트 Admin만 정보 변경 가능합니다.)</p></span>
+                <div class="basic-form">
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>프로젝트 Admin</label>
+                                <input type="text" class="form-control" name="adminUid" th:value="${projectDTO.adminUid}" readonly>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>프로젝트 비밀번호</label><span><button type="button" name="changePasswordBtn" class="btn mb-1 btn-secondary" style="margin-left: 1rem; display: none;">변경</button></span>
 
-        <div class="col-lg-6 col-md-12">
-            <div class="card">
-                <div class="card-body">
-                    <h1>설정</h1>
-                    <h1>Version2 에서 만나요 (준비중)</h1>
+                                <th:block th:with="user=${#authentication.principal}">
+                                    <th:block th:if="${user.uid eq projectDTO.adminUid}">
+                                        <input type="text" class="form-control" name="projectPassword" th:value="${projectDTO.projectPassword}">
+                                    </th:block>
+                                    <th:block th:unless="${user.uid eq projectDTO.adminUid}">
+                                        <input type="text" class="form-control" name="projectPassword" th:value="${projectDTO.projectPassword}" readonly>
+                                    </th:block>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                            <label>프로젝트 설명</label><span><button type="button" name="changeDescriptionBtn" class="btn mb-1 btn-secondary" style="margin-left: 1rem; display: none;" >변경</button></span>
+                                <th:block th:with="user=${#authentication.principal}">
+                                    <th:block th:if="${user.uid eq projectDTO.adminUid}">
+                                        <input type="text" class="form-control" name="projectDescription" th:value="${projectDTO.projectDescription}">
+                                    </th:block>
+                                    <th:block th:unless="${user.uid eq projectDTO.adminUid}">
+                                        <input type="text" class="form-control" name="projectDescription" th:value="${projectDTO.projectDescription}" readonly>
+                                    </th:block>
+                                </th:block>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>프로젝트 인원</label>
+                                <input type="text" class="form-control" name="memberCount" th:value="${projectDTO.memberCount}+명" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>프로젝트 생성일</label>
+                            <input type="text" class="form-control" name="regDate" th:value="${#temporals.format(projectDTO.regDate, 'yyyy/MM/dd')}" readonly>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>멤버 목록</label><span><p>(프로젝트 Admin만 멤버를 제외할 수 있습니다.)</p></span>
+                                <table class="table table-striped table-bordered zero-configuration dataTable" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <th >ID</th>
+                                        <th >제외</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <th:block th:each="member : ${projectDTO.projectMember}">
+
+                                        <tr role="row" class="odd">
+                                            <td class="sorting_1" name="memberUid">[[${member}]]</td>
+                                            <th:block th:with="user=${#authentication.principal}">
+                                                <th:block th:if="${user.uid eq projectDTO.adminUid}">
+                                                    <td> <button type="button" class="btn mb-1 btn-danger" name="deleteMemberBtn">제외</button></td>
+                                                </th:block>
+                                                <th:block th:unless="${user.uid eq projectDTO.adminUid}">
+                                                    <td> <button type="button" class="btn mb-1 btn-danger" disabled >제외</button></td>
+                                                </th:block>
+                                            </th:block>
+                                        </tr>
+
+                                    </th:block>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>멤버 초대</label><span><button type="button" name="inviteNewMemberBtn" class="btn mb-1 btn-secondary" style="margin-left: 1rem; display: none;">초대하기</button></span>
+                                <input type="text" class="form-control" placeholder="초대 멤버 ID입력" name="inviteMember" style="display: inline-block;">
+                                <span> <button type="button" class="btn btn-dark mb-2" style="position: absolute;" name="addBtn"> + </button> </span>
+                                <div name="memberTags" style="display: block;width: 26rem;height: 10rem;position: absolute;top: 6rem;padding: 10px;border: 1px solid gray;">
+
+
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+
+    <script th:inline="javascript">
+        $(document).ready(function (){
+            var memberInputs='';
+
+            $("button[name='addBtn']").on("click" , function(){
+
+                var memberInput = $("input[name='inviteMember']").val();
+
+                if(memberInput === '' || memberInput === null){
+                    alert("추가할 멤버 ID를 입력해주세요");
+                }else{
+
+                    memberInputs = "<span class='badge badge-pill badge-primary'>"+memberInput+"</span><button name='deleteInviteMember' type='button' style='border-radius: 50%; background-color: #ebebeb;width: 1rem;' data-memberId='"+memberInput+"'><i class=\"fa-solid fa-xmark\"></i></button>" +
+                        "<input type='hidden' name='projectMember' value='"+ memberInput +"'/>";
+
+                    $("div[name='memberTags']").append(memberInputs);
+                    $("input[name='inviteMember']").val('');
+                    memberInputs ='';
+                    $("button[name='inviteNewMemberBtn']").show();
+                }
+            });
+
+            $(document).on('click','button[name="deleteInviteMember"]',function (){
+                $(this).prev("span").remove();
+                $(this).next("input").remove();
+                $(this).remove();
+            });
+
+            $("input[name='projectDescription']").change(function (){
+                //프로젝트 설명란에 변경이 감지된다면
+
+                $("button[name='changeDescriptionBtn']").show();
+
+            });
+
+            $("input[name='projectPassword']").change(function (){
+
+                $("button[name='changePasswordBtn']").show();
+
+            });
+
+        });
+
+        $(document).on("click","button[name='changeDescriptionBtn']",function (e){
+            e.preventDefault();
+            var pid = [[${pid}]];
+            var des = $("input[name='projectDescription']").val();
+            $.ajax({
+                url:'/project/changeDes',
+                data:{ 'pid' : pid,
+                        'des':des},
+                type:'post',
+                success:function (result){
+                    if(result=='y'){
+                        alert("변경되었습니다!");
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        $(document).on("click","button[name='changePasswordBtn']",function (e){
+            e.preventDefault();
+            var pid = [[${pid}]];
+            var newPw = $("input[name='projectPassword']").val();
+
+            $.ajax({
+                url:'/project/changePw',
+                data:{ 'pid' : pid,
+                    'newPw':newPw},
+                type:'post',
+                success:function (result){
+                    if(result=='y'){
+                        alert("변경되었습니다!");
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        $(document).on("click","button[name='deleteMemberBtn']",function (e){
+            e.preventDefault();
+            var deleteMember = $(this).parent().prev("td[name='memberUid']").text();
+            var pid = [[${pid}]];
+
+            $.ajax({
+                url:'/project/deleteMember',
+                data:{ 'pid':pid , 'deleteMember':deleteMember},
+                type:'post',
+                success:function (result){
+                    if(result  =='y'){
+                        alert("멤버가 제외되었습니다!");
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+        $(document).on("click","button[name='inviteNewMemberBtn']",function (e){
+           e.preventDefault();
+           var pid = [[${pid}]];
+           var memberInput = document.querySelectorAll("input[name='projectMember']");
+           var invitedMemberList = [];
+
+            memberInput.forEach(function (input){
+                invitedMemberList.push(input.value);
+           })
+
+            $.ajax({
+                url:'/project/addMember',
+                data:{'pid':pid ,'invitedMemberList':invitedMemberList},
+                type:'post',
+                success:function (result){
+                    if(result  =='y'){
+                        alert("멤버가 추가되었습니다!\n(GroovUs 회원이 아닌 ID는 추가되지 않습니다.)");
+                        location.reload();
+                    }
+                }
+            })
+        });
+    </script>
 
 </th:block>
 

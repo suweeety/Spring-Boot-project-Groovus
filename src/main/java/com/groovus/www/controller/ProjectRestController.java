@@ -9,10 +9,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -42,6 +44,64 @@ public class ProjectRestController {
         log.info(memberList);
         log.info("====================================================");
         return new ResponseEntity<>(memberList,HttpStatus.OK);
+    }
+
+    @PostMapping("/project/info")
+    public ResponseEntity<RegisterProjectDTO> getProjectInfo(String pid){
+        //pid로 프로젝트 정보를 반환함
+
+        RegisterProjectDTO projectDTO = projectService.getProjectDTO(Long.parseLong(pid));
+
+        return new ResponseEntity<>(projectDTO,HttpStatus.OK);
+    }
+
+    @PostMapping("/project/changeDes")
+    public ResponseEntity<String> changeDescription(String pid, String des){
+
+       boolean result = projectService.changeDes(Long.parseLong(pid),des);
+
+        if(result){
+            return new ResponseEntity<>("y",HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("n",HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/project/changePw")
+    public ResponseEntity<String> changePassword(String pid, String newPw){
+
+        boolean result = projectService.changePw(Long.parseLong(pid),newPw);
+
+        if(result){
+            return new ResponseEntity<>("y",HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("n",HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/project/deleteMember")
+    public ResponseEntity<String> deleteMember(String pid,String deleteMember){
+
+        boolean result = projectService.deleteMember(Long.parseLong(pid),deleteMember);
+
+        if(result){
+            return new ResponseEntity<>("y",HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("n",HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/project/addMember")
+    public ResponseEntity<String> addMember(String pid, String[] invitedMemberList){
+
+        boolean result = projectService.addMember(Long.parseLong(pid), Arrays.asList(invitedMemberList));
+
+        if(result){
+            return new ResponseEntity<>("y",HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>("n",HttpStatus.OK);
+        }
+
     }
 
 }

@@ -5,14 +5,11 @@ import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
 import com.groovus.www.repository.MemberRepository;
 import com.groovus.www.repository.ProjectRepository;
-import groovyjarjarpicocli.CommandLine;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -151,6 +148,7 @@ public class ProjectServiceImpl implements ProjectService{
                     .pid(project.getPid().toString())
                     .projectName(project.getProjectName())
                     .regDate(project.getRegDate())
+                    .projectPassword(project.getProjectPassword())
                     .adminUid(project.getAdminUid())
                     .projectDescription(project.getProjectDescription())
                     .projectMember(project.getProjectMember().stream().map(member -> {
@@ -163,6 +161,90 @@ public class ProjectServiceImpl implements ProjectService{
         }else{
             return null;
         }
+    }
+
+    @Override
+    public boolean changeDes(Long pid, String des) {
+
+        Optional<Project> result = projectRepository.findById(pid);
+
+        if(result.isPresent()){
+            Project project =  result.get();
+            project.changeProjectDescription(des);
+            projectRepository.save(project);
+            return true;
+        }else{
+
+            return false;
+        }
+    }
+
+    @Override
+    public boolean changePw(Long pid, String pw) {
+        Optional<Project> result = projectRepository.findById(pid);
+
+        if(result.isPresent()){
+            Project project =  result.get();
+            project.changePassword(pw);
+            projectRepository.save(project);
+            return true;
+        }else{
+
+            return false;
+        }
+    }
+
+    @Override
+    public boolean addMember(Long pid, List<String> newMembers) {
+
+        Optional<Project> result = projectRepository.findByIdWithMember(pid);
+        if(result.isPresent()){
+            Project project = result.get();
+
+            for(String member : newMembers){
+
+                Optional<Member> tmpResult = memberRepository.findByUid(member);
+                if(tmpResult.isPresent()){
+                    Member tmpMember = tmpResult.get();
+                    if(project.getProjectMember().contains(tmpMember)){
+
+                    }else {
+
+                        project.addMember(tmpMember);
+                    }
+                }
+            }
+
+            projectRepository.save(project);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteMember(Long pid, String deleteMember) {
+
+        Optional<Project> result = projectRepository.findByIdWithMember(pid);
+
+        if(result.isPresent()){
+            Project project =  result.get();
+
+            Optional<Member> memberResult = memberRepository.findByUid(deleteMember);
+            if(memberResult.isPresent()){
+                Member member = memberResult.get();
+                project.deleteMember(member);
+                projectRepository.save(project);
+                return true;
+            }else{
+                return false;
+            }
+
+        }else{
+
+            return false;
+        }
+
     }
 
 

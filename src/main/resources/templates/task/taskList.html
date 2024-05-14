@@ -263,7 +263,7 @@
             <input type="text" class="form-control input-default" name="readTaskWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
             <br/> <br/>
             <span><b>담당자</b></span>
-            <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem; display: none;" >
+            <select name="modifyresponsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem; display: none;" >
                 <option value="">------</option>
                 <!--여기에 멤버들 보임-->
 
@@ -528,6 +528,7 @@
             function insertMemberList(result){
 
                 var selectList = $("select[name='responsibleMember']");
+                var modifyselectList = $("select[name='modifyresponsibleMember']");
                 var str ='';
                 for(var member of result){
 
@@ -535,6 +536,7 @@
 
                 }
                 selectList.append(str);
+                modifyselectList.append(str);
             }
 
             //업무읽기에서 뒤로가기 버튼이 눌렸을 때
@@ -556,7 +558,7 @@
                 $("select[name='readTaskStatus']").removeAttr("disabled");
 
                 $("input[name='readResponsibleMember']").show();
-                $("select[name='responsibleMember']").hide();
+                $("select[name='modifyresponsibleMember']").hide();
 
                 $("div[name='readTaskContent']").show();
                 $("div[name='readTaskContent']").html($("div[name='modifyContent'] div.note-editable").html());
@@ -919,7 +921,7 @@
             $("select[name='readTaskStatus']").attr("disabled","disabled"); // 상태변경 select disabled
 
             $("input[name='readResponsibleMember']").hide(); //담당자 input 박스 hide
-            $("select[name='responsibleMember']").show(); //담당자 select 박스 show
+            $("select[name='modifyresponsibleMember']").show(); //담당자 select 박스 show
             var readTaskContent = $("div[name='readTaskContent']").html(); //업무내용 저장
             $("div[name='readTaskContent']").hide(); //내용 div숨김
 
@@ -932,13 +934,13 @@
             //업무 수정후 저장 버튼이 눌렸을 때
             e.preventDefault();
 
-            if( $("select[name='responsibleMember']").val() == ''){
+            if( $("select[name='modifyresponsibleMember']").val() == ''){
                 alert("담당자를 지정해주세요");
                 return;
             }
             var tid = $("input[name='readTaskTid']").val(); // 업무 번호
             var taskTitle =  $("input[name='readTaskTitle']").val();
-            var responsibleMember =  $("select[name='responsibleMember']").val();
+            var responsibleMember =  $("select[name='modifyresponsibleMember']").val();
             var taskContent =$("div[name='modifyContent'] div.note-editable").html();
 
             $.ajax({
@@ -959,7 +961,7 @@
                         $("select[name='readTaskStatus']").removeAttr("disabled");
 
                         $("input[name='readResponsibleMember']").show();
-                        $("select[name='responsibleMember']").hide();
+                        $("select[name='modifyresponsibleMember']").hide();
 
                         $("div[name='readTaskContent']").show();
                         $("div[name='readTaskContent']").html($("div[name='modifyContent'] div.note-editable").html());
