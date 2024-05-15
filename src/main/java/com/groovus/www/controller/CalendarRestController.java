@@ -34,7 +34,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
     // 프로젝트와 일정에 해당하는 값 반환
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/read/{pid}/{cal_id}", produces = MediaType.APPLICATION_JSON_VALUE) // {pid},{cal_id}를 json 형태로 보내줌
-    public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id) {
+    public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id, CalendarRequestDTO calendarRequestDTO) {
 
         log.info("cal_id****: " + cal_id);
         log.info("pid****: " + pid);
