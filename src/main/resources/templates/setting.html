@@ -119,6 +119,8 @@
 
     <script th:inline="javascript">
         $(document).ready(function (){
+            var adminUid = [[${projectDTO.adminUid}]];
+
             var memberInputs='';
 
             $("button[name='addBtn']").on("click" , function(){
@@ -138,6 +140,22 @@
                     $("button[name='inviteNewMemberBtn']").show();
                 }
             });
+
+            //admin은 멤버 제외 안됨
+            var isAdmin = document.querySelectorAll("td[name='memberUid']");
+            if (isAdmin) {
+                isAdmin.forEach(function(admin) {
+                    if (admin.innerText.trim() === adminUid) {
+                        var nextSibling = admin.nextElementSibling; // 다음 요소 선택
+                        if (nextSibling) {
+                            var deleteButton = nextSibling.querySelector("button[name='deleteMemberBtn']");
+                            if (deleteButton) {
+                                deleteButton.disabled = true;
+                            }
+                        }
+                    }
+                });
+            }
 
             $(document).on('click','button[name="deleteInviteMember"]',function (){
                 $(this).prev("span").remove();

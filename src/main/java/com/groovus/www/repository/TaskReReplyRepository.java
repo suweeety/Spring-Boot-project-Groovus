@@ -16,4 +16,9 @@ public interface TaskReReplyRepository extends JpaRepository<TaskReReply,Long> {
     @Query("select r from TaskReReply r where r.taskReply=:taskReply")
     List<TaskReReply> getTaskReRepliesByRid(TaskReply taskReply);
 
+    //작성자 아이디로 대댓글 리스트 가져옴
+    @EntityGraph(attributePaths = "taskReply")
+    @Query("select r from  TaskReReply r where r.uid=:uid and r.taskReply.task.project.pid=:pid")
+    List<TaskReReply> getTaskReRepliesByUid(String uid, Long pid);
+
 }

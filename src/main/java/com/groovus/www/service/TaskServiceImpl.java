@@ -340,4 +340,59 @@ public class TaskServiceImpl implements TaskService {
             return null;
         }
     }
+
+    @Override
+    public List<TaskReplyDTO> getMyReplyList(String uid , Long pid) {
+
+        List<TaskReplyDTO> taskReplyDTOList ;
+        List<TaskReply> taskReplyList = taskReplyRepository.getTaskReplyListByUid(uid , pid);
+
+        if(!taskReplyList.isEmpty()){
+
+            taskReplyDTOList = taskReplyList.stream().map(taskReply -> {
+                TaskReplyDTO dto = TaskReplyDTO.builder()
+                        .rid(taskReply.getRid().toString())
+                        .regDate(taskReply.getRegDate())
+                        .replyContent(taskReply.getReplyContent())
+                        .uid(taskReply.getUid())
+                        .tid(taskReply.getTask().getTid().toString())
+                        .title(taskReply.getTask().getTaskTitle())
+                        .build();
+                return dto;
+            }).collect(Collectors.toList());
+
+            return taskReplyDTOList;
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public List<TaskReReplyDTO> getMyReReplyList(String uid, Long pid) {
+
+        List<TaskReReplyDTO> taskReReplyDTOList ;
+        List<TaskReReply> taskReReplyList = taskReReplyRepository.getTaskReRepliesByUid(uid , pid);
+
+        if(!taskReReplyList.isEmpty()){
+
+            taskReReplyDTOList = taskReReplyList.stream().map(taskReReply -> {
+                TaskReReplyDTO dto = TaskReReplyDTO.builder()
+                        .rrid(taskReReply.getRrid().toString())
+                        .rid(taskReReply.getTaskReply().getRid().toString())
+                        .replyText(taskReReply.getReplyText())
+                        .uid(taskReReply.getUid())
+                        .regDate(taskReReply.getRegDate())
+                        .tid(taskReReply.getTaskReply().getTask().getTid().toString())
+                        .title(taskReReply.getTaskReply().getTask().getTaskTitle())
+                        .build();
+
+                return dto;
+
+            }).collect(Collectors.toList());
+
+            return taskReReplyDTOList;
+        }else {
+            return null;
+        }
+    }
 }

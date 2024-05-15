@@ -1,8 +1,6 @@
 package com.groovus.www.controller;
 
-import com.groovus.www.dto.CalendarDTO;
-import com.groovus.www.dto.MemberDTO;
-import com.groovus.www.dto.RegisterProjectDTO;
+import com.groovus.www.dto.*;
 import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
@@ -10,6 +8,7 @@ import com.groovus.www.repository.CalendarRepository;
 import com.groovus.www.repository.ProjectRepository;
 import com.groovus.www.service.CalendarService;
 import com.groovus.www.service.ProjectService;
+import com.groovus.www.service.TaskService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +41,9 @@ public class CommonController {
 
     @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    private TaskService taskService;
 
     @PreAuthorize("permitAll()")
     @GetMapping("/")
@@ -62,10 +65,20 @@ public class CommonController {
     }
 
     @GetMapping("/reply/myreply/{pid}/{projectName}")
-    public String goMyReply(Model model,@PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
+    public String goMyReply(Model model, @PathVariable("pid") String pid, @PathVariable("projectName") String projectName, Principal principal){
+
+        String uid = principal.getName();
+        List<TaskReplyDTO> taskReplyDTOList = taskService.getMyReplyList(uid,Long.parseLong(pid));
+        List<TaskReReplyDTO> taskReReplyDTOList = taskService.getMyReReplyList(uid,Long.parseLong(pid));
+
+
+        model.addAttribute("taskReplyDTOList",taskReplyDTOList);
+        model.addAttribute("taskReReplyDTOList" , taskReReplyDTOList);
         //내가 쓴 댓글로 이동
         model.addAttribute("pid",pid);
         model.addAttribute("projectName",projectName);
+
+
         return "reply/myreply";
     }
 

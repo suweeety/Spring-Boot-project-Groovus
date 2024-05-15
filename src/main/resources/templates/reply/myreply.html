@@ -21,22 +21,85 @@
 
 <th:block layout:fragment="content">
 
+  <div class="container-fluid">
   <div class="row">
+    <div class="col">
+    <div class="card">
+      <p style=" margin-top: 1rem; text-align: center;">내가쓴 댓글</p>
+      <hr>
+      <div class="card-body">
 
-    <div class="col-lg-6 col-md-12">
-      <div class="card">
-        <div class="card-body">
-          <h1>내가쓴댓글</h1>
-          <h1>Version2 에서 만나요 (준비중)</h1>
-        </div>
+        <th:block th:each="reply : ${taskReplyDTOList}">
+
+          <div class="media media-reply">
+
+            <div class="media-body">
+              <div class="d-sm-flex justify-content-between mb-2">
+                <h5 class="mb-sm-0">[[${reply.uid}]] <small class="text-muted ml-3">[[${#temporals.format(reply.regDate, 'yyyy/MM/dd')}]] ( #[[${reply.tid}]] [[${reply.title}]])</small></h5>
+                <div class="media-reply__link">
+                  <button class="btn btn-transparent p-0 ml-3 font-weight-bold" name="deleteBtn">삭제</button>
+                </div>
+              </div>
+              <p>[[${reply.replyContent}]]</p>
+            </div>
+          </div>
+
+        </th:block>
+
+        <th:block th:unless="${taskReplyDTOList}">
+
+          <div class="media media-reply">
+
+            <div class="media-body">
+              <p>작성한 댓글이 존재하지 않습니다.</p>
+            </div>
+          </div>
+
+        </th:block>
+
       </div>
     </div>
+    </div>
 
+
+    <div class="col">
+    <div class="card">
+      <p style=" margin-top: 1rem;  text-align: center;">내가쓴 대댓글</p>
+      <hr>
+      <div class="card-body">
+
+        <th:block th:each="reply : ${taskReReplyDTOList}">
+
+          <div class="media media-reply">
+
+            <div class="media-body">
+              <div class="d-sm-flex justify-content-between mb-2">
+                <h5 class="mb-sm-0">[[${reply.uid}]] <small class="text-muted ml-3">[[${#temporals.format(reply.regDate, 'yyyy/MM/dd')}]] ( #[[${reply.tid}]] [[${reply.title}]])</small></h5>
+                <div class="media-reply__link">
+                  <button class="btn btn-transparent p-0 ml-3 font-weight-bold" name="deleteBtn">삭제</button>
+                </div>
+              </div>
+              <p>[[${reply.replyText}]]</p>
+            </div>
+          </div>
+
+        </th:block>
+
+        <th:block th:unless="${taskReReplyDTOList}">
+
+          <div class="media media-reply">
+
+            <div class="media-body">
+              <p>작성한 대댓글이 존재하지 않습니다.</p>
+            </div>
+          </div>
+
+        </th:block>
+      </div>
+    </div>
+    </div>
+  </div>
   </div>
 
 </th:block>
-
-
-
-
 </html>

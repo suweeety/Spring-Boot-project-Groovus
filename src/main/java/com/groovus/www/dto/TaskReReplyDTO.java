@@ -16,6 +16,9 @@ public class TaskReReplyDTO {
 
     private String rid; //댓글번호
     private String uid; //작성자
+    
+    private String tid; //업무번호
+    private String title; //업무제목
 
     private String replyText;
 

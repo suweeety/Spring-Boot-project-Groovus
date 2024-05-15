@@ -43,7 +43,8 @@ public interface TaskService {
     //rid로 대댓글 리스트를 가져오는 메서드
     public List<TaskReReplyDTO> getTaskReReplyList(String rid);
 
-
-
+    //내가쓴 댓글들 가져오기
+    List<TaskReplyDTO> getMyReplyList(String uid , Long pid);
+    List<TaskReReplyDTO> getMyReReplyList(String uid , Long pid);
 
 }
