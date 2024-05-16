@@ -14,6 +14,7 @@ import lombok.*;
 public class NoticeRequestDTO {
     private String title;
     private String content;
+    private String pid;
     public Notice toEntity() {
         return Notice.builder()
                 .title(title)

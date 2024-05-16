@@ -7,6 +7,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface QueryDslNoticeRepository {
 
-    Page<NoticeResponseDTO> searchAll(String[] types, String keyword, Pageable pageable);
+    Page<NoticeResponseDTO> searchAll(String[] types, String keyword, Pageable pageable, Long pid);
 
 }

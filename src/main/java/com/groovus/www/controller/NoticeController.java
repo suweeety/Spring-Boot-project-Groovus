@@ -6,11 +6,13 @@ import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.dto.ResponseDTO;
 import com.groovus.www.dto.notice.NoticeRequestDTO;
 import com.groovus.www.dto.notice.NoticeResponseDTO;
+import com.groovus.www.service.notice.NoticeService;
 import com.groovus.www.service.notice.NoticeServiceImpl;
 import groovy.util.logging.Log4j2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 @Log4j2
 @RequestMapping("/notice")
 public class NoticeController {
-    private final NoticeServiceImpl noticeService;
+    private final NoticeService noticeService;
 
     //워크스페이스에 따라 구분
     //공지사항 생성
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> createNotice(NoticeRequestDTO noticeRequestDTO,
@@ -36,11 +39,14 @@ public class NoticeController {
     @GetMapping("/noticeList/{pid}/{projectName}")
     public String noticeList(ProjectPageRequestDTO pageRequestDTO, Model model , @PathVariable("pid")String pid , @PathVariable("projectName")String projectName) {
 
-        ProjectPageResponseDTO<NoticeResponseDTO> noticeList = noticeService.noticeList(pageRequestDTO);
+        ProjectPageResponseDTO<NoticeResponseDTO> noticeList = noticeService.noticeList(pageRequestDTO, Long.parseLong(pid));
         model.addAttribute("noticeList", noticeList);
         model.addAttribute("pageRequestDTO", pageRequestDTO);
         model.addAttribute("pid",pid);
         model.addAttribute("projectName",projectName);
+
+
+
 
         return "notice/noticeList";
     }

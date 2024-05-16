@@ -2,27 +2,42 @@ package com.groovus.www.repository;
 
 import com.groovus.www.entity.Notice;
 import com.groovus.www.repository.dsl.QueryDslNoticeRepository;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long>, QueryDslNoticeRepository {
 
-    // 작업 공간 관련 정보를 제외하고 생성일자를 기준으로 내림차순으로 모든 공지사항을 가져옴
-    List<Notice> findAllByOrderByRegDateDesc();
+    //프로젝트 번호로 공지사항 목록을 가져오는 쿼리
+    @EntityGraph(attributePaths = "project")
+    @Query("select n from Notice n where n.project.pid=:pid")
+    List<Notice> getNoticeByPid(Long pid);
 
-    // 생성일자를 기준으로 오름차순으로 첫 번째 공지사항을 가져옴
-    Notice findFirstByOrderByRegDateAsc();
+    //pid와 nid로 가져오는 쿼리
+    @EntityGraph(attributePaths = "project")
+    @Query("select n from Notice n where n.project.pid=:pid and n.nid=:nid")
+    Optional<Notice> getNoticeByPidandNid(Long pid, Long nid);
 
-    // 생성일자를 기준으로 내림차순으로 첫 번째 공지사항을 가져옴
-    Notice findFirstByOrderByRegDateDesc();
+    @EntityGraph(attributePaths = "project")
+    @Query("select count(n) from Notice n where n.project.pid=:pid and n.del=false")
+    Long countNotice(Long pid);
 
-    // 주어진 커서 이전의 공지사항을 생성일자를 기준으로 내림차순으로 가져옴
-    Slice<Notice> findAllByNidBeforeOrderByRegDateDesc(Long cursor, Pageable pageable);
+    //삭제업무 개수
+    @EntityGraph(attributePaths = "project")
+    @Query("select count(n) from Notice n where n.project.pid=:pid and n.del=true and n.noticeWriter=:uid")
+    Long countDelNotice(Long pid , String uid);
 
-    Optional<Notice> findByNid(Long nid);
+
+    @EntityGraph(attributePaths = "project")
+    @Query("select n from Notice n where n.nid=:nid and n.del=false")
+    Optional<Notice> getNoticeByNid(Long nid);
+
+    //작성자 아이디로 업무를 가져오는 메서드
+    @EntityGraph(attributePaths = "project")
+    @Query("select n from Notice n where n.noticeWriter=:noticeWriter")
+    List<Notice> getNoticeByNoticeWriter(String noticeWriter);
 
 }
