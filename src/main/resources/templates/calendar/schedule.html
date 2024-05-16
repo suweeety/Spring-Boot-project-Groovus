@@ -421,7 +421,7 @@
                                 .find(".modal-body").empty().prepend(i).end()
 
                         /*-------------------------------------------------------*/
-                        /*초대 멤버 입력*/
+                        /*초대 멤버 입력(새로 추가되는 용)*/
                         $(document).ready(function() {
                             $("button[name='addBtn']").on("click", function () {
 
@@ -536,7 +536,7 @@
                     }
                 })
 
-                function insertMember(memlist){ // 태그용
+                function insertMember(memlist){ // 기존 cal_members 태그용
 
                     var str ="";
 
@@ -546,7 +546,7 @@
                     return str;
                 }
 
-                function insertMember2(memlist) { // 드롭다운용
+                function insertMember2(memlist) { // 기존 cal_members 드롭다운용
                     var str2 = "";
 
                     for (var member of memlist) {
@@ -559,17 +559,6 @@
                         // 삭제 버튼을 생성하고 이벤트를 추가합니다.
                         var deleteButton = $("<button type='button' class='deleteInviteMember' style='margin-left: 5px;'>X</button>");
 
-                        // 삭제 버튼에 클릭 이벤트 핸들러를 추가합니다.
-                        deleteButton.on("click", function() {
-                            // 클릭된 버튼의 부모인 dropdown-item을 제거합니다.
-                            $(this).closest('.dropdown-item').remove();
-
-                            $("div[name='memberTags']").find("span").filter(function() {
-                                return $(this).text() === member;
-                            }).remove();
-
-                        });
-
                         // 삭제 버튼을 dropdown-item에 추가합니다.
                         dropdownItem.append(deleteButton);
 
@@ -577,18 +566,21 @@
                         str2 += dropdownItem[0].outerHTML;
                     }
 
-                    return str2;
-                }
-
-                $(document).ready(function() {
-                    // 삭제 버튼에 대한 클릭 이벤트 핸들러를 추가합니다.
+                    // 삭제 버튼의 클릭 이벤트 핸들러를 한 번만 바인딩합니다.
                     $(document).on("click", ".deleteInviteMember", function() {
                         // 클릭된 버튼의 부모인 dropdown-item을 찾아 제거합니다.
-                        $(this).closest('.dropdown-item').remove();
+                        var parentDropdownItem = $(this).closest('.dropdown-item');
+                        parentDropdownItem.remove();
+
+                        // 클릭된 버튼이 속한 dropdown-item 안에 있는 멤버를 찾아서 삭제합니다.
+                        var memberToRemove = parentDropdownItem.find("a").text();
+                        $("div[name='memberTags']").find("span").filter(function() {
+                            return $(this).text() === memberToRemove;
+                        }).remove();
                     });
-                });
 
-
+                    return str2;
+                }
 
             },
             /*Register schedule*/
