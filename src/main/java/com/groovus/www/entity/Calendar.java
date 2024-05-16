@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name="tb_calendar")
-@ToString(exclude = "imageSet")
+@ToString(exclude = {"imageSet" , "create_user_id","update_user_id","cal_members"})
 @Log4j2
 public class Calendar extends BaseEntity{
     /*
@@ -113,6 +113,10 @@ public class Calendar extends BaseEntity{
         this.cal_endDate = cal_endDate;
         this.cal_link_list = cal_link_list;
 
+    }
+
+    public void changeUpdateMember(Member member){
+       this.update_user_id =  member;
     }
 
     // 수정일 및 등록일은 BaseEntity 참고

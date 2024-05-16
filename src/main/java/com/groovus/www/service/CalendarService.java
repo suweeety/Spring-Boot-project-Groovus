@@ -1,5 +1,6 @@
 package com.groovus.www.service;
 
+import com.google.api.services.calendar.CalendarRequest;
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.dto.CalendarRequestDTO;
 import com.groovus.www.dto.MemberDTO;
@@ -19,7 +20,9 @@ public interface CalendarService {
 
     List<CalendarDTO> getList(Long pid); // 특정 프로젝트의 일정 목록
 
-    CalendarDTO readOne(Long pid, Long cal_id); // 일정 가져오기
+    // 일정 가져오기
+
+    CalendarDTO readOne(Long pid, Long cal_id);
 
     void modify(CalendarRequestDTO calendarRequestDTO, Long pid, Long cal_id); // 일정 수정
 

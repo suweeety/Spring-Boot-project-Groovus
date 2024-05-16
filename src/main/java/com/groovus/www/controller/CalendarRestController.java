@@ -2,6 +2,7 @@ package com.groovus.www.controller;
 
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.dto.CalendarRequestDTO;
+import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
 import com.groovus.www.repository.CalendarRepository;
 import com.groovus.www.service.CalendarService;
@@ -33,17 +34,16 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
 
     // 프로젝트와 일정에 해당하는 값 반환
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/read/{pid}/{cal_id}", produces = MediaType.APPLICATION_JSON_VALUE) // {pid},{cal_id}를 json 형태로 보내줌
-    public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id, CalendarRequestDTO calendarRequestDTO) {
+    @GetMapping(value = "/read/{pid}/{cal_id}") // {pid},{cal_id}를 쿼리스트링으로
+    public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id) {
 
         log.info("cal_id****: " + cal_id);
         log.info("pid****: " + pid);
-        log.info("---------------------------------------------------------------");
+        log.info("-------------------------readController--------------------------------------");
         // pid와 cal_id를 이용하여 값을 조회해 옴
         CalendarDTO dto = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
         log.info(dto.getCal_members());
-        log.info("---------------------------------------------------------------");
-
+        log.info("-------------------------readController dto--------------------------------------");
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -55,7 +55,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info("registerPOST 확인");
         log.info(calendarRequestDTO.getPid());
         log.info(calendarRequestDTO.getCal_cate());
-        log.info(calendarRequestDTO.getCal_members());
+        log.info(calendarRequestDTO.getCal_members().stream().toArray());
         log.info(calendarRequestDTO.getCreate_user_id());
         log.info("==========================================================");
 

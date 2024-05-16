@@ -327,12 +327,11 @@
                 $.ajax({
                     url: '/calendar/read/' + pid + '/' + cal_id,
                     type: 'GET',
-                    dataType: 'json',
-                    contentType: 'application/json',
-                    success: function (response) {
+                    success: async function (response) {
+
+                        var str =  await insertMember(response.cal_members);
 
                         console.log("일정 보기 success.");
-                        var firstLetter = uid.charAt(0);
                         var i = e("<form name='calendarForm' ></form>");
                         i.append("<input type='hidden' value='cal_id' name='cal_id'/>")
                         i.append("<div class='row' style='height: auto;'></div>"), i.find(".row")
@@ -366,8 +365,7 @@
                                 "</span>" +
                                 "</div>" +
                                 "<div name='memberTags' style='display: block;width: 11rem;height: 3rem; transform: translate(6px, -76px); position: absolute;left: 35%;top: 4rem;padding: 10px;'>" +
-                                "<span class='badge badge-pill badge-success' style='margin-right: 5px'>"+response.cal_members+"</span>" +
-                                "<span class='badge badge-pill badge-success' style='margin-right: 5px'>"+firstLetter+"</span>" +
+                                  str +
                                 "</div>"+
                                 "<div class ='col' style='transform: translate(265px, -78px);'>" +
                                 "<div class='dropdown custom-dropdown'>" +
@@ -531,6 +529,17 @@
 
                     }
                 })
+
+                function insertMember(memlist){
+
+                    var str ="";
+
+                    for(var member of memlist){
+                      str+="<span class='badge badge-pill badge-success' style='margin-right: 5px'>"+member+"</span>";
+                    }
+                    return str;
+                }
+
             },
             /*Register schedule*/
             t.prototype.onSelect = function (t, n, a) {
@@ -639,9 +648,11 @@
 
                             // 멤버 추가
                             memberInputs = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span><input type='hidden' name='cal_members' value='" + memberInput + "'/>";
-
+                            alert("memberInput: "+memberInput);
+                            var chkInputHidden = "<input type='hidden' name='cal_members' value='" + memberInput + "'/>";
+                            alert("chkInputHidden: "+chkInputHidden);
                             // 입력된 멤버를 dropdown-menu에 추가
-                            var dropdownItem = $("<a class='dropdown-item' href='#'></a>").text(memberInput);
+                            var dropdownItem = $("<a class='dropdown-item' href='#'></a><input type='hidden' name='cal_members' value='" + memberInput + "'/>").text(memberInput);
 
                             // 삭제 버튼 추가
                             var deleteButton = $("<button name='deleteInviteMember' class='deleteInviteMember' type='button' style='width: 20px;background: lightgray;border-radius: 50%;border: none;margin-left: 40px;margin-top: 5px;'>").html("<i class='fa-solid fa-xmark'></i>");
@@ -670,6 +681,7 @@
 
                             // 입력창 초기화
                             $("input[name='inviteMember']").val('');
+                            memberInputs = '';
                         }
                     });
                 });
