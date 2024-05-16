@@ -6,6 +6,7 @@ import com.groovus.www.dto.ProjectPageResponseDTO;
 import com.groovus.www.dto.ResponseDTO;
 import com.groovus.www.dto.notice.NoticeRequestDTO;
 import com.groovus.www.dto.notice.NoticeResponseDTO;
+import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 
 public interface NoticeService {
@@ -14,7 +15,7 @@ public interface NoticeService {
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> createNotice(NoticeRequestDTO noticeRequestDTO, MemberDTO memberDTO);
 
     //공지사항 조회
-    public ProjectPageResponseDTO<NoticeResponseDTO> noticeList(ProjectPageRequestDTO PageRequestDTO);
+    public ProjectPageResponseDTO<NoticeResponseDTO> noticeList(ProjectPageRequestDTO PageRequestDTO, Long pid);
 
     public ResponseEntity<ResponseDTO<NoticeResponseDTO>> readNotice(Long nid);
 

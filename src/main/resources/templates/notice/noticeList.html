@@ -73,9 +73,8 @@
               <button type="button" class="btn btn-primary btn-block" style="background-color: #a441de;" name="registerNoticeBtn">새글등록</button>
 
               <div class="mail-list mt-4">
-                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체글</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholenotice">0</span> </a>
-                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-star-o font-18 align-middle mr-2"></i>즐겨찾기 <span class="badge badge-danger badge-sm float-right m-t-5">47</span> </a>
-                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2"></i>삭제글</a>
+                <a th:href="@{'/notice/noticeList/'+ ${pid}+'/'+${projectName}}" class="list-group-item border-0 text-primary p-r-0" id="wholeNotice"><span class="fa fa-briefcase f-s-14 mr-2"></span><b>전체글</b></a>
+                <a th:href="@{'/notice/noticeList/'+ ${pid}+'/'+${projectName}+'?type=d&keyword='+${#authentication.principal.uid}}" class="list-group-item border-0 p-r-0" id="delNotice"><i class="fa fa-trash font-18 align-middle mr-2"></i><b>삭제글</b></a>
               </div>
             </div>
             <div class="email-right-box">
@@ -111,6 +110,7 @@
                     </table>
                     <!--페이징-->
                     <div class="bootstrap-pagination">
+                      <nav>
                         <ul class="pagination justify-content-end">
                           <li class="page-item" th:if="${noticeList.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
                           </li>
@@ -120,7 +120,6 @@
                               <a class="page-link" th:data-num="${i}">[[${i}]]</a>
                             </li>
                           </th:block>
-qqe
                           <li class="page-item" th:if="${noticeList.next}">
                             <a class="page-link" th:data-num="${noticeList.lastPage}"><b>>></b></a>
                           </li>
@@ -153,7 +152,6 @@ qqe
     </div>
   </div>
   </div>
-
   <!--모달창-->
   <div class="modal_">
     <div class="modal_body">
@@ -162,23 +160,23 @@ qqe
 
       <form name="noticeForm" method="post" action="/notice/register">
         <span><b>제목</b></span>
-        <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" id="title" name="noticeTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+        <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" id="title" name="noticeTitle" style="display: inline-block; width: 25rem; margin-left: 2.8rem;">
         <br/>
         <br/>
         <span><b>작성자</b></span>
-        <input type="text" class="form-control input-default" id="writer" name="noticeWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+        <input type="text" class="form-control input-default" id="writer" name="noticeWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
         <br/>
         <br/>
         <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
 
-        <div class="card-body">
+        <!--<div class="card-body">
           <span><b>첨부파일</b></span>
           <div class="basic-form">
             <div class="form-group">
               <input type="file" class="form-control-file">
             </div>
           </div>
-        </div>
+        </div>-->
 
         <!--에디터-->
         <!--'note-editable panel-body' 안에 들어감-->
@@ -191,6 +189,8 @@ qqe
         <!--에디터 끝-->
 
         <input type="hidden" name="noticeContent" value="">
+        <input type="hidden" name="pid" th:value="${pid}">
+        <input type="hidden" name="projectName" th:value="${projectName}">
         <!--<input type="hidden" name="projectName" th:value="${projectName}">-->
       </form>
       <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
@@ -211,14 +211,14 @@ qqe
 
       <br/> <br/>
       <span><b>제목</b></span>
-      <input type="text" class="form-control input-default" name="readNoticeTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;" readonly>
+      <input type="text" class="form-control input-default" name="readNoticeTitle" style="display: inline-block; width: 25rem; margin-left: 2.8rem;" readonly>
       <br/> <br/>
       <span><b>작성자</b></span>
-      <input type="text" class="form-control input-default" name="readNoticeWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+      <input type="text" class="form-control input-default" name="readNoticeWriter"  style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
       <br/> <br/>
       <span><b>작성일</b></span>
       <input type="text" class="form-control input-default" name="readNoticeRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
-      <br/> <br/> <br/>  <br/>
+      <br/> <br/>
       <div name="readNoticeContent" class="form-control input-default" style="height:auto;">
       </div>
 
@@ -235,18 +235,32 @@ qqe
       </div>
     </div>
     <!--에디터 끝-->
-
+    </div>
   </div>
-
 
   <!--스크립트-->
   <script th:inline="javascript">
 
+    let pid = [[${pid}]];
+
     $(document).ready(function () {
+
 
       let mainList = $("div[name='mainList']");
       let type = [[${pageRequestDTO.type}]];
 
+      // 다른 곳 클릭 시 div 숨기기
+      $(document).on("click", function(event){
+        if (!$(event.target).closest(".popup").length) {
+          $(".popup").hide();
+        }
+      });
+
+      if(type =='d'){
+        //삭제업무탭
+        $("#wholeNotice").removeClass("text-primary");
+        $("#delNotice").addClass("text-primary");
+      }
 
       /*새글등록 버튼 클릭 시*/
       $("button[name='registerNoticeBtn']").on("click",function (e){
@@ -294,6 +308,7 @@ qqe
           url:'/notice/create',
           type:'post',
           data:{
+            'pid' : pid,
             'title' : title,
             'content' : content,
           },
@@ -313,19 +328,25 @@ qqe
         let nid = $(this).data("nid");
         let type = [[${pageRequestDTO.type}]];
 
-        $.ajax({
-          url:'/notice/view',
-          type:'post',
-          data:{
-            'nid' : nid
-          },
-          success:function (result){
-            readNotice(result);
-            console.log("result", result);
-            console.log("uname", result.data.uname);
-          }
-        }); //ajax 종료
+        if(type =='d'){
+          //삭제된 업무 탭에서 업무 읽기 눌렀을 시
+          alert("삭제된 업무는 읽기 불가입니다. 관리자에게 문의하세요.");
+        }else {
 
+          $.ajax({
+            url: '/notice/view',
+            type: 'post',
+            data: {
+              'pid': pid,
+              'nid': nid
+            },
+            success: function (result) {
+              readNotice(result);
+              console.log("result", result);
+              console.log("uname", result.data.uname);
+            }
+          }); //ajax 종료
+        }
       });//document 종료
 
       function readNotice(result) {
@@ -366,11 +387,11 @@ qqe
       $(this).attr("name","readNoticeModify-save"); //input태그 name속성도 변경
       $("input[name='readNoticeTitle']").attr("readonly",false); //readonly속성 false
 
-      var readTaskContent = $("div[name='readNoticeContent']").html(); //업무내용 저장
+      var readNoticeContent = $("div[name='readNoticeContent']").html(); //업무내용 저장
       $("div[name='readNoticeContent']").hide(); //내용 div숨김
 
       $("div[name='modifyContent']").show(); //에디터 보임
-      $("div[name='modifyContent'] div.note-editable").html(readTaskContent); //에디터에 저장한 업무내용 삽입
+      $("div[name='modifyContent'] div.note-editable").html(readNoticeContent); //에디터에 저장한 업무내용 삽입
 
     })
 
@@ -445,9 +466,9 @@ qqe
       var keyword = [[${pageRequestDTO.keyword}]];
 
       if(type != null && keyword!=null){
-        var url = '/notice/list/'+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
+        var url = '/notice/noticeList/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
       }else{
-        var url = '/notice/list/'+'?page='+pageNum;
+        var url = '/notice/noticeList/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum;
       }
       window.location.href = url; // 새로운 URL로 이동합니다.
     });
