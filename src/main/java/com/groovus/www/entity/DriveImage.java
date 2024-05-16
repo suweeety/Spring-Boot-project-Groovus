@@ -1,34 +1,29 @@
 package com.groovus.www.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter
+@Embeddable
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "drive")
-public class DriveImage implements Comparable<DriveImage> {
+@AllArgsConstructor
+@Getter
+@ToString(exclude = "drive") //연관 관계시 항상 주의
+public class DriveImage  {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long inum;
+
     private String uuid;
 
-    private String fileName;
+    private String imgName;
 
-    private int ord; // 순번
+    private String path;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) //무조건 lazy로
     private Drive drive;
 
-    @Override
-    public int compareTo(DriveImage other) {
-        return this.ord - other.ord;
-    }
 
-    public void changeDrive(Drive drive){
-        this.drive = drive;
-    }
 }

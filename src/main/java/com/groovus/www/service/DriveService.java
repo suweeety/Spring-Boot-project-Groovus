@@ -1,61 +1,79 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.DriveAllDTO;
 import com.groovus.www.dto.DriveDTO;
+import com.groovus.www.dto.DriveImageDTO;
 import com.groovus.www.dto.PageRequestDTO;
-import com.groovus.www.dto.PageResponseDTO;
+import com.groovus.www.dto.PageResultDTO;
 import com.groovus.www.entity.Drive;
+import com.groovus.www.entity.DriveImage;
 
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public interface DriveService {
 
     Long register(DriveDTO driveDTO);
 
-    DriveDTO readOne(Long bno);
+    DriveDTO getDrive(Long bno);
 
     void modify(DriveDTO driveDTO);
 
-    void remove(Long bno);
+//    void moveToBin(Long bno);
 
-    PageResponseDTO<DriveDTO> list(PageRequestDTO pageRequestDTO);
 
- //   PageResponseDTO<DriveAllDTO> listWithALl(PageRequestDTO pageRequestDTO);
 
-    default Drive dtoToEntity(DriveDTO driveDTO){
+    PageResultDTO<DriveDTO, Object[]> getList(PageRequestDTO requestDTO);
 
-        Drive drive = Drive.builder()
-                .bno(driveDTO.getBno())
-                .title(driveDTO.getTitle())
-                .nickname(driveDTO.getNickname())
-                .build();
-
-        if (driveDTO.getFileNames() != null){
-            driveDTO.getFileNames().forEach(fileName -> {
-                String[] arr = fileName.split("_");
-                drive.addImage(arr[0], arr[1]);
-            });
-        }
-        return drive;
-    } // dtoToEntity
-
-    default DriveDTO entityToDTO(Drive drive){
-
+    default DriveDTO entitiesToDTO(Drive drive, List<DriveImage> driveImages){
         DriveDTO driveDTO = DriveDTO.builder()
                 .bno(drive.getBno())
                 .title(drive.getTitle())
-                .nickname(drive.getNickname())
-                .regdate(drive.getRegDate())
-                .moddate(drive.getModDate())
+                .regDate(drive.getRegDate())
+                .modDate(drive.getModDate())
                 .build();
 
-        List<String> fileNames =
-                drive.getImageSet().stream().sorted().map(driveImage ->
-                        driveImage.getUuid()+"_"+driveImage.getFileName()).collect(Collectors.toList());
+        List<DriveImageDTO> driveImageDTOList = driveImages.stream().map(driveImage -> {
+            return DriveImageDTO.builder().imgName(driveImage.getImgName())
+                    .path(driveImage.getPath())
+                    .uuid(driveImage.getUuid())
+                    .build();
+        }).collect(Collectors.toList());
 
-        driveDTO.setFileNames(fileNames);
+        driveDTO.setImageDTOList(driveImageDTOList);
+
+
 
         return driveDTO;
+
+    }
+    default Map<String, Object> dtoToEntity(DriveDTO driveDTO){
+
+        Map<String, Object> entityMap = new HashMap<>();
+
+        Drive drive = Drive.builder().
+                bno(driveDTO.getBno()).
+                title(driveDTO.getTitle()).build();
+
+        entityMap.put("drive", drive);
+
+        List<DriveImageDTO> imageDTOList = driveDTO.getImageDTOList();
+
+        if(imageDTOList != null && imageDTOList.size() > 0) {
+            List<DriveImage> driveImageList = imageDTOList.stream().map(driveImageDTO ->
+                    {
+                        DriveImage driveImage = DriveImage.builder()
+                            .path(driveImageDTO.getPath())
+                            .imgName(driveImageDTO.getImgName())
+                            .uuid(driveImageDTO.getUuid())
+                            .drive(drive).build();
+                    return driveImage;
+                    }).collect(Collectors.toList());  //객체를 새로운 리스트로 만드는 방법
+            entityMap.put("imgList", driveImageList);
+
+        }
+        return entityMap;
     }
 }
