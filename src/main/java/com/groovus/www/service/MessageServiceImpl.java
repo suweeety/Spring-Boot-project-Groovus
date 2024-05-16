@@ -83,7 +83,8 @@ public class MessageServiceImpl implements MessageService {
         if(!result.isEmpty()){
             Message message = result.get();
 
-            if(message.getMessageStatus() == MessageStatus.UNREAD && ( message.getSender().getMid() == message.getReceiver().getMid() || message.getSender().getMid() != mid )){
+            if(message.getMessageStatus() == MessageStatus.UNREAD && ( message.getSender().getMid() == message.getReceiver().getMid()
+                                                                        || message.getSender().getMid() != mid )){
                 message.changeStatus(MessageStatus.READ); //읽음 처리
                 messageRepository.save(message);
             }

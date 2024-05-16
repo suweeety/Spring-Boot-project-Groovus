@@ -29,7 +29,6 @@ public class ProjectController {
     @GetMapping("/list")
     public void  goProjectList(ProjectPageRequestDTO pageRequestDTO, Long mid , Model model){
 
-
         ProjectPageResponseDTO<RegisterProjectDTO> responseDTO = projectService.getProjectListWithPaging(pageRequestDTO,mid);
 
         model.addAttribute("mid",mid);

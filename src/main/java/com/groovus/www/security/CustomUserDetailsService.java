@@ -37,8 +37,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = result.get();
 
         MemberDTO memberDTO = new MemberDTO(member.getUid(),member.getUpw(),member.getMid(),member.getUname(),
-                member.getEmail(),member.isDel(),false,member.getRoleSet().stream().map(memberRole -> new SimpleGrantedAuthority("ROLR_"+memberRole.name())).collect(Collectors.toList()));
-
+                member.getEmail(),member.isDel(),false,member.getRoleSet().stream().map(memberRole ->
+                new SimpleGrantedAuthority("ROLR_"+memberRole.name())).collect(Collectors.toList()));
 
         return memberDTO;
     }

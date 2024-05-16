@@ -797,9 +797,9 @@
             e.preventDefault();
 
             var tid = $("input[name='readTaskTid']").val()+"";
-            var status = $("select[name='readTaskStatus']").val();
+            var status = $("select[name='readTaskStatus']").val(); //바뀐상태
             var uid = [[${#authentication.principal.uid}]];
-            var prevStatus = PrevStatus;
+            var prevStatus = PrevStatus; //이전 상태
             //해당 업무의 상태를 변경
             $.ajax({
                 url:'/task/changestatus',
