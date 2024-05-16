@@ -235,6 +235,7 @@
             var pidStr = pid+'';
             var cal_idStr = cal_id+'';
 
+            var cal_members = $("input[name='cal_members']").val() ; // value = 'member1,member2,...."
             var cal_title = $("input[name='cal_title']").val();
             var  beginning =  $("input[name='beginning']").val();
             var  ending = $("input[name='ending']").val();
@@ -250,6 +251,7 @@
                 url: '/calendar/modify',
                 method: 'POST',
                 data: {
+                    'cal_members_str': cal_members,
                     'cal_link_list': cal_link_list,
                     'cal_title': cal_title,
                     'cal_content': cal_content,
@@ -330,6 +332,7 @@
                     success: async function (response) {
 
                         var str =  await insertMember(response.cal_members);
+                        var str2 = await insertMember2(response.cal_members);
 
                         console.log("일정 보기 success.");
                         var i = e("<form name='calendarForm' ></form>");
@@ -373,7 +376,7 @@
                                 "<i class='fa fa-ellipsis-v'></i>" +
                                 "</div>"+
                                 "<div class='dropdown-menu dropdown-menu-right' x-placement='bottom-end' style='position: absolute; will-change: transform; top: 15px; transform: translate(0px, -4px); left: 0px; min-width: 7rem; z-index: 20000;' id='dropdownMenu'>" +
-                                "<a class='dropdown-item' href='#'>"+uid+"</a>" +
+                                  str2 +
                                 "</div>"+
                                 "</div>" +
                                 "</div>" +
@@ -421,11 +424,15 @@
                         /*초대 멤버 입력*/
                         $(document).ready(function() {
                             $("button[name='addBtn']").on("click", function () {
+
                                 var memberInput = $("input[name='inviteMember']").val();
                                 if (memberInput === '' || memberInput === null) {
                                     alert("추가할 멤버 ID를 입력해주세요");
                                 } else {
                                     var firstLetter = memberInput.charAt(0); // 입력된 멤버 ID의 첫 글자 추출
+
+                                    var calMembersInput = $("input[name='cal_members']");
+                                    calMembersInput.val(calMembersInput.val() + "," + memberInput);
 
                                     // 멤버 추가
                                     var memberBadge = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span><input type='hidden' name='cal_members' value='" + memberInput + "'/>";
@@ -450,7 +457,6 @@
 
                                     // 삭제 버튼을 멤버 옆에 추가
                                     dropdownItem.append(deleteButton);
-
                                     // 드롭다운 메뉴에 멤버 추가
                                     $("#dropdownMenu").append(dropdownItem);
 
@@ -530,7 +536,7 @@
                     }
                 })
 
-                function insertMember(memlist){
+                function insertMember(memlist){ // 태그용
 
                     var str ="";
 
@@ -539,6 +545,50 @@
                     }
                     return str;
                 }
+
+                function insertMember2(memlist) { // 드롭다운용
+                    var str2 = "";
+
+                    for (var member of memlist) {
+                        // dropdown-item을 감싸는 div를 만듭니다.
+                        var dropdownItem = $("<div class='dropdown-item'></div>");
+
+                        // 멤버 텍스트를 추가합니다.
+                        dropdownItem.append("<a href='#'>" + member + "</a>");
+
+                        // 삭제 버튼을 생성하고 이벤트를 추가합니다.
+                        var deleteButton = $("<button type='button' class='deleteInviteMember' style='margin-left: 5px;'>X</button>");
+
+                        // 삭제 버튼에 클릭 이벤트 핸들러를 추가합니다.
+                        deleteButton.on("click", function() {
+                            // 클릭된 버튼의 부모인 dropdown-item을 제거합니다.
+                            $(this).closest('.dropdown-item').remove();
+
+                            $("div[name='memberTags']").find("span").filter(function() {
+                                return $(this).text() === member;
+                            }).remove();
+
+                        });
+
+                        // 삭제 버튼을 dropdown-item에 추가합니다.
+                        dropdownItem.append(deleteButton);
+
+                        // 생성된 dropdown-item을 문자열에 추가합니다.
+                        str2 += dropdownItem[0].outerHTML;
+                    }
+
+                    return str2;
+                }
+
+                $(document).ready(function() {
+                    // 삭제 버튼에 대한 클릭 이벤트 핸들러를 추가합니다.
+                    $(document).on("click", ".deleteInviteMember", function() {
+                        // 클릭된 버튼의 부모인 dropdown-item을 찾아 제거합니다.
+                        $(this).closest('.dropdown-item').remove();
+                    });
+                });
+
+
 
             },
             /*Register schedule*/
@@ -641,16 +691,18 @@
 
                     $("button[name='addBtn']").on("click", function () {
                         var memberInput = $("input[name='inviteMember']").val();
+
                         if (memberInput === '' || memberInput === null) {
                             alert("추가할 멤버 ID를 입력해주세요");
                         } else {
                             var firstLetter = memberInput.charAt(0); // 입력된 멤버 ID의 첫 글자 추출
 
+                            var calMembersInput = $("input[name='cal_members']");
+                            calMembersInput.val(calMembersInput.val() + "," + memberInput);
+
                             // 멤버 추가
-                            memberInputs = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span><input type='hidden' name='cal_members' value='" + memberInput + "'/>";
-                            alert("memberInput: "+memberInput);
-                            var chkInputHidden = "<input type='hidden' name='cal_members' value='" + memberInput + "'/>";
-                            alert("chkInputHidden: "+chkInputHidden);
+                            memberInputs = "<span class='badge badge-pill badge-primary'>" + firstLetter + "</span>";
+
                             // 입력된 멤버를 dropdown-menu에 추가
                             var dropdownItem = $("<a class='dropdown-item' href='#'></a><input type='hidden' name='cal_members' value='" + memberInput + "'/>").text(memberInput);
 

@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -87,10 +88,21 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify") // 일정 수정
-    public ResponseEntity<String> modify(String update_user_id, CalendarRequestDTO calendarRequestDTO) {
+    public ResponseEntity<String> modify(CalendarRequestDTO calendarRequestDTO , String cal_members_str) {
+
+        log.info("==================+cal_members_str===================");
+        log.info(cal_members_str);
+
+        String[] cal_members = cal_members_str.split(",");
+
+        log.info("==================+cal_members====================");
+        log.info(cal_members);
+
+        calendarRequestDTO.setCal_members(Arrays.asList(cal_members));
 
         log.info("==================++++++++++===================");
         log.info("modify:"+calendarRequestDTO);
+        log.info("멤바리스트는:"+calendarRequestDTO.getCal_members());
         log.info("==================++++++++++===================");
 
         calendarService.modify(calendarRequestDTO, Long.parseLong(calendarRequestDTO.getPid()), Long.parseLong(calendarRequestDTO.getCal_id()));

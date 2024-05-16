@@ -95,22 +95,23 @@ public class CalendarServiceImpl implements CalendarService{
         // 하나의 일정 가져오는 용
         Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(pid, cal_id);
 
-
-
         // pid, cal_id로 가져온 calendar 정보(result)
         if(result.isPresent()){
             Calendar calendar = result.get();
 
-            log.info("=====================calendar==================================");
+            log.info("=====================calendar========================");
             log.info(calendar.getCreate_user_id().getUid());
             log.info(calendar);
-            log.info("=======================================================");
+            log.info("====================================================");
 
+            // 일정 등록자용
             Optional<Member> memberResult = memberRepository.getMemberByMid(calendar.getCreate_user_id().getMid());
 
+            // 일정 등록자 정보가 있으면
             if(memberResult.isPresent()){
                 Member member = memberResult.get();
 
+                // member라는 이름으로 changeUpdateMember 메서드의 update_user_id에 담음
                 calendar.changeUpdateMember(member);
                 calendarRepository.save(calendar);
 
@@ -136,34 +137,49 @@ public class CalendarServiceImpl implements CalendarService{
             }else{
                 return null;
             }
-
-
-
         }else {
             return null;
         }
     }
 
-
-
     @Override
     public void modify(CalendarRequestDTO calendarRequestDTO, Long pid, Long cal_id) {
-        //CalendarRequestDTO: String 타입으로 이루어짐
 
         Optional<Calendar> calResult = calendarRepository.findById(cal_id);
         if(calResult.isPresent()){
             Calendar calendar = calResult.get();
 
-            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(), calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate(), calendarRequestDTO.getCal_link_list());
+            log.info("======cal_id는-=====>");
+            log.info(calendar.getCal_id());
+            log.info(cal_id);
+            log.info("======cal_id끝-=====>");
+            
+            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(),
+                    calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate(), calendarRequestDTO.getCal_link_list());
 
-          Optional<Member> memberResult = memberRepository.findByUid(calendarRequestDTO.getUpdate_user_id());
-          if(memberResult.isPresent()){
-              Member member = memberResult.get();
+            Optional<Member> memberResult = memberRepository.findByUid(calendarRequestDTO.getUpdate_user_id());
 
-              calendar.setUpdate_user_id(member);
+            if(memberResult.isPresent()){
 
-              calendarRepository.save(calendar);
-          }
+                Member member = memberResult.get();
+
+                calendar.setUpdate_user_id(member);
+
+                calendar.addMember(member);
+
+                List<String> members = calendarRequestDTO.getCal_members();
+
+                for(String imember : members){
+
+                    Optional<Member> inviteResult = memberRepository.findByUid(imember);
+                    if(inviteResult.isPresent()){
+                        Member inviteMember = inviteResult.get();
+                        calendar.addMember(inviteMember);
+                    }
+
+                }
+            }
+
         }
     }
 

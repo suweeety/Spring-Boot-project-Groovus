@@ -30,7 +30,7 @@ public class CalendarRequestDTO {
     private String cal_link_list; // 링크
 
     @NotNull
-    private List<String> cal_members; // 초대 멤버
+    private List<String> cal_members; // 초대 멤버 uid
 
     private String pid; // 프로젝트 번호
 
