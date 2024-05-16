@@ -1,19 +1,24 @@
+
 package com.groovus.www.repository;
 
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.groovus.www.entity.Drive;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import com.groovus.www.entity.Drive;
-import com.groovus.www.repository.search.DriveSearch;
 
-import java.util.Optional;
+import java.util.List;
 
-public interface DriveRepository extends JpaRepository<Drive, Long>, DriveSearch {
+public interface DriveRepository extends JpaRepository<Drive, Long> {
 
-//    @Query(value = "SELECT now()", nativeQuery = true)
-//    String getTime();
 
-    @EntityGraph(attributePaths = {"imageSet"}) // attributePaths 같이 로딩해야 하는 속성을 명시함.
-    @Query("select d from Drive d where d.bno =:bno")
-    Optional<Drive> findByIdWithImages(Long bno); // bno를 이용해 이미지를 찾아옴.
+
+    @Query("select d, di from Drive d " +
+            "left outer join DriveImage di on di.drive = d ")
+    Page<Object[]> getListPage(Pageable pageable);
+
+    @Query("select d, di from Drive d " +
+            "left outer join DriveImage di on di.drive = d " +
+            "where d.bno = :bno")
+    List<Object[]> getDriveWithAll(Long bno);
 }

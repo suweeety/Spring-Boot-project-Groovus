@@ -1,121 +1,102 @@
 package com.groovus.www.service;
 
-import com.groovus.www.dto.DriveAllDTO;
-import jakarta.transaction.Transactional;
+import com.groovus.www.entity.Drive;
+import com.groovus.www.entity.DriveImage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.groovus.www.entity.Drive;
+import org.springframework.transaction.annotation.Transactional;
 import com.groovus.www.dto.DriveDTO;
 import com.groovus.www.dto.PageRequestDTO;
-import com.groovus.www.dto.PageResponseDTO;
+import com.groovus.www.dto.PageResultDTO;
+import com.groovus.www.repository.DriveImageRepository;
 import com.groovus.www.repository.DriveRepository;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.function.Function;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
-public class DriveServiceImpl implements DriveService{
-
-    private final ModelMapper modelMapper;
+public class DriveServiceImpl implements DriveService {
 
     private final DriveRepository driveRepository;
 
+    private final DriveImageRepository ImageRepository;
+
+    @Transactional
     @Override
     public Long register(DriveDTO driveDTO) {
 
-        Drive drive = dtoToEntity(driveDTO);
+        Map<String , Object> entityMap = dtoToEntity(driveDTO);
+        Drive drive =(Drive) entityMap.get("drive");
+        List<DriveImage> driveImageList= (List<DriveImage>) entityMap.get("imgList");
 
-        Long bno = driveRepository.save(drive).getBno();
+        driveRepository.save(drive);
 
-        return bno;
-//        Drive drive = modelMapper.map(driveDTO, Drive.class);
-//
-//        Long bno = driveRepository.save(drive).getBno();
-//
-//        return bno;
+        driveImageList.forEach(driveImage -> {
+           ImageRepository.save(driveImage);
+
+        });
+        return drive.getBno();
     }
 
     @Override
-    public DriveDTO readOne(Long bno) {
+    public DriveDTO getDrive(Long bno) {
+        List<Object[]> result = driveRepository.getDriveWithAll(bno);
 
-        Optional<Drive> result = driveRepository.findByIdWithImages(bno);
+        Drive drive = (Drive) result.get(0)[0];
 
-        Drive drive = result.orElseThrow();
+        List<DriveImage> driveImageList = new ArrayList<>();
 
-        // DriveDTO driveDTO = modelMapper.map(drive, DriveDTO.class);
+        result.forEach(arr -> {
+            DriveImage  driveImage = (DriveImage)arr[1];
+            driveImageList.add(driveImage);
+        });
 
-        DriveDTO driveDTO = entityToDTO(drive);
 
-        return driveDTO;
+        return entitiesToDTO(drive, driveImageList);
     }
 
     @Override
     public void modify(DriveDTO driveDTO) {
 
-        Optional<Drive> result = driveRepository.findById(driveDTO.getBno());
+        Drive drive = driveRepository.getOne(driveDTO.getBno());
 
-        Drive drive = result.orElseThrow();
+        if(drive != null) {
 
-        drive.change(driveDTO.getTitle());
+            drive.changeTitle(driveDTO.getTitle());
 
-        drive.clearImages();
-
-        if(driveDTO.getFileNames() != null){
-            for (String fileName : driveDTO.getFileNames()) {
-                String[] arr = fileName.split("_");
-                drive.addImage(arr[0], arr[1]);
-            }
+            driveRepository.save(drive);
         }
-        driveRepository.save(drive);
     }
+
 
     @Override
-    public void remove(Long bno) {
+    public PageResultDTO<DriveDTO, Object[]> getList(PageRequestDTO requestDTO) {
+          Pageable pageable = requestDTO.getPageable(Sort.by("bno").descending());
 
-        driveRepository.deleteById(bno);
+        Page<Object[]> result = driveRepository.getListPage(pageable);
+
+        log.info("==============================================");
+        result.getContent().forEach(arr -> {
+            log.info(Arrays.toString(arr));
+        });
+
+
+        Function<Object[], DriveDTO> fn = (arr -> entitiesToDTO(
+                (Drive)arr[0] ,
+                (List<DriveImage>)(Arrays.asList((DriveImage)arr[1]))
+
+        ));
+
+        return new PageResultDTO<>(result, fn);
     }
-
-    @Override
-    public PageResponseDTO<DriveDTO> list(PageRequestDTO pageRequestDTO) {
-
-        String[] types = pageRequestDTO.getTypes();
-        String keyword = pageRequestDTO.getKeyword();
-        Pageable pageable = pageRequestDTO.getPageable("bno");
-
-        Page<Drive> result = driveRepository.searchAll(types, keyword, pageable);
-
-        List<DriveDTO> dtoList = result.getContent().stream()
-                .map(drive -> modelMapper.map(drive,DriveDTO.class)).collect(Collectors.toList());
-
-        return PageResponseDTO.<DriveDTO>withAll()
-                .pageRequestDTO(pageRequestDTO)
-                .dtoList(dtoList)
-                .total((int)result.getTotalElements())
-                .build();
-
-    }
-
-//    @Override
-//    public PageResponseDTO<DriveAllDTO> listWithALl(PageRequestDTO pageRequestDTO) {
-//        String[] types = pageRequestDTO.getTypes();
-//        String keyword = pageRequestDTO.getKeyword();
-//        Pageable pageable = pageRequestDTO.getPageable("bno");
-//
-//        Page<DriveAllDTO> result = driveRepository.searchAll(types, keyword, pageable);
-//
-//        return PageResponseDTO.<DriveAllDTO>withAll()
-//                .pageRequestDTO(pageRequestDTO)
-//                .dtoList(result.getContent())
-//                .total((int)result.getTotalElements())
-//                .build();
-//    }
-
 }

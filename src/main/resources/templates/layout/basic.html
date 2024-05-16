@@ -345,7 +345,7 @@
             <i class="fa-solid fa-cloud"></i> <span class="nav-text">Drive</span>
           </a>
           <ul aria-expanded="false">
-            <li><a th:href="@{/drive/drive}">공유드라이브</a></li>
+            <li><a th:href="@{'/drive/drive/'+${pid}+'/'+${projectName}}">공유드라이브</a></li>
             <li><a th:href="@{/drive/bin}">휴지통</a></li>
           </ul>
         </li>
