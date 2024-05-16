@@ -29,10 +29,10 @@
                 <div class="card-body">
                     <h1>수정</h1>
 
-                    <form th:action="@{/drive/modify}" method="post" id="f1">
+                    <form th:action="@{/drive/modify}" method="post" id="f1" name="uploadForm">
                     <div class="input-group mb-3">
                         <span class="input-group-text">번호</span>
-                        <input type="text" class="form-control" th:value="${dto.bno}" readonly>
+                        <input type="text" class="form-control" th:value="${dto.bno}" name="bno" readonly>
                     </div>
 
                     <div class="input-group mb-3">
@@ -154,9 +154,12 @@
             e.preventDefault()
             e.stopPropagation()
 
-            formObj.action = `/drive/remove`
-            formObj.method ='post'
-            formObj.submit()
+            var removeForm = $("form[name='uploadForm']");
+
+            removeForm.attr("action","/drive/remove");
+            removeForm.attr("method","post");
+            removeForm.submit();
+
         }, false)
 
         document.querySelector(".listBtn").addEventListener("click", function(e){

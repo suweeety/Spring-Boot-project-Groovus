@@ -76,25 +76,59 @@
                         <div class="card-header">
                             Attachments
                         </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item" th:each="fileName: ${dto.fileNames}">
-                                <a th:href="@{'/download/' + ${fileName}}" download th:text="${fileName}">Download</a>
-                            </li>
+                        <ul class="list-group list-group-flush uploadResult">
+                            <th:block th:each="fileName: ${dto.fileNames}">
+                                <li class="list-group-item" th:data-filename="${fileName}">
+                                   [[${fileName}]]
+                                </li>
+                            </th:block>
                         </ul>
                     </div>
                 </div>
 
 
                 <div class="col">
-                    <div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                    <div class="card uploadImg" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
                         <img class="card-img-top"
                              th:each="fileName: ${dto.fileNames}"
-                             th:src="|/view/${fileName}|">
+                             th:src="|/view/${fileName}|" th:data-filename="${fileName}" >
                     </div>
             </div> <!-- card -->
         </div> <!-- col-lg-6 col-md-12 -->
     </div> <!-- row -->
+    </div>
 
+    <script th:inline="javascript">
+
+        $(document).ready(function (){
+
+            $(".uploadResult").on("click","li",function(e){
+
+                console.log("viewImage");
+
+                var liObj = $(this);
+
+                var path = encodeURIComponent(liObj.data("filename"));
+
+                    //다운로드 하기
+                    self.location = "/drive/download?fileName="+path;
+
+            });
+
+            $(".uploadImg").on("click","img",function(e){
+
+
+                var liObj = $(this);
+
+                var path = encodeURIComponent(liObj.data("filename"));
+
+                //다운로드 하기
+                self.location = "/drive/download?fileName="+path;
+
+            });
+        });
+
+    </script>
 </th:block>
 
 </html>

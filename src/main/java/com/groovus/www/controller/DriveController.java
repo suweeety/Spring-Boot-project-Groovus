@@ -1,19 +1,28 @@
 package com.groovus.www.controller;
 
+import org.springframework.core.io.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.groovus.www.dto.DriveDTO;
 import com.groovus.www.dto.PageRequestDTO;
 import com.groovus.www.dto.PageResponseDTO;
 import com.groovus.www.service.DriveService;
+
 
 @Controller
 @RequestMapping("/drive")
@@ -98,9 +107,13 @@ public class DriveController {
     }
 
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/remove")
-    public String remove(Long bno, RedirectAttributes redirectAttributes){
-        driveService.remove(bno);
+    public String remove(String bno, RedirectAttributes redirectAttributes){
+
+        log.info("================remove bno'==================");
+        log.info(bno);
+        driveService.remove(Long.parseLong(bno));
 
         redirectAttributes.addFlashAttribute("result", "removed");
 
@@ -108,4 +121,45 @@ public class DriveController {
     }
 
 
+    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public ResponseEntity<Resource> downloadFile(@RequestHeader("User-Agent") String userAgent, String fileName) {
+
+        Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
+
+        if (resource.exists() == false) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        String resourceName = resource.getFilename();
+
+        // remove UUID
+        String resourceOriginalName = resourceName.substring(resourceName.indexOf("_") + 1);
+
+        HttpHeaders headers = new HttpHeaders();
+        try {
+
+            String downloadName = null;
+
+            if ( userAgent.contains("Trident")) {
+                log.info("IE browser");
+                downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
+            }else if(userAgent.contains("Edge")) {
+                log.info("Edge browser");
+                downloadName =  URLEncoder.encode(resourceOriginalName,"UTF-8");
+            }else {
+                log.info("Chrome browser");
+                downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");
+            }
+
+            log.info("downloadName: " + downloadName);
+
+            headers.add("Content-Disposition", "attachment; filename=" + downloadName);
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+    }
 }

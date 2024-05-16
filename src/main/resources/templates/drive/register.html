@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <h1>등록</h1>
 
-                    <form action="/drive/register" method="post">
+                    <form action="/drive/register" method="post" name="regiForm">
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
                             <input type="text" name="title" class="form-control" placeholder="Title">
@@ -45,13 +45,13 @@
                             <span class="input-group-text">파일</span>
                             <div class="float-end uploadHidden">
                                 <button type="button" class="btn btn-primary uploadFileBtn">파일 추가</button>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalpopover">파일 추가</button>
+<!--                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalpopover">파일 추가</button>-->
                             </div>
                         </div>
 
                         <div class="my-4">
                             <div class="float-end">
-                                <button type="submit" class="btn btn-primary submitBtn">저장</button>
+                                <button type="button" class="btn btn-primary submitBtn">저장</button>
                                 <button type="reset" class="btn btn-secondary">Reset</button>
                             </div>
                         </div>
@@ -245,7 +245,10 @@
 
             const target = document.querySelector(".uploadHidden")
 
-            const uploadFiles = uploadResult.querySelectorAll("img")
+            const uploadFiles  = document.querySelector(".uploadResult").querySelectorAll("img");
+
+           alert(uploadFiles)
+
 
             let str = ''
 
@@ -258,7 +261,7 @@
 
             target.innerHTML = str;
 
-            const formObj = document.querySelector("form");
+            const formObj = document.querySelector("form[name='regiForm']");
 
             formObj.submit();
             formObj.reset();
