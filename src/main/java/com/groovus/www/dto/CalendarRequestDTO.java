@@ -1,9 +1,6 @@
 package com.groovus.www.dto;
 
-import com.groovus.www.entity.CalendarAttach;
-import com.groovus.www.entity.CalendarLink;
-import com.groovus.www.entity.Member;
-import jakarta.validation.constraints.NotEmpty;
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -16,28 +13,29 @@ import java.util.List;
 public class CalendarRequestDTO {
 
     //tb_calendar
-    private String cal_id; //
+    private String cal_id; // 일정 아이디
 
-    private String cal_title; //
+    private String cal_title; // 일정 제목
 
-    private String cal_content; //
+    private String cal_content; // 일정 내용
 
-    private String cal_cate; //
+    private String cal_cate; // 카테고리
 
-    private String cal_startDate; //
+    private String cal_startDate; // 시작 날짜
 
-    private String cal_endDate;
+    private String cal_endDate; // 종료 날짜
 
-    private List<String> cal_attach;
+    private List<String> cal_attach; // 첨부파일
 
-    private List<String> cal_link_list;
+    private String cal_link_list; // 링크
 
-    private List<String> cal_members;
+    @NotNull
+    private List<String> cal_members; // 초대 멤버 uid
 
     private String pid; // 프로젝트 번호
 
-    private String create_user_id;
+    private String create_user_id; // 작성자
 
-    private String update_user_id;
+    private String update_user_id; // 수정
 
 }

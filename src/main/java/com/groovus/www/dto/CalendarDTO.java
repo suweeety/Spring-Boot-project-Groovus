@@ -30,7 +30,7 @@ public class CalendarDTO {
 
     private String cal_link_list;
 
-    private List<Member> cal_members;
+    private List<String> cal_members;
 
     private Long pid; // 프로젝트 번호
 

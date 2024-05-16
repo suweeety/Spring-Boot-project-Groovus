@@ -1,6 +1,9 @@
 package com.groovus.www.controller;
 
 import com.groovus.www.dto.*;
+import com.groovus.www.dto.CalendarDTO;
+import com.groovus.www.dto.CalendarRequestDTO;
+import com.groovus.www.dto.MemberDTO;
 import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
 import com.groovus.www.entity.Project;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -91,19 +95,16 @@ public class CommonController {
     @GetMapping("/calendar/schedule/{pid}/{projectName}")
     public String goScheduleManagement(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName ,Model model){
         //일정관리로 이동
+
         log.info("---------------------------------------");
         log.info("pid****: " + pid);
         List<CalendarDTO> calendarList = calendarService.getList(Long.parseLong(pid));
         log.info(calendarList);
-//        CalendarDTO calendarDTO = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
-//        log.info(calendarDTO);
         log.info("---------------------------------------");
 
         model.addAttribute("calendarList", calendarList);
         model.addAttribute("pid",pid);
         model.addAttribute("projectName",projectName);
-
-//        model.addAttribute("calendarDTO", calendarDTO);
 
         return "calendar/schedule";
     }
@@ -122,7 +123,7 @@ public class CommonController {
         model.addAttribute("projectName",projectName);
         return "drive/bin";
     }
-    
+
     @GetMapping("/setting/{pid}/{projectName}")
     public String goSetting(Model model,@PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
 

@@ -2,6 +2,7 @@ package com.groovus.www.controller;
 
 import com.groovus.www.dto.CalendarDTO;
 import com.groovus.www.dto.CalendarRequestDTO;
+import com.groovus.www.entity.Calendar;
 import com.groovus.www.entity.Member;
 import com.groovus.www.repository.CalendarRepository;
 import com.groovus.www.service.CalendarService;
@@ -20,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -33,17 +35,16 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
 
     // 프로젝트와 일정에 해당하는 값 반환
     @PreAuthorize("isAuthenticated()")
-    @GetMapping(value = "/read/{pid}/{cal_id}", produces = MediaType.APPLICATION_JSON_VALUE) // {pid},{cal_id}를 json 형태로 보내줌
+    @GetMapping(value = "/read/{pid}/{cal_id}") // {pid},{cal_id}를 쿼리스트링으로
     public ResponseEntity<CalendarDTO> get(@PathVariable("pid") String pid, @PathVariable("cal_id") String cal_id) {
 
         log.info("cal_id****: " + cal_id);
         log.info("pid****: " + pid);
-        log.info("---------------------------------------------------------------");
+        log.info("-------------------------readController--------------------------------------");
         // pid와 cal_id를 이용하여 값을 조회해 옴
         CalendarDTO dto = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
-        log.info(dto);
-        log.info("---------------------------------------------------------------");
-
+        log.info(dto.getCal_members());
+        log.info("-------------------------readController dto--------------------------------------");
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -55,7 +56,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info("registerPOST 확인");
         log.info(calendarRequestDTO.getPid());
         log.info(calendarRequestDTO.getCal_cate());
-        log.info(calendarRequestDTO.getCal_members());
+        log.info(calendarRequestDTO.getCal_members().stream().toArray());
         log.info(calendarRequestDTO.getCreate_user_id());
         log.info("==========================================================");
 
@@ -87,10 +88,21 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify") // 일정 수정
-    public ResponseEntity<String> modify(String update_user_id, CalendarRequestDTO calendarRequestDTO) {
+    public ResponseEntity<String> modify(CalendarRequestDTO calendarRequestDTO , String cal_members_str) {
+
+        log.info("==================+cal_members_str===================");
+        log.info(cal_members_str);
+
+        String[] cal_members = cal_members_str.split(",");
+
+        log.info("==================+cal_members====================");
+        log.info(cal_members);
+
+        calendarRequestDTO.setCal_members(Arrays.asList(cal_members));
 
         log.info("==================++++++++++===================");
         log.info("modify:"+calendarRequestDTO);
+        log.info("멤바리스트는:"+calendarRequestDTO.getCal_members());
         log.info("==================++++++++++===================");
 
         calendarService.modify(calendarRequestDTO, Long.parseLong(calendarRequestDTO.getPid()), Long.parseLong(calendarRequestDTO.getCal_id()));
@@ -98,8 +110,8 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    @DeleteMapping("/{cal_id}") // 일정 삭제
-    public ResponseEntity<String> remove(@PathVariable("cal_id") Long cal_id) {
+    @DeleteMapping("/delete/{pid}/{cal_id}") // 일정 삭제
+    public ResponseEntity<String> remove(@PathVariable("pid") Long pid, @PathVariable("cal_id") Long cal_id) {
 
         log.info("cal_id in remove method: " + cal_id);
 

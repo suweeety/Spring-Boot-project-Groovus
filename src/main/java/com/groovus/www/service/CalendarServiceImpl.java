@@ -11,15 +11,10 @@ import com.groovus.www.repository.ProjectRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,33 +39,15 @@ public class CalendarServiceImpl implements CalendarService{
 
         Member createMember = result.get();
 
-        log.info("======createMember");
-        log.info(createMember.getUid());
-
-        Calendar calendar = Calendar.builder()
-                .cal_title(calendarRequestDTO.getCal_title())
-                .cal_content(calendarRequestDTO.getCal_content())
-                .cal_cate(calendarRequestDTO.getCal_cate())
-                .cal_startDate(calendarRequestDTO.getCal_startDate())
-                .cal_endDate(calendarRequestDTO.getCal_endDate())
-                .create_user_id(createMember)
-                .build();
-
-        // 멤버 초대
-        for (String memberUid : calendarRequestDTO.getCal_members()) {
-
-            log.info("memberUid: " + memberUid);
-
-            Optional<Member> result2 = memberRepository.findByUid(memberUid);
-
-            log.info("result2: " + result2);
-
-            if(!result2.isEmpty()) {
-
-                Member member = result.get();
-                calendar.addMember(member);
-            }
-        }
+            Calendar calendar = Calendar.builder()
+                    .cal_title(calendarRequestDTO.getCal_title())
+                    .cal_content(calendarRequestDTO.getCal_content())
+                    .cal_cate(calendarRequestDTO.getCal_cate())
+                    .cal_startDate(calendarRequestDTO.getCal_startDate())
+                    .cal_endDate(calendarRequestDTO.getCal_endDate())
+                    .cal_link_list(calendarRequestDTO.getCal_link_list())
+                    .create_user_id(createMember)
+                    .build();
 
         // 프로젝트에 등록
         Optional<Project> proResult = projectRepository.findByIdWithMember(pid);
@@ -80,12 +57,24 @@ public class CalendarServiceImpl implements CalendarService{
             calendar.setProject(project);
         }
 
+        // 멤버 초대
+        for (String cal_members : calendarRequestDTO.getCal_members()) {
+            log.info("cal_members: " + cal_members);
+            Optional<Member> memberResult = memberRepository.findByUid(cal_members);
+            log.info("memberResult: " + memberResult);
+            if (memberResult.isPresent()) {
+                Member member = memberResult.get();
+                log.info("member: " + member);
+                calendar.addMember(member);
+            }
+        }
+
         log.info("register method: "+calendar);
         calendarRepository.save(calendar);
         log.info("calendar.getCal_id(): "+calendar.getCal_id());
-        log.info("calendar.getCreate_user_id(): "+calendar.getCreate_user_id());
 
         return calendar.getCal_id();
+
     }
 
     @Override
@@ -101,52 +90,119 @@ public class CalendarServiceImpl implements CalendarService{
     }
 
     @Override
-    public CalendarDTO readOne(Long pid, Long cal_id) { // 하나의 일정 가져오는 용
+    public CalendarDTO readOne(Long pid, Long cal_id) {
 
+        // 하나의 일정 가져오는 용
         Optional<Calendar> result = calendarRepository.findCalendarByCal_idAndProject(pid, cal_id);
 
-        log.info("=======================================================");
-        log.info("readOne method: "+result);
-        log.info("readOne method: "+pid);
-        log.info("readOne method: "+cal_id);
-        log.info("=======================================================");
+        // pid, cal_id로 가져온 calendar 정보(result)
+        if(result.isPresent()){
+            Calendar calendar = result.get();
 
-        return result.isPresent() ? entityToDto(result.get()) : null;
+            log.info("=====================calendar========================");
+            log.info(calendar.getCreate_user_id().getUid());
+            log.info(calendar);
+            log.info("====================================================");
 
+            // 일정 등록자용
+            Optional<Member> memberResult = memberRepository.getMemberByMid(calendar.getCreate_user_id().getMid());
+
+            // 일정 등록자 정보가 있으면
+            if(memberResult.isPresent()){
+                Member member = memberResult.get();
+
+                // member라는 이름으로 changeUpdateMember 메서드의 update_user_id에 담음
+                calendar.changeUpdateMember(member);
+                calendarRepository.save(calendar);
+
+                CalendarDTO dto = CalendarDTO.builder()
+                        .cal_title(calendar.getCal_title())
+                        .cal_content(calendar.getCal_content())
+                        .cal_cate(calendar.getCal_cate())
+                        .cal_startDate(calendar.getCal_startDate())
+                        .cal_endDate(calendar.getCal_endDate())
+                        .cal_link_list(calendar.getCal_link_list())
+                        .cal_members(calendar.getCal_members().stream().map(member1 -> {
+                            String uid = member1.getUid();
+                            return uid;
+                        }).collect(Collectors.toList()))
+                        .update_user_id(calendar.getUpdate_user_id().getUid())
+                        .build();
+                log.info("=======================================================");
+                log.info(dto);
+                log.info("=======================================================");
+
+                return dto;
+
+            }else{
+                return null;
+            }
+        }else {
+            return null;
+        }
     }
-
 
     @Override
     public void modify(CalendarRequestDTO calendarRequestDTO, Long pid, Long cal_id) {
-        //CalendarRequestDTO: String 타입으로 이루어짐
 
         Optional<Calendar> calResult = calendarRepository.findById(cal_id);
         if(calResult.isPresent()){
             Calendar calendar = calResult.get();
 
-            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(), calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate());
+            log.info("======cal_id는-=====>");
+            log.info(calendar.getCal_id());
+            log.info(cal_id);
+            log.info("======cal_id끝-=====>");
+            
+            calendar.change(calendarRequestDTO.getCal_title(), calendarRequestDTO.getCal_content(), calendarRequestDTO.getCal_cate(),
+                    calendarRequestDTO.getCal_startDate(), calendarRequestDTO.getCal_endDate(), calendarRequestDTO.getCal_link_list());
 
             Optional<Member> memberResult = memberRepository.findByUid(calendarRequestDTO.getUpdate_user_id());
+
             if(memberResult.isPresent()){
+
                 Member member = memberResult.get();
 
                 calendar.setUpdate_user_id(member);
 
-                calendarRepository.save(calendar);
+                calendar.addMember(member);
+
+                List<String> members = calendarRequestDTO.getCal_members();
+
+                for(String imember : members){
+
+                    Optional<Member> inviteResult = memberRepository.findByUid(imember);
+                    if(inviteResult.isPresent()){
+                        Member inviteMember = inviteResult.get();
+                        calendar.addMember(inviteMember);
+                    }
+
+                }
             }
+
         }
     }
 
     @Override
     public boolean remove(Long cal_id) {
 
-        calendarRepository.deleteById(cal_id);
+        calendarRepository.deleteByCal_id(cal_id);
 
         return false;
 
     }
 
+    @Override
+    public int countSchedule(Long pid) {
 
+        return calendarRepository.countCalendarsByProject(pid);
+    }
+
+    @Override
+    public List<CalendarRequestDTO> getInvitedMembers(Long pid) {
+
+        return null;
+    }
 
 
 }
