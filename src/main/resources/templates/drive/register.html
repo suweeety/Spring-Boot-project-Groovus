@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <h1>등록</h1>
 
-                    <form action="/drive/register" method="post" name="regiForm">
+                    <form th:action="@{'/drive/register/'+${pid}+'/'+${projectName}}" method="post" name="regiForm">
                         <div class="input-group mb-3">
                             <span class="input-group-text">제목</span>
                             <input type="text" name="title" class="form-control" placeholder="Title">
@@ -197,7 +197,7 @@
             });
 
             function showImageList(result){
-                alert(result); //undefined
+                //undefined
                 showUploadFile(result);
             }
 
@@ -247,7 +247,7 @@
 
             const uploadFiles  = document.querySelector(".uploadResult").querySelectorAll("img");
 
-           alert(uploadFiles)
+           alert("등록되었습니다.");
 
 
             let str = ''

@@ -76,7 +76,7 @@
 
                             <th scope="row">[[${dto.bno}]]</th>
                             <td>
-                                <a th:href="|@{/drive/read(bno =${dto.bno})}&${link}|" class="text-decoration-none"> [[${dto.title}]] </a>
+                                <a th:href="@{'/drive/read?bno='+${dto.bno}+'&'+${link}+'&pid='+${pid}+'&projectName='+${projectName}}" class="text-decoration-none"> [[${dto.title}]] </a>
                             </td>
                             <td>[[${dto.nickname}]]</td>
                             <td>[[${#temporals.format(dto.regdate, 'yyyy-MM-dd')}]]</td>
@@ -164,7 +164,7 @@
         document.querySelector(".registerBtn").addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            window.location.href = "/drive/register";
+            window.location.href = "/drive/register/"+[[${pid}]]+"/"+[[${projectName}]];
         });
     </script>
 

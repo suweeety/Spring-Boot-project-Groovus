@@ -1,12 +1,12 @@
 package com.groovus.www.controller;
 
+import com.mysema.commons.lang.URLEncoder;
 import org.springframework.core.io.Resource;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,29 +32,34 @@ public class DriveController {
 
     private final DriveService driveService;
 
-    @GetMapping("/drive")
-    public void list(PageRequestDTO pageRequestDTO, Model model) {
+    @GetMapping("/drive/{pid}/{projectName}")
+    public String list (@PathVariable("pid") String pid, @PathVariable("projectName") String projectName,  PageRequestDTO pageRequestDTO, Model model) {
 
         PageResponseDTO<DriveDTO> responseDTO = driveService.list(pageRequestDTO);
 
         log.info(responseDTO);
 
         model.addAttribute("responseDTO", responseDTO);
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
 
+        return "drive/drive";
     } // list
 
-    @GetMapping("/register")
-    public void registerGet() {
+    @GetMapping("/register/{pid}/{projectName}")
+    public String registerGet(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName ,Model model) {
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
 
+        return "drive/register";
     }
 
-    @PostMapping("/register")
-    public String registerPost(@Valid DriveDTO driveDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    @PostMapping("/register/{pid}/{projectName}")
+    public String registerPost(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName,@Valid DriveDTO driveDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             log.info("has errors...");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
-            return "redirect:/drive/register";
         }
 
         log.info(driveDTO);
@@ -62,26 +67,32 @@ public class DriveController {
         Long bno = driveService.register(driveDTO);
 
         redirectAttributes.addFlashAttribute("result", bno);
+        redirectAttributes.addFlashAttribute("pid",pid);
+        redirectAttributes.addFlashAttribute("projectName",projectName);
 
-        return "redirect:/drive/drive";
+
+        String newUrl = URLEncoder.encodeURL("/drive/drive/"+pid+"/"+projectName);
+        return "redirect:"+newUrl;
     }
 
     @GetMapping({"/read", "/modify"})
-    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model) {
+    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model , String pid , String projectName) {
 
         DriveDTO driveDTO = driveService.readOne(bno);
 
         log.info(driveDTO);
 
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
         model.addAttribute("dto", driveDTO);
 
     } // read
 
-    @PostMapping("/modify")
+    @PostMapping("/modify/{pid}/{projectName}")
     public String modify( PageRequestDTO pageRequestDTO,
                           @Valid DriveDTO driveDTO,
                           BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes){
+                          RedirectAttributes redirectAttributes , @PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
 
         log.info("drive modify post......." + driveDTO);
 
@@ -91,10 +102,14 @@ public class DriveController {
             String link = pageRequestDTO.getLink();
 
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
-
             redirectAttributes.addAttribute("bno", driveDTO.getBno());
+            redirectAttributes.addFlashAttribute("pid",pid);
+            redirectAttributes.addFlashAttribute("projectName",projectName);
 
-            return "redirect:/drive/modify?"+link;
+            String newUrl = URLEncoder.encodeURL("/drive/modify?"+link+"&pid="+pid+"&projectName="+projectName);
+
+
+            return "redirect:"+newUrl;
         }
 
         driveService.modify(driveDTO);
@@ -102,22 +117,28 @@ public class DriveController {
         redirectAttributes.addFlashAttribute("result", "modified");
 
         redirectAttributes.addAttribute("bno", driveDTO.getBno());
+        redirectAttributes.addFlashAttribute("pid",pid);
+        redirectAttributes.addFlashAttribute("projectName",projectName);
 
-        return "redirect:/drive/drive";
+        String newUrl = URLEncoder.encodeURL("/drive/drive/"+pid+"/"+projectName);
+        return "redirect:"+newUrl;
     }
 
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/remove")
-    public String remove(String bno, RedirectAttributes redirectAttributes){
+    @PostMapping("/remove/{pid}/{projectName}")
+    public String remove(String bno, RedirectAttributes redirectAttributes,@PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
 
         log.info("================remove bno'==================");
         log.info(bno);
         driveService.remove(Long.parseLong(bno));
 
         redirectAttributes.addFlashAttribute("result", "removed");
+        redirectAttributes.addFlashAttribute("pid",pid);
+        redirectAttributes.addFlashAttribute("projectName",projectName);
 
-        return "redirect:/drive/drive";
+        String newUrl = URLEncoder.encodeURL("/drive/drive/"+pid+"/"+projectName);
+        return "redirect:"+newUrl;
     }
 
 
@@ -143,10 +164,10 @@ public class DriveController {
 
             if ( userAgent.contains("Trident")) {
                 log.info("IE browser");
-                downloadName = URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
+                downloadName = java.net.URLEncoder.encode(resourceOriginalName, "UTF-8").replaceAll("\\+", " ");
             }else if(userAgent.contains("Edge")) {
                 log.info("Edge browser");
-                downloadName =  URLEncoder.encode(resourceOriginalName,"UTF-8");
+                downloadName =  java.net.URLEncoder.encode(resourceOriginalName,"UTF-8");
             }else {
                 log.info("Chrome browser");
                 downloadName = new String(resourceOriginalName.getBytes("UTF-8"), "ISO-8859-1");

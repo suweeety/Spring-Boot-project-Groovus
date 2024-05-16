@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <h1>수정</h1>
 
-                    <form th:action="@{/drive/modify}" method="post" id="f1" name="uploadForm">
+                    <form th:action="@{'/drive/modify/'+${pid}+'/'+${projectName}}" method="post" id="f1" name="uploadForm">
                     <div class="input-group mb-3">
                         <span class="input-group-text">번호</span>
                         <input type="text" class="form-control" th:value="${dto.bno}" name="bno" readonly>
@@ -88,7 +88,7 @@
                                     th:onclick="removeFile([[${arr[0]}]], [[${arr[1]}]], this)">X</button>
                         </div>
                         <div class="card-body">
-                            <img th:src="|/upload/s_${fileName}|" th:data-src="${fileName}" >
+                            <img th:src="|/view/${fileName}|" th:data-src="${fileName}" >
                         </div>
                     </div><!-- card -->
                 </th:block>
@@ -106,7 +106,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="input-group mb-3">
-                        <<input type="file" name="files" class="form-control" multiple>
+                        <input type="file" name="files" class="form-control" multiple>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -143,7 +143,7 @@
             e.preventDefault()
             e.stopPropagation()
 
-            formObj.action = `/drive/modify?${link}`
+            formObj.action = `/drive/modify/`+[[${pid}]]+`/`+[[${projectName}]]+`?${link}`;
             formObj.method ='post'
             formObj.submit()
 
@@ -156,7 +156,7 @@
 
             var removeForm = $("form[name='uploadForm']");
 
-            removeForm.attr("action","/drive/remove");
+            removeForm.attr("action","/drive/remove/"+[[${pid}]]+"/"+[[${projectName}]]);
             removeForm.attr("method","post");
             removeForm.submit();
 
