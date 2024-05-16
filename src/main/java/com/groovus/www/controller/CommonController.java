@@ -71,7 +71,6 @@ public class CommonController {
         List<TaskReplyDTO> taskReplyDTOList = taskService.getMyReplyList(uid,Long.parseLong(pid));
         List<TaskReReplyDTO> taskReReplyDTOList = taskService.getMyReReplyList(uid,Long.parseLong(pid));
 
-
         model.addAttribute("taskReplyDTOList",taskReplyDTOList);
         model.addAttribute("taskReReplyDTOList" , taskReReplyDTOList);
         //내가 쓴 댓글로 이동
