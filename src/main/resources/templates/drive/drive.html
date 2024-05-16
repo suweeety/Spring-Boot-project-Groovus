@@ -22,101 +22,151 @@
 
 <th:block layout:fragment="content">
 
-<!--    <div class="row">-->
+    <div class="row">
 
-<!--        <div class="col-lg-6 col-md-12">-->
-<!--            <div class="card">-->
-<!--                <div class="card-body">-->
-<!--                    <h1>드라이브</h1>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1>드라이브</h1>
 
+                    <!-- 검색 -->
+                    <div class="row mt-3">
+                        <form action="/drive/drive" method="get">
+                            <div class="col">
+                                <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+                                <input type="hidden" name="type" value="tw">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary searchBtn" type="submit">검색</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- 까지 검색-->
 
-    <span>
-                <a th:href="@{'/drive/register/'+${pid}+'/'+${projectName}}">
-                    <button type="button" class="btn btn-outline-primary">파일 등록
-                    </button>
-                </a>
-            </span>
-    </h1>
+                    <!-- 등록 버튼-->
+                    <div class="float-end">
+                        <button type="button" class="btn btn-primary registerBtn">등록</button>
+                    </div>
 
-
-<!--    다운로드 버튼 <button type="button" class="btn btn-success" onclick="downloadSelectedFiles()">다운로드</button>-->
-
-    <form th:action="@{'/drive/drive/'+${pid}+'/'+${projectName}}" method="get" id="searchForm">
-        <input type="hidden" name="page" value="1">
-    </form>
-
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col"></th>
-            <th scope="col">제목</th>
-
-            <th scope="col">수정일</th>
-        </tr>
-        </thead>
-        <tbody>
-
-        <tr th:each="dto : ${result.dtoList}" >
-            <td>
-                <input type="checkbox" name="selectedItems" th:value="${dto.bno}"/>
-            </td>
-
-            <td><img th:if="${dto.imageDTOList.size() > 0 && dto.imageDTOList[0].path != null }"
-                     th:src="|/display?fileName=${dto.imageDTOList[0].getThumbnailURL()}|" >
-                <a th:href="@{'/drive/read?bno='+${dto.bno}+'&page='+${result.page}+'&pid='+${pid}+'&projectName='+${projectName}}">[[${dto.title}]]</td>
-
-            <td>[[${#temporals.format(dto.modDate, 'yyyy/MM/dd')}]]</td>
-        </tr>
-
-        </tbody>
-    </table>
-
-    <ul class="pagination h-100 justify-content-center align-items-center">
-
-        <li class="page-item " th:if="${result.prev}">
-            <a class="page-link" th:href="@{'/drive/drive/'+${pid}+'/'+${projectName}+'?page='+${result.start -1}+'?tabindex=-1'}"> Previous</a>
-        </li>
-        <li th:class="'page-item ' + ${result.page == page?'active':''} " th:each="page: ${result.pageList}">
-            <a class="page-link" th:href="@{/drive/drive(page = ${page})}">
-                [[${page}]]
-            </a>
-        </li>
-
-        <li class="page-item" th:if="${result.next}">
-            <a class="page-link" th:href="@{'/drive/drive/'+${pid}+'/'+${projectName}+'?page='+${result.end + 1}}">Next</a>
-        </li>
-    </ul>
+<!--                    <div class="float-end">-->
+<!--                        <button type="button" class="btn btn-danger moveToTrashBtn">삭제</button> &lt;!&ndash; 휴지통으로 &ndash;&gt;-->
+<!--                    </div>-->
 
 
-    <script th:inline="javascript">
+                    <table class="table">
+                        <thead>
+                        <tr>
+<!--                            <th scope="col"></th>-->
+                            <th scope="col">번호</th>
+                            <th scope="col">제목</th>
+                            <th scope="col">작성자</th>
+                            <th scope="col">수정일</th>
+                        </tr>
+                        </thead>
+
+                        <tbody th:with="link = ${pageRequestDTO.getLink()}">
+
+                        <tr th:each="dto:${responseDTO.dtoList}">
+<!--                            <td>-->
+<!--                                <input type="checkbox" name="selectedItems" th:value="${dto.bno}" class="form-check-input">-->
+<!--                            </td>-->
+
+                            <th scope="row">[[${dto.bno}]]</th>
+                            <td>
+                                <a th:href="@{'/drive/read?bno='+${dto.bno}+'&'+${link}+'&pid='+${pid}+'&projectName='+${projectName}}" class="text-decoration-none"> [[${dto.title}]] </a>
+                            </td>
+                            <td>[[${dto.nickname}]]</td>
+                            <td>[[${#temporals.format(dto.regdate, 'yyyy-MM-dd')}]]</td>
+                        </tr>
+
+
+                        </tbody>
+
+                    </table>
+
+                    <!-- 페이지 -->
+                    <div class="float-end">
+                        <ul class="pagination flex-wrap">
+
+                            <li class="page-item" th:if="${responseDTO.prev}">
+                                <a class="page-link" th:data-num="${responseDTO.start - 1}"><</a>
+                            </li>
+
+                            <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
+                                <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >
+                                    <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                </li>
+
+                            </th:block>
+
+                            <li class="page-item" th:if="${responseDTO.next}">
+                                <a class="page-link" th:data-num="${responseDTO.end + 1}">></a>
+                            </li>
+
+                        </ul>
+                    </div> <!-- 까지 페이지-->
+
+                </div>
+            </div>
+        </div>
+    </div> <!-- row -->
+
+    <!-- 모달 -->
+   <!-- <div class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <!-- 까지 모달-->
+
+    <script layout:fragment="script" th:inline="javascript">
+        document.querySelector(".pagination").addEventListener("click", function (e) {
+            e.preventDefault()
+            e.stopPropagation()
+
+            const target = e.target
+
+            if(target.tagName !== 'A') {
+                return
+            }
+
+            const num = target.getAttribute("data-num")
+
+            const formObj = document.querySelector("form")
+
+            formObj.innerHTML += `<input type='hidden' name='page' value='${num}'>`
+
+            formObj.submit();
+
+        }, false)
+
+
+
 
     </script>
 
-<!--   다운로드 <script th:inline="javascript">-->
-<!--        function downloadSelectedFiles() {-->
-<!--            // 체크된 항목들을 가져옵니다.-->
-<!--            var selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');-->
-
-<!--            // 체크된 항목들의 bno 값을 가져와서 배열로 저장합니다.-->
-<!--            var selectedBnos = [];-->
-<!--            selectedItems.forEach(function(item) {-->
-<!--                selectedBnos.push(item.value);-->
-<!--            });-->
-
-<!--            // 체크된 항목이 없는 경우에는 알림을 표시합니다.-->
-<!--            if (selectedBnos.length === 0) {-->
-<!--                alert('선택된 파일이 없습니다.');-->
-<!--                return;-->
-<!--            }-->
-
-<!--            // 서버로 선택된 파일들의 bno 값을 전달하여 다운로드 요청을 보냅니다.-->
-<!--            window.location.href = '/drive/download?bno=' + selectedBnos.join(',');-->
-<!--        }-->
-<!--    </script> -->
+    <script layout:fragment="script" th:inline="javascript">
+        document.querySelector(".registerBtn").addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = "/drive/register/"+[[${pid}]]+"/"+[[${projectName}]];
+        });
+    </script>
 
 </th:block>
 
