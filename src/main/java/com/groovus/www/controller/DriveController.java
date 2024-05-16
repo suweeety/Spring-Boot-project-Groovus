@@ -3,6 +3,7 @@ package com.groovus.www.controller;
 import com.mysema.commons.lang.URLEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +44,7 @@ public class DriveController {
         return "redirect:"+newUrl;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/drive/{pid}/{projectName}")
     public String list(PageRequestDTO pageRequestDTO, Model model ,@PathVariable("pid") String pid , @PathVariable("projectName")String projectName){
         //리스트로 이동
