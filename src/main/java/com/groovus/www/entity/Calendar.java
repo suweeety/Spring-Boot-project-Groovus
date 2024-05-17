@@ -81,6 +81,10 @@ public class Calendar extends BaseEntity{
         log.info(member);
     }
 
+    public void removeMember(Member member) {
+        this.cal_members.remove(member);
+    }
+
     public void addImage(String uuid, String fileName) {
         CalendarImage calendarImage = CalendarImage.builder()
                 .uuid(uuid)

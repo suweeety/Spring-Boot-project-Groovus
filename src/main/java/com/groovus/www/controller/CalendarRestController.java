@@ -45,6 +45,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         CalendarDTO dto = calendarService.readOne(Long.parseLong(pid), Long.parseLong(cal_id));
         log.info(dto.getCal_members());
         log.info("-------------------------readController dto--------------------------------------");
+
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
@@ -60,7 +61,7 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info(calendarRequestDTO.getCreate_user_id());
         log.info("==========================================================");
 
-// 카테고리를 한글화하는 작업
+        // 카테고리를 한글화하는 작업
         if(calendarRequestDTO.getCal_cate().equals("bg-team")) {
             calendarRequestDTO.setCal_cate("팀 회의");
         } else if(calendarRequestDTO.getCal_cate().equals("bg-dept")) {
@@ -99,6 +100,23 @@ public class CalendarRestController { // JSON을 주로 보내는 목적으로 �
         log.info(cal_members);
 
         calendarRequestDTO.setCal_members(Arrays.asList(cal_members));
+
+        // 카테고리를 한글화하는 작업
+        if(calendarRequestDTO.getCal_cate().equals("bg-team")) {
+            calendarRequestDTO.setCal_cate("팀 회의");
+        } else if(calendarRequestDTO.getCal_cate().equals("bg-dept")) {
+            calendarRequestDTO.setCal_cate("부서 회의");
+        } else if(calendarRequestDTO.getCal_cate().equals("bg-company-event")) {
+            calendarRequestDTO.setCal_cate("사내 행사");
+        } else if(calendarRequestDTO.getCal_cate().equals("bg-personal-event")) {
+            calendarRequestDTO.setCal_cate("개인 일정");
+        } else if(calendarRequestDTO.getCal_cate().equals("bg-account-event")) {
+            calendarRequestDTO.setCal_cate("거래처 일정");
+        } else if(calendarRequestDTO.getCal_cate().equals("bg-business-trip")) {
+            calendarRequestDTO.setCal_cate("출장");
+        } else {
+            calendarRequestDTO.setCal_cate("기타");
+        }
 
         log.info("==================++++++++++===================");
         log.info("modify:"+calendarRequestDTO);

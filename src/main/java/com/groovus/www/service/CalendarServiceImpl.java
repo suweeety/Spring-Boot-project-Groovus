@@ -69,9 +69,7 @@ public class CalendarServiceImpl implements CalendarService{
             }
         }
 
-        log.info("register method: "+calendar);
         calendarRepository.save(calendar);
-        log.info("calendar.getCal_id(): "+calendar.getCal_id());
 
         return calendar.getCal_id();
 
