@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 @Entity
@@ -30,5 +31,19 @@ public class Project extends BaseEntity {
 
     public void addMember(Member member){
         this.projectMember.add(member);
+    }
+
+    public void changeProjectDescription(String projectDescription){
+
+        this.projectDescription = projectDescription;
+    }
+    public void changePassword(String projectPassword){
+        this.projectPassword = projectPassword;
+    }
+
+    public void deleteMember(Member deleteMember){
+
+        projectMember.remove(deleteMember);
+
     }
 }

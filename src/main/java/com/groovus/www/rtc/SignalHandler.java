@@ -1,9 +1,9 @@
 package com.groovus.www.rtc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;;
-import com.groovus.www.dto.ChatRoomDto;
-import com.groovus.www.dto.ChatRoomMap;
-import com.groovus.www.dto.WebSocketMessage;
+import com.groovus.www.dto.chat.ChatRoomDto;
+import com.groovus.www.dto.chat.ChatRoomMap;
+import com.groovus.www.dto.chat.WebSocketMessage;
 import com.groovus.www.service.ChatService.ChatServiceMain;
 import com.groovus.www.service.ChatService.RtcChatService;
 import lombok.RequiredArgsConstructor;

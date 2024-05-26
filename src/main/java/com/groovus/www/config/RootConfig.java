@@ -16,7 +16,8 @@ public class RootConfig {
         modelMapper.getConfiguration()  // 기본 환경설정을 가져옴.
                 .setFieldMatchingEnabled(true) // private 인 필드도 맵핑
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE) //Private 필드 매핑
-                .setMatchingStrategy(MatchingStrategies.LOOSE);
+                .setMatchingStrategy(MatchingStrategies.LOOSE)
+                .setAmbiguityIgnored(true);
         //MatchingStrategies.STANDARD(default)
         //모든 destination 객체의 property 토큰들은 매칭 되어야 한다.
         //모든 source 객체의 property들은 하나 이상의 토큰이 매칭되어야 한다.

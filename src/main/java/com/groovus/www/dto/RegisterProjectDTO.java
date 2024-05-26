@@ -1,9 +1,7 @@
 package com.groovus.www.dto;
 
 import jakarta.validation.constraints.Null;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
@@ -13,11 +11,13 @@ import java.util.List;
 @Log4j2
 @ToString
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterProjectDTO {
 
     private String pid;
 
-    private String  adminUid;
+    private String adminUid;
 
     private String projectName;
 

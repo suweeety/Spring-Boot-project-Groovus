@@ -1,56 +1,112 @@
 package com.groovus.www.controller;
 
+import com.groovus.www.dto.*;
+import com.groovus.www.dto.CalendarDTO;
+import com.groovus.www.dto.CalendarRequestDTO;
+import com.groovus.www.dto.MemberDTO;
+import com.groovus.www.entity.Calendar;
+import com.groovus.www.entity.Member;
+import com.groovus.www.entity.Project;
+import com.groovus.www.repository.CalendarRepository;
+import com.groovus.www.repository.ProjectRepository;
+import com.groovus.www.service.CalendarService;
+import com.groovus.www.service.ProjectService;
+import com.groovus.www.service.TaskService;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
+@Log4j2
 public class CommonController {
 
     //공통 컨트롤러입니다.
     //페이지 분기시에 사용합니다.!
     //메인화면에서 이동할때나....
 
+    @Autowired
+    private CalendarService calendarService;
+
+    @Autowired
+    private ProjectService projectService;
+
+    @Autowired
+    private TaskService taskService;
 
     @PreAuthorize("permitAll()")
     @GetMapping("/")
     public String helloGroovus(){
 
-        return "/main/main";
+        return "main/main";
     }
-
+    @PreAuthorize("permitAll()")
     @PostMapping ("/")
     public String LoginGroovus(){
 
-        return "/main/main";
+        return "main/main";
     }
 
     @GetMapping("/main/test")
     public String tesPage(){
 
-        return "/main/test";
+        return "main/test";
     }
 
-    @GetMapping("/reply/myreply")
-    public void goMyReply(){
+    @GetMapping("/reply/myreply/{pid}/{projectName}")
+    public String goMyReply(Model model, @PathVariable("pid") String pid, @PathVariable("projectName") String projectName, Principal principal){
+
+        String uid = principal.getName();
+        List<TaskReplyDTO> taskReplyDTOList = taskService.getMyReplyList(uid,Long.parseLong(pid));
+        List<TaskReReplyDTO> taskReReplyDTOList = taskService.getMyReReplyList(uid,Long.parseLong(pid));
+
+        model.addAttribute("taskReplyDTOList",taskReplyDTOList);
+        model.addAttribute("taskReReplyDTOList" , taskReReplyDTOList);
         //내가 쓴 댓글로 이동
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
 
+
+        return "reply/myreply";
     }
 
-
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/task/taskList")
     public void goTaskList(){
         //업무리스트로 이동
     }
 
-    @GetMapping("/calendar/schedule")
-    public String goScheduleManagement(){
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/calendar/schedule/{pid}/{projectName}")
+    public String goScheduleManagement(@PathVariable("pid") String pid, @PathVariable("projectName") String projectName ,Model model){
         //일정관리로 이동
 
-        return "/calendar/schedule";
+        log.info("---------------------------------------");
+        log.info("pid****: " + pid);
+        List<CalendarDTO> calendarList = calendarService.getList(Long.parseLong(pid));
+        log.info(calendarList);
+        log.info("---------------------------------------");
+
+        model.addAttribute("calendarList", calendarList);
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+
+        return "calendar/schedule";
     }
 
     @GetMapping("/message/messageList")
@@ -59,20 +115,26 @@ public class CommonController {
 
     }
 
-    @GetMapping("/drive/drive")
-    public void goDrive(){
-        //드라이브 이동
-
-    }
-    @GetMapping("/drive/bin")
-    public void goDriveBin(){
+    @GetMapping("/drive/bin/{pid}/{projectName}")
+    public String goDriveBin(@PathVariable("pid") String pid , @PathVariable("projectName") String projectName , Model model){
         //드라이브 휴지통
 
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+        return "drive/bin";
     }
-    
-    @GetMapping("/setting")
-    public void goSetting(){
+
+    @GetMapping("/setting/{pid}/{projectName}")
+    public String goSetting(Model model,@PathVariable("pid") String pid, @PathVariable("projectName") String projectName){
+
+        RegisterProjectDTO projectDTO = projectService.getProjectDTO(Long.parseLong(pid));
         //설정페이지로 이동
+        model.addAttribute("pid",pid);
+        model.addAttribute("projectName",projectName);
+        model.addAttribute("projectDTO",projectDTO);
+
+
+        return "setting";
     }
     
     @GetMapping("/main/about")

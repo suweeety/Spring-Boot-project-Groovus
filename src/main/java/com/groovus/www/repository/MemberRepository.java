@@ -22,6 +22,10 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     @EntityGraph(attributePaths = {"roleSet"})
     Optional<Member> findByEmail(String email);
 
+    @EntityGraph(attributePaths = {"roleSet"})
+    Optional<Member> findByMid(Long mid);
+
+
     //비밀번호 변경
     //@Query는 주로 select 할때 사용하지만 @Modifying과 같이 사용하면 처리 가능
     @Transactional
@@ -30,5 +34,8 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     int updatePassword(@Param("newPw")String newPw , @Param("mid") Long mid);
 
 
+    @EntityGraph(attributePaths = {"roleSet"})
+    @Query("select m from Member m where m.mid=:mid")
+    Optional<Member> getMemberByMid(Long mid);
 
 }

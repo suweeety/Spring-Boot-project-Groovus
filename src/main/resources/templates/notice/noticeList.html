@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      layout:decorate="~{layout/basic.html}">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항</title>
+
+  <th:block layout:fragment="css">
+
+    <style>
+
+      #logoImg{
+        background-color: #a441de;
+      }
+
+      .modal_{
+        position:absolute;
+        display:none;
+        justify-content: center;
+        top:0;
+        left:0;
+        z-index:99999;
+        width:100%;
+        height:100%;
+
+        background-color: rgba(0,0,0,0.4);
+      }
+
+      .modal_body{
+        position:absolute;
+        top:5%; /* 모달을 화면가운데 놓기위함.  */
+
+        width:50rem;  /* 모달의 가로크기  */
+        height:55rem; /* 모달의 세로크기  */
+        padding:40px;
+
+        background-color: rgb(255,255,255);
+        border-radius:10px;
+        box-shadow:0 2px 3px 0 rgba(34,36,38,0.15);
+
+        transform:translateX(25%);
+      }
+
+      .noticeTitle:hover{
+        color: #a441de;
+        cursor: pointer;
+      }
+
+    </style>
+
+  </th:block>
+</head>
+
+<th:block layout:fragment="content">
+
+  <div class="row page-titles mx-0">
+    <div class="col p-md-0">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">notice</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="email-left-box">
+
+              <button type="button" class="btn btn-primary btn-block" style="background-color: #a441de;" name="registerNoticeBtn">새글등록</button>
+
+              <div class="mail-list mt-4">
+                <a th:href="@{'/notice/noticeList/'+ ${pid}+'/'+${projectName}}" class="list-group-item border-0 text-primary p-r-0" id="wholeNotice"><span class="fa fa-briefcase f-s-14 mr-2"></span><b>전체글</b></a>
+                <a th:href="@{'/notice/noticeList/'+ ${pid}+'/'+${projectName}+'?type=d&keyword='+${#authentication.principal.uid}}" class="list-group-item border-0 p-r-0" id="delNotice"><i class="fa fa-trash font-18 align-middle mr-2"></i><b>삭제글</b></a>
+              </div>
+            </div>
+            <div class="email-right-box">
+              <!--업무리스트 시작-->
+              <div class="card-body" name="mainContent">
+                <div name="mainList">
+                  <div class="card-title">
+                    <h4>공지사항</h4>
+                  </div>
+                  <div class="table-responsive" >
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>제목</th>
+                        <th>등록일</th>
+                        <th>작성자</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+
+                      <th:block th:each="notice, i : ${noticeList.dtoList}">
+                        <tr>
+                          <th>[[${i.index + noticeList.start }]]</th>
+                          <td name="readNotice" class="noticeTitle" th:data-nid="${notice.nid}">[[${notice.title}]]</td>
+                          <td> [[${#temporals.format(notice.regDate, 'yyyy/MM/dd')}]]</td>
+                          <td class="color-primary">[[${notice.uname}]]</td>
+                        </tr>
+                      </th:block>
+
+                      </tbody>
+
+                    </table>
+                    <!--페이징-->
+                    <div class="bootstrap-pagination">
+                      <nav>
+                        <ul class="pagination justify-content-end">
+                          <li class="page-item" th:if="${noticeList.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                          </li>
+
+                          <th:block th:each="i : ${#numbers.sequence(1,noticeList.lastPage)}">
+                            <li th:class="${noticeList.page == i}?'page-item active':'page-item'">
+                              <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                            </li>
+                          </th:block>
+                          <li class="page-item" th:if="${noticeList.next}">
+                            <a class="page-link" th:data-num="${noticeList.lastPage}"><b>>></b></a>
+                          </li>
+                        </ul>
+                      </nav>
+                    </div>
+                    <!--페이징 끝-->
+                  </div>
+                </div>
+              </div>
+              <!--업무리스트 끝-->
+
+              <!-- panel -->
+              <div class="row">
+                <!-- <div class="col-7">
+                     <div class="text-left">1 - 20 of 568</div>
+                 </div>
+                 <div class="col-5">
+                     <div class="btn-group float-right">
+                         <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
+                         </button>
+                         <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
+                         </button>
+                     </div>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!--모달창-->
+  <div class="modal_">
+    <div class="modal_body">
+      <span  name="modal_close_btn" style="width: 3rem; height: 3rem; font-size: 30px; float:right ; margin-bottom: 1rem; cursor: pointer;"> X </span>
+      <br/>
+
+      <form name="noticeForm" method="post" action="/notice/register">
+        <span><b>제목</b></span>
+        <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" id="title" name="noticeTitle" style="display: inline-block; width: 25rem; margin-left: 2.8rem;">
+        <br/>
+        <br/>
+        <span><b>작성자</b></span>
+        <input type="text" class="form-control input-default" id="writer" name="noticeWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+        <br/>
+        <br/>
+        <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
+
+        <!--<div class="card-body">
+          <span><b>첨부파일</b></span>
+          <div class="basic-form">
+            <div class="form-group">
+              <input type="file" class="form-control-file">
+            </div>
+          </div>
+        </div>-->
+
+        <!--에디터-->
+        <!--'note-editable panel-body' 안에 들어감-->
+        <div class="card">
+          <div class="card-body">
+            <div class="summernote" style="display: none;" method="post">
+            </div>
+          </div>
+        </div>
+        <!--에디터 끝-->
+
+        <input type="hidden" name="noticeContent" value="">
+        <input type="hidden" name="pid" th:value="${pid}">
+        <input type="hidden" name="projectName" th:value="${projectName}">
+        <!--<input type="hidden" name="projectName" th:value="${projectName}">-->
+      </form>
+      <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
+    </div>
+  </div>
+  <!--모달 끝-->
+
+  <div name="noticeDetailsArea">
+
+    <!--업무 상세보기-->
+    <div name="noticeDetails" style="display: none">
+      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-light" name="readNoticeBack">뒤로</button></span>
+      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-success" name="readNoticeModify">수정</button></span>
+      <span><button type="button" class="btn mb-1 btn-rounded btn-outline-danger" name="readNoticeDelete">삭제</button></span>
+
+      <!--숨김항목-->
+      <input type="hidden" name="readNoticeNid">
+
+      <br/> <br/>
+      <span><b>제목</b></span>
+      <input type="text" class="form-control input-default" name="readNoticeTitle" style="display: inline-block; width: 25rem; margin-left: 2.8rem;" readonly>
+      <br/> <br/>
+      <span><b>작성자</b></span>
+      <input type="text" class="form-control input-default" name="readNoticeWriter"  style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+      <br/> <br/>
+      <span><b>작성일</b></span>
+      <input type="text" class="form-control input-default" name="readNoticeRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+      <br/> <br/>
+      <div name="readNoticeContent" class="form-control input-default" style="height:auto;">
+      </div>
+
+
+    <!--업무 상세보기창 끝-->
+
+    <!--에디터-->
+    <!--'note-editable panel-body' 안에 들어감-->
+    <div class="card" name="modifyContent" style="display: none;">
+      <div class="card-body">
+        <div class="summernote" style="display: none;" method="post">
+          <h3>업무내용입력</h3>
+        </div>
+      </div>
+    </div>
+    <!--에디터 끝-->
+    </div>
+  </div>
+
+  <!--스크립트-->
+  <script th:inline="javascript">
+
+    let pid = [[${pid}]];
+
+    $(document).ready(function () {
+
+
+      let mainList = $("div[name='mainList']");
+      let type = [[${pageRequestDTO.type}]];
+
+      // 다른 곳 클릭 시 div 숨기기
+      $(document).on("click", function(event){
+        if (!$(event.target).closest(".popup").length) {
+          $(".popup").hide();
+        }
+      });
+
+      if(type =='d'){
+        //삭제업무탭
+        $("#wholeNotice").removeClass("text-primary");
+        $("#delNotice").addClass("text-primary");
+      }
+
+      /*새글등록 버튼 클릭 시*/
+      $("button[name='registerNoticeBtn']").on("click",function (e){
+        e.preventDefault();
+        $(".modal_").show();
+      });
+
+      //모달 닫기 버튼을 눌렀을 때
+      $(document).on("click","span[name='modal_close_btn']",function(){
+        $(".modal_").hide();
+      });
+
+      //업무읽기에서 뒤로가기 버튼이 눌렸을 때
+      $(document).on("click","button[name='readNoticeBack']",function (e){
+        e.preventDefault();
+        $("button[name='readNoticeModify']").show();
+        $("button[name='readNoticeDelete']").show();
+        $("div[name='noticeDetailsArea']").html($("div[name='noticeDetails']")); // 2. 'Notice' 대문자를 'notice' 소문자로 변경
+        $("div[name='noticeDetails']").hide(); // 3. 'Notice' 대문자를 'notice' 소문자로 변경
+        $("button[name='readNoticeModify-save']").text("수정");
+        $("button[name='readNoticeModify-save']").attr("name", "readNoticeModify");
+        $("input[name='readNoticeTitle']").attr("readonly", true);
+        $("div[name='readNoticeContent']").show();
+        $("div[name='readNoticeContent']").html($("div[name='modifyContent'] div.note-editable").html());
+        $("div[name='modifyContent']").hide();
+        $("div[name='mainContent']").html(mainList);//메인콘텐츠공간에 메인리스트 이동
+
+      });
+
+      $(document).on("click","button[name='registerBtn']",function (e){
+        //업무 등록 버튼 눌렀을때
+        e.preventDefault();
+
+        if($("input[name='noticeTitle']").val() == ""){
+          alert("업무 제목을 입력해주세요");
+          $("input[name='noticeTitle']").focus();
+          return;
+        }
+
+        const htmlStr = $("div.note-editable").html();
+        const title = $('#title').val();
+        const content = htmlStr;
+
+        $.ajax({
+          url:'/notice/create',
+          type:'post',
+          data:{
+            'pid' : pid,
+            'title' : title,
+            'content' : content,
+          },
+          success:function (result){
+            alert("공지를 등록하였습니다.");
+            location.reload();
+          },
+          fail: function (result) {
+            alert("공지 등록 실패!!!")
+          }
+        });
+      });
+      //업무 제목 눌렀을 때
+      $(document).on("click", "td[name='readNotice']", function (e) {
+        e.preventDefault();
+
+        let nid = $(this).data("nid");
+        let type = [[${pageRequestDTO.type}]];
+
+        if(type =='d'){
+          //삭제된 업무 탭에서 업무 읽기 눌렀을 시
+          alert("삭제된 업무는 읽기 불가입니다. 관리자에게 문의하세요.");
+        }else {
+
+          $.ajax({
+            url: '/notice/view',
+            type: 'post',
+            data: {
+              'pid': pid,
+              'nid': nid
+            },
+            success: function (result) {
+              readNotice(result);
+              console.log("result", result);
+              console.log("uname", result.data.uname);
+            }
+          }); //ajax 종료
+        }
+      });//document 종료
+
+      function readNotice(result) {
+        let currentUser = [[${#authentication.principal}]];
+        let noticeDetails = $("div[name='noticeDetails']");
+
+        var content = result.data.content;
+        var modDate = result.data.modDate;
+        var nid = result.data.nid;
+        var regDate = result.data.regDate;
+        var title = result.data.title;
+        var uid = result.data.uid;
+        var uname = result.data.uname;
+
+        $("input[name='readNoticeNid']").val(nid);
+        $("input[name='readNoticeTitle']").val(title);
+        $("input[name='readNoticeWriter']").val(uname);
+        $("input[name='readNoticeRegDate']").val(regDate);
+        $("div[name='readNoticeContent']").html(content);
+
+        if (currentUser.uid !== uid) {
+          $("button[name='readNoticeModify']").hide();
+          $("button[name='readNoticeDelete']").hide();
+        }
+
+        noticeDetails.show();
+        $("div[name='mainContent']").html(noticeDetails);
+
+      }
+
+    });
+
+    $(document).on("click","button[name='readNoticeModify']",function (e){
+      //수정 버튼이 눌렸을 때 (작성자만 수정 가능)
+      e.preventDefault();
+
+      $(this).text("저장"); //수정 버튼을 저장 버튼으로 바꿈
+      $(this).attr("name","readNoticeModify-save"); //input태그 name속성도 변경
+      $("input[name='readNoticeTitle']").attr("readonly",false); //readonly속성 false
+
+      var readNoticeContent = $("div[name='readNoticeContent']").html(); //업무내용 저장
+      $("div[name='readNoticeContent']").hide(); //내용 div숨김
+
+      $("div[name='modifyContent']").show(); //에디터 보임
+      $("div[name='modifyContent'] div.note-editable").html(readNoticeContent); //에디터에 저장한 업무내용 삽입
+
+    })
+
+    $(document).on("click","button[name='readNoticeModify-save']" ,function (e){
+      //수정후 저장 버튼이 눌렸을 때
+      e.preventDefault();
+
+      var nid = $("input[name='readNoticeNid']").val(); // 업무 번호
+      var noticeTitle =  $("input[name='readNoticeTitle']").val();
+      var noticeContent =$("div[name='modifyContent'] div.note-editable").html();
+
+      $.ajax({
+        url:'/notice/update',
+        data:{
+          'nid':nid,
+          'title' : noticeTitle,
+          'content' : noticeContent
+        },
+        type:'post',
+        success:function (result){
+
+          if(result !== null){
+
+            $("button[name='readNoticeModify-save']").text("수정");
+            $("button[name='readNoticeModify-save']").attr("name","readNoticeModify"); //input태그 name속성도 변경
+            $("input[name='readNoticeTitle']").attr("readonly",true); //readonly속성 false
+
+            $("div[name='readNoticeContent']").show();
+            $("div[name='readNoticeContent']").html($("div[name='modifyContent'] div.note-editable").html());
+            $("div[name='modifyContent']").hide();
+
+            alert("업무를 수정했습니다.");
+
+          }else{
+            alert("수정 실패!");
+          }
+        }
+      });
+    });
+
+    $(document).on("click","button[name='readNoticeDelete']",function (e){
+      e.preventDefault();
+
+      if(confirm("해당 업무를 삭제하시겠습니까?")){
+        var nid = $("input[name='readNoticeNid']").val(); //업무번호
+
+        $.ajax({
+          url:'/notice/delete',
+          data:{
+            'nid':nid
+          },
+          type:'delete',
+          success:function (result){
+            if(result !== null){
+              alert("삭제되었습니다.");
+              location.reload();
+            }
+          }
+        });
+      }
+    });
+
+
+    //페이징 버튼을 눌렀을 때
+    $("a.page-link").on("click", function (event) {
+
+      event.preventDefault(); // 링크의 기본 동작을 중단합니다.
+
+      var pageNum = $(this).data("num");
+      var mid = [[${mid}]];
+      var type = [[${pageRequestDTO.type}]];
+      var keyword = [[${pageRequestDTO.keyword}]];
+
+      if(type != null && keyword!=null){
+        var url = '/notice/noticeList/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
+      }else{
+        var url = '/notice/noticeList/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum;
+      }
+      window.location.href = url; // 새로운 URL로 이동합니다.
+    });
+
+  </script>
+
+</th:block>
+
+</html>

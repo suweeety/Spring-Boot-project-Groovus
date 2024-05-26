@@ -1,8 +1,8 @@
 package com.groovus.www.service.ChatService;
 
-import com.groovus.www.dto.ChatRoomDto;
-import com.groovus.www.dto.ChatRoomMap;
-import com.groovus.www.dto.WebSocketMessage;
+import com.groovus.www.dto.chat.ChatRoomDto;
+import com.groovus.www.dto.chat.ChatRoomMap;
+import com.groovus.www.dto.chat.WebSocketMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

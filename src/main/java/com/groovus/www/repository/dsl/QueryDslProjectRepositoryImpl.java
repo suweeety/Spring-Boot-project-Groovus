@@ -64,9 +64,7 @@ public class QueryDslProjectRepositoryImpl extends QuerydslRepositorySupport imp
 
         return projectDTOList;
     }
-
-
-
+    
     @Override
     public Page<RegisterProjectDTO> searchAll(String[] types, String keyword, Pageable pageable ,Long mid) {
 
@@ -103,7 +101,7 @@ public class QueryDslProjectRepositoryImpl extends QuerydslRepositorySupport imp
         query.where(project.pid.gt(0L));
 
         //페이징
-        this.getQuerydsl().applyPagination(pageable,query);
+        this.getQuerydsl().applyPagination(pageable, query);
 
         List<Project> projectList = query.fetch();
 

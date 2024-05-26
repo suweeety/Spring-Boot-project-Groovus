@@ -100,9 +100,7 @@ public class CustomSecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );
-
         return http.build();
-
     }
 
     @Bean

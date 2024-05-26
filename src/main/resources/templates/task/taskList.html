@@ -15,6 +15,47 @@
                 background-color: #0435d7;
             }
 
+            .modal_{
+                position:absolute;
+                display:none;
+                justify-content: center;
+                top:0;
+                left:0;
+                z-index:99999;
+                width:100%;
+                height:100%;
+
+                background-color: rgba(0,0,0,0.4);
+            }
+
+            .modal_body{
+                position:absolute;
+                top:5%; /* 모달을 화면가운데 놓기위함.  */
+
+                width:50rem;  /* 모달의 가로크기  */
+                height:55rem; /* 모달의 세로크기  */
+                padding:40px;
+
+                background-color: rgb(255,255,255);
+                border-radius:10px;
+                box-shadow:0 2px 3px 0 rgba(34,36,38,0.15);
+
+                transform:translateX(25%);
+            }
+
+            .taskTitle:hover{
+                color: #0d4dff;
+                cursor: pointer;
+            }
+
+            .popup {
+                position: absolute;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                padding: 10px;
+                display: none;
+            }
+
         </style>
 
     </th:block>
@@ -36,12 +77,14 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="email-left-box"><a href="#" class="btn btn-primary btn-block" style="background-color: #0435d7;">업무등록</a>
+                        <div class="email-left-box">
+
+                            <button type="button" class="btn btn-primary btn-block" style="background-color: #0435d7;" name="registerTaskBtn">업무등록</button>
+
                             <div class="mail-list mt-4">
-                                <a href="#" class="list-group-item border-0 text-primary p-r-0"><span class="fa fa-briefcase f-s-14 mr-2"></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5">198</span> </a>
-                                <a href="#" class="list-group-item border-0 p-r-0"><span class="fa fa-tags f-s-14 mr-2"></span>참조업무</a>
-                                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-star-o font-18 align-middle mr-2"></i>중요업무 <span class="badge badge-danger badge-sm float-right m-t-5">47</span> </a>
-                                <a href="#" class="list-group-item border-0 p-r-0"><i class="fa fa-trash font-18 align-middle mr-2"></i>삭제업무</a>
+                                <a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}}" class="list-group-item border-0 text-primary p-r-0" id="wholeTask"><span class="fa fa-briefcase f-s-14 mr-2" ></span> <b>전체업무</b> <span class="badge badge-primary badge-sm float-right m-t-5" name="wholeTask">0</span> </a>
+                                <a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}+'?type=r&keyword='+${#authentication.principal.mid}}" class="list-group-item border-0 p-r-0" id="myTask"><span class="fa fa-tags f-s-14 mr-2"></span><b>담당업무</b><span class="badge badge-primary badge-sm float-right m-t-5" name="myTask">0</span></a>
+                                <a th:href="@{'/project/task/' + ${pid}+'/'+${projectName}+'?type=d&keyword='+${#authentication.principal.uid}}" class="list-group-item border-0 p-r-0" id="delTask"><i class="fa fa-trash font-18 align-middle mr-2"></i><b>삭제업무</b><span class="badge badge-primary badge-sm float-right m-t-5" name="delTask">0</span></a>
                             </div>
                         </div>
                         <div class="email-right-box">
@@ -49,305 +92,84 @@
                                 <div class="btn-group">
                                     <button aria-expanded="false" data-toggle="dropdown" class="btn btn-dark dropdown-toggle" type="button">More <span class="caret m-l-5"></span>
                                     </button>
-                                    <div class="dropdown-menu"><span class="dropdown-header">More Option :</span>  <a href="javascript: void(0);" class="dropdown-item">Mark as Unread</a>  <a href="javascript: void(0);" class="dropdown-item">Add to Tasks</a>  <a href="javascript: void(0);" class="dropdown-item">Add Star</a>  <a href="javascript: void(0);" class="dropdown-item">Mute</a>
+                                    <div class="dropdown-menu"><span class="dropdown-header">More Option :</span> <a href="javascript: void(0);" class="dropdown-item">준비중</a>  <a href="javascript: void(0);" class="dropdown-item">준비중 </a>  <a href="javascript: void(0);" class="dropdown-item">준비중</a>  <a href="javascript: void(0);" class="dropdown-item">준비중</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="email-list m-t-15">
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk2">
-                                                <label class="toggle" for="chk2"></label>
-                                            </div><span class="star-toggle ti-star"></span>
+
+                            <!--업무리스트 시작-->
+                            <div class="card-body" name="mainContent">
+
+
+                                <div name="mainList">
+                                    <div class="card-title">
+                                        <h4>[[${projectName}]]의 업무 목록</h4>
+                                    </div>
+                                    <div class="table-responsive" >
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th>💼</th>
+                                                <th>업무제목</th>
+                                                <th>상태</th>
+                                                <th>등록일</th>
+                                                <th>담당자</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            <th:block th:each="task ,i : ${responseDTO.dtoList}">
+                                                <tr>
+                                                    <th>[[${i.index + responseDTO.start }]]</th>
+                                                    <td name="readTask" class="taskTitle" th:data-tid="${task.tid}">[[${task.taskTitle}]]</td>
+                                                    <td th:if="${#strings.equals(task.status, 'TODO')}"><span class="badge badge-success px-2">할 일</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'INPROGRESS')}"><span class="badge badge-primary px-2">진행중</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'BLOCK')}"><span class="badge badge-danger px-2">보류</span></td>
+                                                    <td th:if="${#strings.equals(task.status, 'DONE')}"><span class="badge badge-light px-2">완료</span></td>
+                                                    <td> [[${#temporals.format(task.regDate, 'yyyy/MM/dd')}]]</td>
+                                                    <td class="color-primary">[[${task.responsibleMember}]]</td>
+                                                </tr>
+
+                                            </th:block>
+                                            </tbody>
+                                        </table>
+                                        <!--페이징-->
+                                        <div class="bootstrap-pagination">
+                                            <nav>
+                                                <ul class="pagination justify-content-end">
+                                                    <li class="page-item" th:if="${responseDTO.prev}"><a class="page-link" th:data-num="1"><b><<</b></a>
+                                                    </li>
+
+                                                    <th:block th:each="i : ${#numbers.sequence(1,responseDTO.lastPage)}">
+                                                        <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
+                                                            <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                                        </li>
+                                                    </th:block>
+
+                                                    <li class="page-item" th:if="${responseDTO.next}">
+                                                        <a class="page-link" th:data-num="${responseDTO.lastPage}"><b>>></b></a>
+                                                    </li>
+                                                </ul>
+                                            </nav>
                                         </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk3">
-                                                <label class="toggle" for="chk3"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk4">
-                                                <label class="toggle" for="chk4"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk5">
-                                                <label class="toggle" for="chk5"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk6">
-                                                <label class="toggle" for="chk6"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk7">
-                                                <label class="toggle" for="chk7"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk8">
-                                                <label class="toggle" for="chk8"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk9">
-                                                <label class="toggle" for="chk9"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk10">
-                                                <label class="toggle" for="chk10"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk11">
-                                                <label class="toggle" for="chk11"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk12">
-                                                <label class="toggle" for="chk12"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk13">
-                                                <label class="toggle" for="chk13"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk14">
-                                                <label class="toggle" for="chk14"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk15">
-                                                <label class="toggle" for="chk15"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk16">
-                                                <label class="toggle" for="chk16"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk17">
-                                                <label class="toggle" for="chk17"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk18">
-                                                <label class="toggle" for="chk18"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Ingredia Nutrisha, A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk19">
-                                                <label class="toggle" for="chk19"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message unread">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk20">
-                                                <label class="toggle" for="chk20"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="message">
-                                    <a href="email-read.html">
-                                        <div class="col-mail col-mail-1">
-                                            <div class="email-checkbox">
-                                                <input type="checkbox" id="chk21">
-                                                <label class="toggle" for="chk21"></label>
-                                            </div><span class="star-toggle ti-star"></span>
-                                        </div>
-                                        <div class="col-mail col-mail-2">
-                                            <div class="subject">Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of</div>
-                                            <div class="date">11:49 am</div>
-                                        </div>
-                                    </a>
+                                        <!--페이징 끝-->
+                                    </div>
                                 </div>
                             </div>
+                            <!--업무리스트 끝-->
+
                             <!-- panel -->
                             <div class="row">
-                                <div class="col-7">
-                                    <div class="text-left">1 - 20 of 568</div>
-                                </div>
-                                <div class="col-5">
-                                    <div class="btn-group float-right">
-                                        <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
-                                        </button>
-                                        <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                <!-- <div class="col-7">
+                                     <div class="text-left">1 - 20 of 568</div>
+                                 </div>
+                                 <div class="col-5">
+                                     <div class="btn-group float-right">
+                                         <button class="btn btn-gradient" type="button"><i class="fa fa-angle-left"></i>
+                                         </button>
+                                         <button class="btn btn-dark" type="button"><i class="fa fa-angle-right"></i>
+                                         </button>
+                                     </div>-->
                             </div>
                         </div>
                     </div>
@@ -355,10 +177,846 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <!--모달창-->
+    <div class="modal_">
+        <div class="modal_body">
+            <span  name="modal_close_btn" style="width: 3rem; height: 3rem; font-size: 30px; float:right ; margin-bottom: 1rem; cursor: pointer;"> X </span>
+            <br/>
+
+            <form name="taskForm" method="post" action="/task/register">
+                <span><b>업무 제목</b></span>
+                <input type="text" class="form-control input-default" placeholder="업무 제목 입력 (필수)" name="taskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;">
+                <br/>
+                <br/>
+                <span><b>작성자</b></span>
+                <input type="text" class="form-control input-default" name="taskWriter" th:value="${#authentication.principal.uid}" style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+                <br/>
+                <br/>
+                <span><b>담당자</b></span>
+                <select name="responsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem;">
+                    <option value="">------</option>
+                    <!--여기에 멤버들 보임-->
+
+                </select>
+                <!--        <span> <button type="button" class="btn btn-dark mb-2" name="addBtn" style=""> + </button> </span>-->
+
+                <!--                <div class="card-body">
+                                    <span><b>첨부</b></span>
+                                    <div class="basic-form">
+                                            <div class="form-group">
+                                                <input type="file" class="form-control-file"  multiple>
+                                                <div name="fileList"></div>
+                                            </div>
+                                    </div>
+                                </div>-->
+
+                <!--에디터-->
+                <!--'note-editable panel-body' 안에 들어감-->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="summernote" style="display: none;" method="post">
+                            <h3>업무내용입력</h3>
+                        </div>
+                    </div>
+                </div>
+                <!--에디터 끝-->
+
+                <input type="hidden" name="taskContent" value="">
+                <input type="hidden" name="pid" th:value="${pid}">
+                <input type="hidden" name="projectName" th:value="${projectName}">
+            </form>
+            <button type="button" class="btn mb-1 btn-info" name="registerBtn">등록</button>
+        </div>
+    </div>
+    <!--모달 끝-->
+
+    <div name="taskDetailsArea">
+
+        <!--업무 상세보기-->
+        <div name="taskDetails" style="display: none" >
+
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-light" name="readTaskBack">뒤로</button></span>
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-success" name="readTaskModify">수정</button></span>
+            <span><button type="button" class="btn mb-1 btn-rounded btn-outline-danger" name="readTaskDelete">삭제</button></span>
+
+            <!--숨김항목-->
+            <input type="hidden" name="readTaskTid">
+
+            <br/> <br/>
+            <span><b>업무 제목</b></span>
+            <input type="text" class="form-control input-default" name="readTaskTitle" style="display: inline-block; width: 25rem; margin-left: 1rem;" readonly>
+            <br/> <br/>
+            <span><b>상태</b></span>
+            <select name="readTaskStatus" style="width: 10rem; margin-left: 3rem; height: 2rem;">
+                <option value="TODO" name="status0" style="color: #6fd96f">할일</option>
+                <option value="INPROGRESS"  name="status1" style="color: #4d7cff">진행중</option>
+                <option value="BLOCK"  name="status2" style="color:#ff5e5e;">보류</option>
+                <option value="DONE"  name="status3" style="color:#aaa;">완료</option>
+            </select>
+
+            <span><button type="button" class="btn mb-1 btn-info" name="statusChangeBtn" style="display: none">변경</button></span>
+
+            <br/> <br/>
+            <span><b>작성자</b></span>
+            <input type="text" class="form-control input-default" name="readTaskWriter"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/> <br/>
+            <span><b>담당자</b></span>
+            <select name="modifyresponsibleMember" style="width: 10rem; margin-left: 2rem; height: 2rem; display: none;" >
+                <option value="">------</option>
+                <!--여기에 멤버들 보임-->
+
+            </select>
+            <input type="text" class="form-control input-default" name="readResponsibleMember"  style="display: inline-block; width: 20rem; margin-left: 2rem;" readonly>
+            <br/> <br/>
+            <span><b>작성일</b></span>
+            <input type="text" class="form-control input-default" name="readTaskRegDate" style="display: inline-block; width: 25rem; margin-left: 2rem;" readonly>
+            <br/> <br/> <br/>  <br/>
+            <!--업무 내용-->
+            <div name="readTaskContent" class="form-control input-default" style="height:auto; margin-bottom: 1rem;">
+
+            </div>
+
+            <!--에디터-->
+            <!--'note-editable panel-body' 안에 들어감-->
+            <div class="card" name="modifyContent" style="display: none;">
+                <div class="card-body">
+                    <div class="summernote" style="display: none;" method="post">
+                        <h3>업무내용입력</h3>
+                    </div>
+                </div>
+            </div>
+            <!--에디터 끝-->
+
+            <button type="button" class="btn mb-1 btn-outline-primary btn-xs" name="showHistoryBtn">상태 변경 이력 보기</button>
+            <button type="button" class="btn mb-1 btn-outline-primary btn-xs" name="closeHistoryBtn" style="display: none;">상태 변경 이력 닫기</button>
+            <!--상태변경 히스토리-->
+            <div name="history" style="display: none">
+                <div class="card-body">
+                    <div class="card-title">
+                        <h4>상태변경 이력</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>변경일</th>
+                                <th>변경전</th>
+                                <th>변경후</th>
+                                <th>변경자</th>
+                            </tr>
+                            </thead>
+
+                            <tbody th:name="historyBody">
+                            <!--상태 변경이력-->
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--상태변경 히스토리 끝-->
+            <!--댓글 리스트-->
+            <div name="replyList">
+
+
+
+            </div>
+            <!--댓글 리스트 끝-->
+            <!--댓글 쓰는 부분 시작-->
+            <div class="card">
+                <div class="card-body">
+                    <form action="#" class="form-profile" name="replyForm">
+                        <div class="form-group" style="position: relative">
+                            <div class="popup">This is a popup div.</div>
+                            <textarea class="form-control" name="replyText" id="textarea" cols="30" rows="2" placeholder="댓글을 입력하세요"></textarea>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <ul class="mb-0 form-profile__icons">
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-user"></i></button>
+                                </li>
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-paper-plane"></i></button>
+                                </li>
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-camera"></i></button>
+                                </li>
+                                <li class="d-inline-block">
+                                    <button class="btn btn-transparent p-0 mr-3"><i class="fa fa-smile"></i></button>
+                                </li>
+                            </ul>
+
+                            <input type="hidden" name="readTaskTid">
+                            <input type="hidden" name="uid" th:value="${#authentication.principal.uid}">
+                            <button class="btn btn-primary px-3 ml-4" name="regusterReplyBtn">등록</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--댓글 끝-->
+        </div>
+        <!--업무 상세보기창 끝-->
+    </div>
+
+
+
+    <!--스크립트-->
+    <script th:inline="javascript">
+
+        var pid = [[${pid}]];
+        var PrevStatus; // 상태 변경시 저장될 임시 공간
+
+        $(document).ready(function (){
+
+            var mainList = $("div[name='mainList']");
+
+            var type = [[${pageRequestDTO.type}]]; //projectPageRequestDTO
+
+
+            /* ajax로 프로젝트의 전체 업무 개수를 얻어옴*/
+            $.ajax({
+                url:'/task/countall',
+                type:'post',
+                data:{'pid':pid ,
+                    'mid':[[${#authentication.principal.mid}]],
+                    'uid':[[${#authentication.principal.uid}]]
+                },
+                success:function (result){
+
+                    $("span[name='wholeTask']").text(result[0]);
+                    $("span[name='myTask']").text(result[1]);
+                    $("span[name='delTask']").text(result[2]);
+                }
+            });
+            /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
+            $.ajax({
+                url:'/project/memberList',
+                data:{'pid':pid},
+                method:'post',
+                success:function (result){
+                    insertMemberList(result);
+                }
+            });
+
+            $(document).keydown(function(event){
+                if(event.keyCode == 116) { // F5 키 눌렸을 때
+                    event.preventDefault(); // 기본 동작 방지
+                    var newUrl = "/project/task/"+[[${pid}]]+"/"+[[${projectName}]];
+                    location.href = newUrl;
+
+                }
+            });
+
+            /*----------------------------------------*/
+            /*멘션기능 (구현중)*/
+
+            var popup = $(".popup");
+            var textarea =  $("textarea[name='replyText']");
+            var re_replyText = $("textarea[name='re-replyText']");
+
+            // textarea에서 @ 입력 시 팝업 표시
+            textarea.on("input", function(event) {
+
+                var text = textarea.val();
+                var atIndex = text.lastIndexOf("@");
+                if (atIndex !== -1) {
+                    var linesBeforeAt = text.substring(0, atIndex).split("\n");
+                    var lineNumber = linesBeforeAt.length;
+                    var lineHeight = parseInt(textarea.css("line-height"));
+                    var scrollTop = textarea.scrollTop();
+
+                    // @의 위치에 따른 Y 좌표 계산
+                    var posY = lineNumber * lineHeight - scrollTop;
+                    var posX = 0; // 왼쪽에 표시
+
+                    /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
+                    $.ajax({
+                        url:'/project/memberList',
+                        data:{'pid':pid},
+                        method:'post',
+                        success:function (result){
+                            var str ='<ul>';
+                            if(result!=null){
+                                for(var member of result){
+                                    str+= '<li name="mentionTag" data-mid="'+member.mid+'">'+member.uid+'</li>';
+                                }
+                            }
+                            str+='</ul>';
+                            popup.html(str);
+                        }
+                    }); //ajax 끝
+
+                    popup.css({top: posY, left: posX}).show();
+                } else {
+                    popup.hide();
+                }
+            });
+
+            $(document).on("input","textarea[name='re-replyText']",function (event){
+                var text = $("textarea[name='re-replyText']").val();
+                var mentiopnPop = $(this).prev(".popup");
+
+                var atIndex = text.lastIndexOf("@");
+                if (atIndex !== -1) {
+                    var linesBeforeAt = text.substring(0, atIndex).split("\n");
+                    var lineNumber = linesBeforeAt.length;
+                    var lineHeight = parseInt(textarea.css("line-height"));
+                    var scrollTop = textarea.scrollTop();
+
+                    // @의 위치에 따른 Y 좌표 계산
+                    var posY = lineNumber * lineHeight - scrollTop;
+                    var posX = 0; // 왼쪽에 표시
+
+                    /* ajax로 프로젝트에 속한 멤버들 정보를 얻어옴 */
+                    $.ajax({
+                        url:'/project/memberList',
+                        data:{'pid':pid},
+                        method:'post',
+                        success:function (result){
+                            var str ='<ul>';
+                            if(result!=null){
+                                for(var member of result){
+                                    str+= '<li name="mentionTag" data-mid="'+member.mid+'">'+member.uid+'</li>';
+                                }
+                            }
+                            str+='</ul>';
+                            mentiopnPop.html(str);
+                            mentiopnPop.css({top: posY, left: posX}).show();
+                        }
+                    }); //ajax 끝
+
+                } else {
+                    mentiopnPop.hide();
+                }
+            });
+
+            // 다른 곳 클릭 시 div 숨기기
+            $(document).on("click", function(event){
+                if (!$(event.target).closest(".popup").length) {
+                    $(".popup").hide();
+                }
+            });
+            /*----------------------------------------*/
+            if(type =='r'){
+                //담당업무탭
+                $("#myTask").addClass("text-primary");
+                $("#wholeTask").removeClass("text-primary");
+                $("#delTask").removeClass("text-primary");
+            };
+
+            if(type =='d'){
+                //삭제업무탭
+                $("#myTask").removeClass("text-primary");
+                $("#wholeTask").removeClass("text-primary");
+                $("#delTask").addClass("text-primary");
+            }
+
+            //업무 등록하기 버튼을 눌렀을 때
+            $("button[name='registerTaskBtn']").on("click",function (e){
+                e.preventDefault();
+                $(".modal_").show();
+            });
+
+            //모달 닫기 버튼을 눌렀을 때
+            $(document).on("click","span[name='modal_close_btn']",function(){
+                $(".modal_").hide();
+            });
+
+            //멤버 리스트 출력함수
+            function insertMemberList(result){
+
+                var selectList = $("select[name='responsibleMember']");
+                var modifyselectList = $("select[name='modifyresponsibleMember']");
+                var str ='';
+                for(var member of result){
+
+                    str+='<option value="'+member.mid+'">'+member.uid+'</option>';
+
+                }
+                selectList.append(str);
+                modifyselectList.append(str);
+            }
+
+            //업무읽기에서 뒤로가기 버튼이 눌렸을 때
+            $(document).on("click","button[name='readTaskBack']",function (e){
+                e.preventDefault();
+                $("button[name='showHistoryBtn']").show(); //히스토리보기 버튼 보이게
+                $("button[name='closeHistoryBtn']").hide(); //히스토리닫기 버튼 숨김
+                $("button[name='statusChangeBtn']").hide(); // 상태 변경 버튼 숨김
+                $("button[name='readTaskModify']").show(); //수정 버튼 보임
+                $("button[name='readTaskDelete']").show(); //삭제 버튼 보임
+                $("div[name='taskDetailsArea']").html( $("div[name='taskDetails']")); //업무 상세보기창 이동
+
+                $("div[name='taskDetails']").hide(); //숨김
+                $("div[name='history']").hide(); //숨김
+
+                $("button[name='readTaskModify-save']").text("수정");
+                $("button[name='readTaskModify-save']").attr("name","readTaskModify"); //input태그 name속성도 변경
+                $("input[name='readTaskTitle']").attr("readonly",true); //readonly속성 false
+                $("select[name='readTaskStatus']").removeAttr("disabled");
+
+                $("input[name='readResponsibleMember']").show();
+                $("select[name='modifyresponsibleMember']").hide();
+
+                $("div[name='readTaskContent']").show();
+                $("div[name='readTaskContent']").html($("div[name='modifyContent'] div.note-editable").html());
+                $("div[name='modifyContent']").hide();
+
+                $("div[name='mainContent']").html(mainList); //메인콘텐츠공간에 메인리스트 이동
+            });
+
+            //업무 제목을 눌렀을때 (업무내용 보일예정)
+            $(document).on("click","td[name='readTask']",function (e){
+                e.preventDefault();
+                var tid = $(this).data("tid");
+                var type = [[${pageRequestDTO.type}]];
+
+                if(type =='d'){
+                    //삭제된 업무 탭에서 업무 읽기 눌렀을 시
+                    alert("삭제된 업무는 읽기 불가입니다. 관리자에게 문의하세요.");
+                }else{
+
+                    $.ajax({
+                        url:'/task/view',
+                        type:'post',
+                        data:{'tid':tid},
+                        success:function (result){
+                            console.log(result);
+                            readTask(result);
+                            readReply(tid)
+                        }
+                    });
+                }
+            });
+
+            //업무 읽기 함수
+            function readTask(result){
+
+                var currentUser = [[${#authentication.principal}]];
+                var taskDetails = $("div[name='taskDetails']"); //업무 상세보기 창
+
+                var selectStatus = $("select[name='readTaskStatus']");
+
+                $("input[name='readTaskTid']").val(result.tid);
+                $("input[name='readTaskTitle']").val(result.taskTitle);
+                $("input[name='readTaskWriter']").val(result.taskWriter);
+                $("input[name='readResponsibleMember']").val(result.responsibleMember);
+                $("input[name='readTaskRegDate']").val(result.regDate);
+                selectStatus.val(result.status);
+                $("div[name='readTaskContent']").html(result.taskContent);
+
+                PrevStatus = $("select[name='readTaskStatus']").val(); //상태 임시 저장 (변경전)
+
+                if(currentUser.uid != result.taskWriter){
+                    $("button[name='readTaskModify']").hide();
+                    $("button[name='readTaskDelete']").hide();
+                }
+                taskDetails.show();
+
+                $("div[name='mainContent']").html(taskDetails); //메인 콘텐츠쪽에 넣음
+            }
+        });
+
+        //댓글 읽어오기
+        function readReply(tid){
+
+            //댓글과 대댓글 가져옴
+            $.ajax({
+                url:'/task/replyList',
+                type:'post',
+                data:{'tid':tid},
+                success:async function (result){
+
+                    var str ='';
+                    if(result != null){
+                        for(var i=0;i<result.length;i++){
+                            var rereplyStr = await readReReply(result[i]);
+
+                            str+= '<div class="media-body" name="reply" data-rid="'+result[i].rid+'">'+
+                                '<div class="d-sm-flex justify-content-between mb-2">' +
+                                '<h5 class="mb-sm-0">'+ result[i].uid +'<small class="text-muted ml-3">'+result[i].regDate+'</small></h5>' +
+                                '<div class="media-reply__link">'+
+                                '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
+                                '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
+                                '<button class="btn btn-transparent p-0 ml-3 font-weight-bold" name="re-reply">🗨️댓글</button>' +
+                                '</div></div>' +
+                                '<p>'+result[i].replyContent+'</p>'+
+                                '<div name="re-reply">';
+
+                            str+= rereplyStr; //대댓글
+
+                            str+= '</div></div>'+
+                                '<div class="card" name="re-replyInput" style="display: none;">'+
+                                '<div class="card-body" style="background-color: whitesmoke;">' +
+                                '<form action="#" class="form-profile" name="re-replyForm">'+
+                                '<div class="form-group" style="position: relative";>'+
+                                '<div class="popup">This is a popup div.</div>'+
+                                '<textarea class="form-control" name="re-replyText" id="textarea" cols="30" rows="2" placeholder="댓글을 입력하세요"></textarea>' +
+                                '</div>' +
+                                '<div class="d-flex align-items-center">' +
+                                '<input type="hidden" name="parentReplyRid" value="'+result[i].rid+'">'+
+                                '<button class="btn btn-primary px-3 ml-4" name="registerRe-ReplyBtn">등록</button>'+
+                                '</div>'+
+                                '</form>'+
+                                '</div>'+
+                                '</div>'+
+                                '</div>';
+                        }
+                        $("div[name='replyList']").html(str);
+                    }
+                }
+            });
+        } //댓글 읽어오기 끝
+
+        async function readReReply(result) {
+            var rid = result.rid;
+            var resultStr = '';
+
+            try {
+                var reply = await $.ajax({
+                    url: '/task/rereplyList',
+                    data: {'rid': rid},
+                    type: 'post'
+                });
+
+                if (reply != null) {
+                    for (var i = 0; i < reply.length; i++) {
+
+                        resultStr += '<div class="media-body"style="margin-left: 3rem; background-color:aliceblue; padding: 10px; " name="re-reply" data-rid="' + reply[i].rrid + '">' +
+                            '<div class="d-sm-flex justify-content-between mb-2">' +
+                            '<h5 class="mb-sm-0">' + reply[i].uid + '<small class="text-muted ml-3">' + reply[i].regDate + '</small></h5>' +
+                            '<div class="media-reply__link">' +
+                            '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-up"></i></button>' +
+                            '<button class="btn btn-transparent p-0 mr-3"><i class="fa fa-thumbs-down"></i></button>' +
+                            '</div></div>' +
+                            '<p>' + reply[i].replyText + '</p></div>';
+                    }
+                    return resultStr;
+                }
+            } catch (error) {
+                console.error("에러 발생:", error);
+                throw error;
+            }
+        }
+
+        $(document).on("click","button[name='re-reply']",function (e){
+            //대댓글 달기 버튼이 눌렸을 때
+            e.preventDefault();
+            $(this).text("취소");
+            $(this).attr("name","re-reply-close");
+            $(this).closest("div[name='reply']").next("div[name='re-replyInput']").show();
+        });
+
+        $(document).on("click","button[name='re-reply-close']",function (e){
+            //대댓글 달기 취소 버튼이 눌렸을 때
+            e.preventDefault();
+            $(this).text("🗨️댓글");
+            $(this).attr("name","re-reply");
+            $(this).closest("div[name='reply']").next("div[name='re-replyInput']").hide();
+        });
+
+        $(document).on("click","button[name='regusterReplyBtn']",function (e){
+            //댓글 등록 버튼이 눌렸을 때
+
+            e.preventDefault();
+
+            var replyContent= $("textarea[name='replyText']").val();
+
+            if(replyContent.length > 0 && replyContent != null){
+
+                var readTaskTid = $("input[name='readTaskTid']").val();
+                var uid = $("input[name='uid']").val();
+
+                $.ajax({
+                    url:'/task/register/reply',
+                    type:'post',
+                    data:{'readTaskTid':readTaskTid,
+                        'uid':uid,
+                        'replyContent':replyContent
+                    } ,
+                    success:function (result){
+                        if(result != null){
+                            alert("댓글이 등록되었습니다.");
+                            $("textarea[name='replyText']").val(''); //댓글 입력창 비워둠
+                            readReply(readTaskTid); //댓글 리스트 불러옴
+                        }
+                    }
+                }); //ajax끝
+            }else{
+                alert("댓글을 입력하세요!");
+                $("textarea[name='replyText']").focus();
+            }
+        });
+
+        $(document).on("click","button[name='registerRe-ReplyBtn']",function (e){
+            //대댓글 등록 버튼이 눌렸을 때
+            e.preventDefault();
+            var readTaskTid = $("input[name='readTaskTid']").val();
+
+            var replyText = $(this).parent().prev().children("textarea[name='re-replyText']").val();
+
+            if(replyText.length > 0 && replyText != null){
+
+                var parentRid =$(this).prev("input[name='parentReplyRid']").val();
+                var uid = [[${#authentication.principal.uid}]];
+
+                $.ajax({
+                    url:'/task/register/rereply',
+                    type:'post',
+                    data:{'parentRid': parentRid,
+                        'uid':uid,
+                        'replyText':replyText
+                    },
+                    success:function (result){
+                        if(result){
+                            alert("댓글이 등록되었습니다.");
+                            $("button[name='registerRe-ReplyBtn']").parent().prev().children("textarea[name='re-replyText']").val('');
+                            readReply(readTaskTid);
+                        }
+                    }
+                });
+
+            }else{
+                alert("댓글을 입력하세요!");
+                $(this).focus();
+            }
+        });
+
+
+        //업무 상세보기 -> 상태변경 셀렉트 박스에 변경이 감지되면
+        $("select[name='readTaskStatus']").change(function (){
+
+            //변경 버튼 노출
+            $("button[name='statusChangeBtn']").show();
+        })
+
+        //업무의 상세보기 -> 상태 변경 버튼이 눌렸을 때
+        $("button[name='statusChangeBtn']").on("click",function (e){
+            e.preventDefault();
+
+            var tid = $("input[name='readTaskTid']").val()+"";
+            var status = $("select[name='readTaskStatus']").val(); //바뀐상태
+            var uid = [[${#authentication.principal.uid}]];
+            var prevStatus = PrevStatus; //이전 상태
+            //해당 업무의 상태를 변경
+            $.ajax({
+                url:'/task/changestatus',
+                data:{'tid':tid,
+                    'status':status,
+                    'uid' : uid,
+                    'prevStatus':prevStatus
+                },
+                type:'post',
+                success:function(result){
+
+                    location.reload();
+                }
+            });
+        });
+
+        //상태 변경이력보기 버튼이 눌렸다면
+        $(document).on("click","button[name='showHistoryBtn']",function (e){
+            e.preventDefault();
+            $(this).hide();
+            $("button[name='closeHistoryBtn']").show();
+
+            var tid =  $("input[name='readTaskTid']").val();
+
+            $.ajax({
+                url:'/task/history',
+                type:'post',
+                data:{'tid':tid},
+                success:function (result){
+                    console.log(result);
+                    showHistory(result);
+                }
+            });
+        });
+
+        $(document).on("click","button[name='closeHistoryBtn']",function (e){
+            //상태 이력 보기 닫기버튼이 눌렸다면
+            e.preventDefault();
+            $(this).hide();
+            $("button[name='showHistoryBtn']").show();
+
+            $("div[name='history']").hide();
+        });
+
+        function showHistory(result){
+            var str ='';
+
+            if(result==null){
+
+                str = "<b>상태 변경 이력이 존재하지 않습니다.</b>";
+
+            }else {
+
+                for(var i=0;i<result.length;i++){
+
+                    var prevStatus;
+                    var status;
+
+                    if(result[i].status=='TODO'){
+                        status='할일';
+                    }else if(result[i].status=='INPROGRESS'){
+                        status='진행중';
+                    }else if(result[i].status=='BLOCK'){
+                        status='보류';
+                    }else if(result[i].status=='DONE'){
+                        status='완료';
+                    }
+
+                    if(result[i].prevStatus=='TODO'){
+                        prevStatus='할일';
+                    }else if(result[i].prevStatus=='INPROGRESS'){
+                        prevStatus='진행중';
+                    }else if(result[i].prevStatus=='BLOCK'){
+                        prevStatus='보류';
+                    }else if(result[i].prevStatus=='DONE'){
+                        prevStatus='완료';
+                    }
+
+                    str += "<tr><th>"+result[i].modDate+"</th><td>"+prevStatus+"</td>"
+                        +"<td>"+status+"</span></td>"
+                        +"<td>"+result[i].uid+"</td></tr>";
+                }
+            }
+            $("tbody[name='historyBody']").html(str);
+            $("div[name='history']").show();
+        };
+
+        $(document).on("click","button[name='registerBtn']",function (e){
+            //업무 등록 버튼 눌렀을때 (업무 등록 모달에서 등록 버튼)
+            e.preventDefault();
+
+            if($("select[name='responsibleMember']").val() == null || $("select[name='responsibleMember']").val().length<=0){
+                alert("담당자를 지정해주세요");
+                $("select[name='responsibleMember']").focus();
+                return;
+            }
+            if($("input[name='taskTitle']").val().length<=0){
+                alert("업무 제목을 입력해주세요");
+                $("input[name='taskTitle']").focus();
+                return;
+            }
+
+            var taskForm = $("form[name='taskForm']");
+            var htmlStr = $(".modal_ div.note-editable").html();
+
+            $("input[name='taskContent']").val(htmlStr);
+
+            taskForm.submit();
+
+        })
+
+        $(document).on("click","button[name='readTaskModify']",function (e){
+            //업무 수정 버튼이 눌렸을 때 (작성자만 수정 가능)
+            e.preventDefault();
+
+            $(this).text("저장"); //수정 버튼을 저장 버튼으로 바꿈
+            $(this).attr("name","readTaskModify-save"); //input태그 name속성도 변경
+            $("input[name='readTaskTitle']").attr("readonly",false); //readonly속성 false
+            $("select[name='readTaskStatus']").attr("disabled","disabled"); // 상태변경 select disabled
+
+            $("input[name='readResponsibleMember']").hide(); //담당자 input 박스 hide
+            $("select[name='modifyresponsibleMember']").show(); //담당자 select 박스 show
+            var readTaskContent = $("div[name='readTaskContent']").html(); //업무내용 저장
+            $("div[name='readTaskContent']").hide(); //내용 div숨김
+
+            $("div[name='modifyContent']").show(); //에디터 보임
+            $("div[name='modifyContent'] div.note-editable").html(readTaskContent); //에디터에 저장한 업무내용 삽입
+
+        })
+
+
+        $(document).on("click","button[name='readTaskModify-save']" ,function (e){
+            //업무 수정후 저장 버튼이 눌렸을 때
+            e.preventDefault();
+
+            if( $("select[name='modifyresponsibleMember']").val() == ''){
+                alert("담당자를 지정해주세요");
+                return;
+            }
+            var tid = $("input[name='readTaskTid']").val(); // 업무 번호
+            var taskTitle =  $("input[name='readTaskTitle']").val();
+            var responsibleMember =  $("select[name='modifyresponsibleMember']").val();
+            var taskContent =$("div[name='modifyContent'] div.note-editable").html();
+
+            $.ajax({
+                url:'/task/modify',
+                data:{'tid':tid,
+                    'taskTitle':taskTitle,
+                    'responsibleMember':responsibleMember,
+                    'taskContent':taskContent
+                },
+                type:'post',
+                success:function (result){
+
+                    if(result == 'success'){
+
+                        $("button[name='readTaskModify-save']").text("수정");
+                        $("button[name='readTaskModify-save']").attr("name","readTaskModify"); //input태그 name속성도 변경
+                        $("input[name='readTaskTitle']").attr("readonly",true); //readonly속성 false
+                        $("select[name='readTaskStatus']").removeAttr("disabled");
+
+                        $("input[name='readResponsibleMember']").show();
+                        $("select[name='modifyresponsibleMember']").hide();
+
+                        $("div[name='readTaskContent']").show();
+                        $("div[name='readTaskContent']").html($("div[name='modifyContent'] div.note-editable").html());
+                        $("div[name='modifyContent']").hide();
+
+                        alert("업무를 수정했습니다.");
+
+                    }else{
+                        alert("수정 실패!");
+                    }
+                }
+            });
+        });
+
+        $(document).on("click","button[name='readTaskDelete']",function (e){
+            e.preventDefault();
+
+            if(confirm("해당 업무를 삭제하시겠습니까?")){
+                var tid = $("input[name='readTaskTid']").val(); //업무번호
+
+                $.ajax({
+                    url:'/task/delete',
+                    data:{'tid':tid},
+                    type:'delete',
+                    success:function (result){
+                        if(result == 'success'){
+                            alert("삭제되었습니다.");
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
+
+
+        //페이징 버튼을 눌렀을 때
+        $("a.page-link").on("click", function (event) {
+
+            event.preventDefault(); // 링크의 기본 동작을 중단합니다.
+
+            var pageNum = $(this).data("num");
+            var mid = [[${mid}]];
+            var type = [[${pageRequestDTO.type}]];
+            var keyword = [[${pageRequestDTO.keyword}]];
+
+            if(type != null && keyword!=null){
+                var url = '/task/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum+'&type='+type+'&keyword='+keyword;
+            }else{
+                var url = '/task/list/'+[[${pid}]]+'/'+[[${projectName}]]+'?page='+pageNum;
+            }
+            window.location.href = url; // 새로운 URL로 이동합니다.
+        });
+
+    </script>
 
 </th:block>
-
-
-
-
 </html>

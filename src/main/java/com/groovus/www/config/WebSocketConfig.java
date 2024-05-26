@@ -1,6 +1,7 @@
 package com.groovus.www.config;
 
 
+import jakarta.servlet.http.HttpServlet;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
@@ -25,5 +26,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
         registry.setApplicationDestinationPrefixes("/pub");
     }
-
 }

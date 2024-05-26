@@ -27,7 +27,7 @@ public class Member extends BaseEntity {
     private boolean del;
     private  boolean social;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.LAZY) //oneToMany 역할
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
