@@ -61,7 +61,7 @@
 <br><br>
 
 ***
-## GroovUs 웹사이트 <a href="https://13.125.247.16:8002/" target=_blank >클릭!</a> 시 홈페이지로 이동합니다.
+## GroovUs 웹사이트 <a href="http://13.125.247.16:8002/" target=_blank >클릭!</a> 시 홈페이지로 이동합니다.
 
 ### Test 계정 로그인
 ID : user
