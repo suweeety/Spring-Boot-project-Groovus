@@ -1,7 +1,7 @@
 # [Spring Boot Project] 
 ![groovus_main](https://github.com/suweeety/Spring-Boot-project-Groovus/assets/150898767/65d54b22-ff21-4ef4-ad5d-2850eb73560a)
 ## 🖥️ 프로젝트 소개
-* 협업에 필요한 주요기능을 구현한 프로젝트 협업툴 사이트 'GroovUs' 입니다.<br>
+* GroovUs는 팀원 간의 원활한 소통과 효율적인 업무 관리를 지원하는 종합 프로젝트 협업 툴입니다. 공지사항, 업무 및 일정 관리부터 실시간 채팅, 화상회의, 공유 드라이브까지 협업에 필요한 핵심 기능들을 통합하여 제공합니다.<br>
 주요기능[ 공지사항 / 프로젝트 관리 / 댓글관리 / 업무관리 / 쪽지함 / 캘린더 / 공유 드라이브 / 화상회의 및 채팅 ]
 <br><br>
 
@@ -11,38 +11,35 @@
 <br><br>
 
 
+### ⚙️ 개발 환경 및 주요 기술 스택
+- **BE** : Java17, Gradle, JPA, Querydsl
+- **FE** : JavaScript, jQuery, Thymeleaf
+- **Framework** : Spring Boot(3.x), Spring Security, OAuth2 Client (소셜 로그인)
+- **DB** : PostgreSQL
+- **Features**: Spring WebSocket, SockJS, STOMP (실시간 통신), MapStruct/ModelMapper (데이터 매핑)
+- **IDE** : IntelliJ
+- **배포환경** : AWS EC2, Docker
+- **VCS** : git&github
+<br><br>
+
+<img width="1731" height="861" alt="diagram-export-2026 -3 -1 -오후-10_48_12" src="https://github.com/user-attachments/assets/11f1cb2b-f978-4684-8588-fffed8484308" />
+<br><br>
+
+
 ## 📌 주요 기능
-#### 공지사항
-- 공지사항
-#### 화상회의 및 채팅
-- 1:1 화상회의 (화상회의, 오디오, 화면공유)
-- 실시간 채팅 (채팅방 생성 및 삭제, 채팅방 입장 및 퇴장 메시지, 유저 리스트 확인)
-#### 업무관리
-- 프로젝트 내에서 각자 해결 해야할 업무 또는 문제 사항을 등록
-- 진행 상황을 서로 공유 (업무의 상태 변경)
-#### 쪽지함
-- 프로젝트 멤버들간의 쪽지 전송
-#### 댓글 관리
-- 업무 하단 댓글/대댓글 등록
-#### 프로젝트 관리
-- 프로젝트에 대한 설정 확인
-- 프로젝트를 생성한 Admin 멤버는 해당 프로젝트에 대한 설정을 바꿀 수 있도록 함.
-#### 캘린더
-- 멤버들간의 일정 공유 가능
-- 공유 캘린더
-#### 공유 드라이브
-- 파일 공유 기능
+* 프로젝트 및 업무 관리: 프로젝트 셋업(Admin 권한 제어), 업무/이슈 등록 및 상태 기반 진행 상황 공유
+* 실시간 화상회의 및 채팅: 1:1 화상회의(오디오/화면공유 지원), 실시간 채팅(방 생성/삭제, 입장/퇴장 알림, 유저 리스트)
+* 소통 및 피드백: 쪽지함(멤버 간 다이렉트 메시지), 업무 하단 댓글 및 대댓글 시스템
+* 리소스 공유: 팀원 간 일정 공유가 가능한 공유 캘린더, 파일 관리를 위한 공유 드라이브
+* 공지사항: 사내/팀 내 중요 소식 전달 기능
 <br><br>
 
 
 ## 🧑‍🤝‍🧑 맴버구성(담당 역할)
-정은 - 프로젝트, 댓글관리, 업무관리 , 쪽지함, 프로젝트 관리
-<br><br>
-수영 - 공지사항, 화상회의 및 채팅
-<br><br>
-근휘 - 캘린더(일정관리)
-<br><br>
-영주 - 공유 드라이브
+* 정은 - 프로젝트, 댓글관리, 업무관리 , 쪽지함, 프로젝트 관리
+* 수영 - 공지사항, 화상회의 및 채팅
+* 근휘 - 캘린더(일정관리)
+* 영주 - 공유 드라이브
 <br><br>
 
 
@@ -50,21 +47,6 @@
 
 ### Test 계정 로그인
 ID : user / PW : 1111
-<br><br>
-
-
-## ⚙️ 개발 환경 및 주요 기술 스택
-- **Language** : Java 17
-- **Framework** : Spring Boot(3.x)
-- **Security** : Spring Security, OAuth2 Client (소셜 로그인)
-- **BE** : Gradle, JPA, Querydsl
-- **FE** : JavaScript, jQuery, Thymeleaf, Bootstrap, Owl Carousel, WOW.js
-- **DB** : PostgreSQL
-- **Real-time & Features**: Spring WebSocket, SockJS, STOMP (실시간 통신), MapStruct/ModelMapper (데이터 매핑)
-- **IDE** : IntelliJ
-- **배포환경** : AWS EC2, Docker
-- **VCS** : git&github
-<img width="1731" height="861" alt="diagram-export-2026 -3 -1 -오후-10_48_12" src="https://github.com/user-attachments/assets/11f1cb2b-f978-4684-8588-fffed8484308" />
 <br><br>
 
 
